@@ -5,6 +5,7 @@
 #include "Terrain.h"
 #include "SkyBox.h"
 #include "BBox.h"
+#include "Camera.h"
 
 class World :
 	public SceneModel
@@ -29,6 +30,8 @@ public:
 	SkyBox				*p_skybox;
 	Terrain				*p_terrain;
 	BBox				*box;
+	Camera				*p_activeCamera;
+
 };
 
 #endif

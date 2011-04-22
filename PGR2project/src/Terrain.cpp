@@ -64,26 +64,32 @@ void Terrain::draw()
 void Terrain::init()
 {
 	// load heightmap
-	loadHeightMap(HEIGHTMAP_SOURCE); 
-
+	loadHeightMap(HEIGHTMAP_SOURCE);
+	int reduction = 1;
+	dim_x /=reduction;
+	dim_y /=reduction;
 	drawingMethod = GL_TRIANGLE_STRIP;
 	// create grid of triangles
 	glGenBuffers(1, &eboId);
 	glGenBuffers(1, &vboId);
 	int ch = 3;
 	float step_x = 1.f, step_y = 1.f;
+	step_x *=reduction;
+	step_y *=reduction;
 	GLfloat * vertices = new GLfloat[dim_x*dim_y*ch];
 	GLfloat * normals  = new GLfloat[dim_x*dim_y*ch];
 	GLuint  * elements = new GLuint[(dim_x-1)*2*dim_y];
 	int x,y;
 	vboCount = 0;
-	float hCorrection = getHeightAt(dim_x/2, dim_y/2);
-
+	float dx2 = dim_x/2*reduction;
+	float dy2 = dim_y/2*reduction;
+	sz_x = 2*dx2;
+	sz_y = 2*dy2;
 	for (x=0; x<dim_x; x++){
 		for (y=0; y<dim_y; y++){
-			vertices[(x*dim_y + y)*ch + 0] = x*step_x - dim_x/2.0;//x
+			vertices[(x*dim_y + y)*ch + 0] = x*step_x - dx2;//x
 			vertices[(x*dim_y + y)*ch + 1] = getHeightAt(x,y);//height
-			vertices[(x*dim_y + y)*ch + 2] = y*step_y - dim_y/2.0;//y
+			vertices[(x*dim_y + y)*ch + 2] = y*step_y - dy2;//y
 			v3 normal;
 			normal.x = getHeightAt(x-1,y) - getHeightAt(x+1,y);
 			normal.y = getHeightAt(x,y);
@@ -169,7 +175,19 @@ void Terrain::loadHeightMap(string filename)
 
 float Terrain::getHeightAt(float x, float y)
 {
-	return 0.0;
+	// interpolate height
+	int ix,iy;
+	ix = (int) x;
+	iy = (int) y;
+	float tx = x-ix;
+	float ty = y-iy;
+	float h3 = (1-ty)*getHeightAt(ix,iy) + ty*getHeightAt(ix, iy+1);
+	float h4 = (1-ty)*getHeightAt(ix+1,iy) + ty*getHeightAt(ix+1, iy+1);
+
+	float out = (1-tx)*h3 + (tx)*h4;
+	
+	printf ("Height(%i, %i) = %f\n", ix,iy,getHeightAt(ix,iy));
+	return out;
 }
 float Terrain::getHeightAt(int x, int y)
 {

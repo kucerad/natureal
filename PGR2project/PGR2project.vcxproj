@@ -60,7 +60,7 @@
     <Link>
       <AdditionalDependencies>opengl32.lib;glu32.lib;glfw.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\bin\$(Configuration)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>./common/GLFW/msvc10;./common/AntTweakBar;./common/GLEW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./common/GLFW/msvc10;./common/AntTweakBar;./common/GLEW;./common/GL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -79,7 +79,7 @@
     <Link>
       <AdditionalDependencies>opengl32.lib;glu32.lib;glfw.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\bin\$(Configuration)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>../common/GLFW/msvc10;../common/AntTweakBar;../common/GLEW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./common/GLFW/msvc10;./common/AntTweakBar;./common/GLEW;./common/GL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -100,6 +100,7 @@
     <ClInclude Include="src\BBox.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\IniSettings.h" />
+    <ClInclude Include="src\math.h" />
     <ClInclude Include="src\pgr2model.h" />
     <ClInclude Include="src\SceneModel.h" />
     <ClInclude Include="src\settings.h" />

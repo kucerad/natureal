@@ -185,6 +185,12 @@ class Matrix4x4
 			return matResult;
 		}
 
+		/*inline Matrix4x4 inverse(void) const
+		{
+			Matrix4x4 matResult = *this;
+			matResult.invert();
+			return matResult;
+		}*/
 
 		inline void transpose(void)
 		{
@@ -269,7 +275,8 @@ class Matrix4x4
 			float m[16];
 
 	};
-
+typedef Matrix4x4 Matrix4;
+typedef Matrix4x4 m4;
 #endif //__MATRIX4X4_H__
 
 

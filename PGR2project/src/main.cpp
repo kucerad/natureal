@@ -24,8 +24,7 @@
 // GLOBAL CONSTANTS____________________________________________________________
 const GLfloat VECTOR_RENDER_SCALE = 0.20f;
 // GLOBAL VARIABLES____________________________________________________________
-GLint    g_WinWidth             = 800;   // Window width
-GLint    g_WinHeight            = 600;   // Window height
+
 
 // Scene orientation (stored as a quaternion)
 GLfloat  g_SceneRot[]           = {0.0f, 0.0f, 0.0f, 1.0f};   
@@ -141,29 +140,29 @@ void initGUI()
    TwAddVarRW(controlBar, "model_file", TW_TYPE_STDSTRING, &g_ModelFileName,
       " label='file' group=Model help='Model file name.' ");
    TwAddButton(controlBar, "load_new_model", loadNewModelCB, NULL, 
-      " label='load model' group=Model key=l help='Load new model.' ");
+      " label='load model' group=Model help='Load new model.' ");
 
    TwAddVarRW(controlBar, "vertex_normals", TW_TYPE_BOOLCPP, 
-      &g_ShowVertexNormals, " label='vertex normals' key=v \
+      &g_ShowVertexNormals, " label='vertex normals' \
       group=Render help='Show vertex normal, tangent, binormal.' ");
    TwAddVarRW(controlBar, "face_normals", TW_TYPE_BOOLCPP, &g_FaceNormals, 
-      " label='face normals' group=Render key=f help='Show face normals.' ");
+      " label='face normals' group=Render help='Show face normals.' ");
    TwAddVarRW(controlBar, "transparency", TW_TYPE_BOOLCPP, &g_Transparency, 
-      " label='transparency' group=Render key=t \
+      " label='transparency' group=Render \
       help='Render transparent meshes.'");
    TwAddVarRW(controlBar, "wiremode", TW_TYPE_BOOLCPP, &g_WireMode,
-      " label='wire mode' group=Render key=t help='Toggle wire mode.' ");
+      " label='wire mode' group=Render help='Toggle wire mode.' ");
    TwAddVarRW(controlBar, "face_culling", TW_TYPE_BOOLCPP, &g_FaceCulling,
-      " label='face culling' group=Render key=c help='Toggle face culling.' ");
+      " label='face culling' group=Render  help='Toggle face culling.' ");
    TwAddVarRW(controlBar, "alpha_threshold", TW_TYPE_FLOAT, &g_AlphaThreshold,
       " label='alpha threshold' group=Render min=0 max=1 step=0.01 \
-      keyIncr=a keyDecr=A help='Alpha test threshold.' ");
+       help='Alpha test threshold.' ");
    TwAddVarRW(controlBar, "Translate", TW_TYPE_FLOAT, &g_SceneTraZ, 
       " group='Scene' label='translate Z' min=1 max=1000 step=0.5 \
-      keyIncr=z keyDecr=Z help='Scene translation.' ");
+       help='Scene translation.' ");
    TwAddVarRW(controlBar, "Scale", TW_TYPE_FLOAT, &g_SceneScale, 
       " group='Scene' label='scale' min=0 max=10 step=0.01 \
-      keyIncr=s keyDecr=S help='Scene scale.' ");
+       help='Scene scale.' ");
    TwAddVarRW(controlBar, "SceneRotation", TW_TYPE_QUAT4F, &g_SceneRot, 
       " group='Scene' label='Scene rotation' open \
       help='Change the scene orientation.' ");
@@ -239,6 +238,12 @@ void activateGLFWMouse()
 //-----------------------------------------------------------------------------
 void cbKeyboardChanged(int key, int action)
 {
+	if (!g_MouseModeANT){
+		// apply to camera first...
+		if (world.p_activeCamera->handleKeyDown(key, action)){
+			return;
+		}
+	}
    switch (key)
    {
       // DA use 'z' instead of 't'
@@ -260,7 +265,6 @@ void cbKeyboardChanged(int key, int action)
 		  } else {
 			activateGLFWMouse();
 		  }
-		  printf("MEZERA, ant=%s \n", g_MouseModeANT?"true":"false");
 		  break;
 	}
 }
@@ -286,16 +290,8 @@ void GLFWCALL cbMouseButtonChanged(int button, int action)
 //-----------------------------------------------------------------------------
 void cbMousePositionChanged(int x, int y)
 {
-   static int s_LastMousePoxX = x;
-   static int s_LastMousePoxY = y;
-
-   if (g_MouseRotationEnabled)
-   {
-      g_SceneRot[1] +=  0.9f*(x - s_LastMousePoxX);
-      g_SceneRot[2] +=  0.9f*(y - s_LastMousePoxY);
-      s_LastMousePoxX = x;
-      s_LastMousePoxY = y;
-   }
+   
+   world.p_activeCamera->handleMouseMove(x,y);
    glfwSetMousePos(g_WinWidth/2, g_WinHeight/2);
 }
 
