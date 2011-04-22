@@ -8,7 +8,7 @@
 
 #ifndef __VECTOR3_H__
 #define __VECTOR3_H__
-
+#include "../src/math.h"
 #include <math.h>
 #include <stdlib.h>
 #include <cstdio>
@@ -18,10 +18,6 @@ union flint{
 	int				i;
 	unsigned char	ch[4];	
 };
-
-const double PI			= 3.1415926536;
-const double HALF_PI	= 0.5*PI;
-const double TWO_PI		= 2.0*PI;
 
 inline double DEGREES_TO_RADIANS(double deg)
 {

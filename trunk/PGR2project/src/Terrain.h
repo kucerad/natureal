@@ -32,6 +32,7 @@ public:
 
 	float*	heightMap;
 	int		dim_x, dim_y;
+	float	sz_x, sz_y;
 	GLuint	drawingMethod;
 	GLuint	vboId;
 	GLuint	vboCount;

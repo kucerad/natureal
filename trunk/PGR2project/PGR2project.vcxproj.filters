@@ -55,6 +55,9 @@
       <Filter>MathUtils</Filter>
     </ClInclude>
     <ClInclude Include="src\World.h" />
+    <ClInclude Include="src\math.h">
+      <Filter>MathUtils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
