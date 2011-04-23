@@ -47,6 +47,7 @@ void Texture::bind(GLenum texUnit)
 void Texture::unbind()
 {
 	glActiveTexture(textureUnit);
+	glClientActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
 }

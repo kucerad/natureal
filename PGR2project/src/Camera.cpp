@@ -178,11 +178,11 @@ void Camera::draw() {
 
 void Camera::shoot()
 {
-  glViewport(0, 0, width, height);
+  
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-
-  gluPerspective(fov, (GLfloat)width/height, near, far);  
+  glViewport(0, 0, g_WinWidth, g_WinHeight);
+  gluPerspective(fov, (GLfloat)g_WinWidth/g_WinHeight, near, far);  
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(position.x, position.y, position.z,
@@ -190,7 +190,7 @@ void Camera::shoot()
 			upVector.x, upVector.y, upVector.z);
 
 }
-void Camera::setup(v3 & pos, v3 & dir, v3 &up, int w, int h, float fo, float n, float fa)
+void Camera::setup(v3 & pos, v3 & dir, v3 &up, int *w, int *h, float fo, float n, float fa)
 {
 	position	= pos;
 	direction	= dir;

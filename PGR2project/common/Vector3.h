@@ -56,7 +56,12 @@ public:
 	{
 		x = y = z = 0;
 	}
-
+	Vector3(float _x)
+	{
+		x = _x;
+		y = _x;
+		z = _x;
+	}
 	Vector3(float _x, float _y, float _z = 0)
 	{
 		x = _x;

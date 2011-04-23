@@ -1,7 +1,8 @@
 #ifndef _SKYBOX_H
 #define _SKYBOX_H
 
-#include "scenemodel.h"
+#include "SceneModel.h"
+#include "Camera.h"
 
 static const string appendices[] = {
 	"north",
@@ -35,6 +36,7 @@ public:
 	void loadFromFiles(string filename);
 
 	vector<int> textureIds;
+	Camera* p_activeCamera;
 };
 
 #endif
