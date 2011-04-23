@@ -21,8 +21,8 @@
 #define TERRAIN_TEX_COUNT 1
 #define TERRAIN_TEX_NAME "terrain/terrain_tex_%02i.png"
 
-#define SKYBOX_TEX_FILENAMES "skybox/512/sahara_%s.png"
-#define SKYBOX_SIZE 999;
+#define SKYBOX_TEX_FILENAMES "skybox/512/nightsky_%s.png"
+#define SKYBOX_SIZE			 800
 
 #define HUMAN_HEIGHT 5.f
 
@@ -53,8 +53,8 @@ static enum Attribs{
 
 
 
-static GLint    g_WinWidth             = 800;   // Window width
-static GLint    g_WinHeight            = 600;   // Window height
+extern GLint    g_WinWidth;   // Window width
+extern GLint    g_WinHeight;   // Window height
 
 static v4 sunAmb  = v4(0.05,0.05, 0.2, 1.0);
 static v4 sunDif  = v4(1.0,1.0, 1.0, 1.0);

@@ -16,7 +16,7 @@ public:
 	Camera();
 	~Camera();
 	void set(Camera * _cam);
-	void setup(v3 & pos, v3 & dir, v3 &up, int w, int h, float fo, float n, float fa);
+	void setup(v3 & pos, v3 & dir, v3 &up, int *w, int *h, float fo, float n, float fa);
 	void setPositon(float x, float y, float z);
 	void setPositon(v3 _v);
 	v3 getPosition();
@@ -63,7 +63,7 @@ private:
 	GLuint vbo;
 	GLuint index_vbo;
 	
-	GLsizei width, height;
+	GLsizei* width, *height;
 	GLfloat fov, near, far;
 
 

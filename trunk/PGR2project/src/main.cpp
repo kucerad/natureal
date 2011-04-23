@@ -17,6 +17,9 @@
 #define USE_ANTTWEAKBAR
 #define TEST 0
 
+int g_WinWidth             = 800;   // Window width
+int g_WinHeight            = 600;   // Window height
+
 #include "pgr2model.h"
 #include <assert.h>
 #include "../common/models/cube.h"
@@ -34,13 +37,15 @@ GLfloat  g_SceneScale           = 1.0f;
 
 GLuint cube_vbo_id				= 0;
 GLuint cube_ebo_id				= 0;
+GLuint plane_vbo_id				= 0;
+GLuint plane_ebo_id				= 0;
 
 
-bool     g_ShowVertexNormals    =  true; // Show vertex normal/tangent/binormal
-bool     g_FaceNormals          =  true; // Show face normal
-bool     g_Transparency         =  true; // Draw transparent meshes
+bool     g_ShowVertexNormals    =  false; // Show vertex normal/tangent/binormal
+bool     g_FaceNormals          =  false; // Show face normal
+bool     g_Transparency         =  false; // Draw transparent meshes
 bool     g_WireMode             = false; // Wire mode enabled/disabled
-bool     g_FaceCulling          = false; // Face culling enabled/disabled
+bool     g_FaceCulling          = true; // Face culling enabled/disabled
 GLfloat  g_AlphaThreshold       = 0.01f; // Alpha test threshold
 bool	 g_MouseModeANT			= true;
 // Model
@@ -67,6 +72,7 @@ void cbDisplay()
 
    // Setup OpenGL states according to user settings
    glAlphaFunc(GL_GEQUAL, g_AlphaThreshold);
+
    glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
    if (g_FaceCulling) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
 
@@ -91,7 +97,7 @@ void initApp()
 	// set cube vbo
 	initCube();
 	//set plane vbo
-	//initPlane();
+	initPlane();
 
 	world.init();
 
@@ -233,12 +239,6 @@ void TW_CALL loadNewModelCB(void* clientData)
 //-----------------------------------------------------------------------------
 void cbWindowSizeChanged(int width, int height)
 {
-   glViewport(0, 0, width, height);
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   gluPerspective(55.0f, GLfloat(width)/height, 1.0f, 100.0f);
-   glMatrixMode(GL_MODELVIEW);
-
    g_WinWidth  = width;
    g_WinHeight = height;
 }
