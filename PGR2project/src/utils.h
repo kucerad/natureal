@@ -2,6 +2,12 @@
 #define _UTILS_H
 
 #include "settings.h"
+#define BACKSPACE(cnt) for (int i=0; i<cnt; i++){printf("\b \b");}
+#define BACK(cnt) for (int i=0; i<cnt; i++){printf("\b");}
+
+#define SAFE_DELETE_PTR(VAR) if(VAR!=NULL){delete VAR; VAR=NULL;}
+#define SAFE_DELETE_ARRAY_PTR(VAR) if(VAR!=NULL){delete [] VAR; VAR=NULL;}
+
 
 static void glScale(v3 &scaleFactors)
 {

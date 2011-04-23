@@ -210,7 +210,7 @@ void Camera::move(v3 & dist)
 		float z = position.z +terrain->sz_y/2.0;
 		switch (mode){
 		case TERRAIN_RESTRICTED:
-			position.y = max(terrain->getHeightAt(x, z), position.y);
+			position.y = max(terrain->getHeightAt(x, z)+HUMAN_HEIGHT, position.y);
 			break;
 		case TERRAIN_CONNECTED:
 			position.y = terrain->getHeightAt(x, z)+HUMAN_HEIGHT;

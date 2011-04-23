@@ -3,6 +3,7 @@
 
 Texture::Texture(void)
 {
+	id = 0;
 
 }
 
@@ -39,6 +40,7 @@ void Texture::bind(GLenum texUnit)
 	textureUnitNumber = texUnitToNumber(texUnit);
 	glEnable(GL_TEXTURE_2D);
 	glActiveTexture(texUnit);
+	glClientActiveTexture(texUnit);
 	glBindTexture(GL_TEXTURE_2D, id);
 }
 
