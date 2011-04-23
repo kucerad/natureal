@@ -21,12 +21,12 @@ const GLfloat CUBE_VERTEX_ARRAY[] =
 };
 const GLfloat CUBE_VERTEX_ARRAY2[] =
 {
-	 0.0f,0.0f, 1.0f,  1.0f,0.0f, 1.0f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-	 0.0f,0.0f,0.0f, 0.0f, 1.0f,0.0f,  1.0f, 1.0f,0.0f,  1.0f,0.0f,0.0f,
-	 0.0f, 1.0f,0.0f, 0.0f, 1.0f, 1.0f,  1.0f, 1.0f, 1.0f,  1.0f, 1.0f,0.0f,
-	 0.0f,0.0f,0.0f,  1.0f,0.0f,0.0f,  1.0f,0.0f, 1.0f, 0.0f,0.0f, 1.0f,
-	  1.0f,0.0f,0.0f,  1.0f, 1.0f,0.0f,  1.0f, 1.0f, 1.0f,  1.0f,0.0f, 1.0f,
-	 0.0f,0.0f,0.0f, 0.0f,0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,0.0f
+	 0.0f,0.0f,1.0f, 1.0f,0.0f,1.0f, 1.0f,1.0f,1.0f, 0.0f,1.0f,1.0f,
+	 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f, 1.0f,1.0f,0.0f, 1.0f,0.0f,0.0f,
+	 0.0f,1.0f,0.0f, 0.0f,1.0f,1.0f, 1.0f,1.0f,1.0f, 1.0f,1.0f,0.0f,
+	 0.0f,0.0f,0.0f, 1.0f,0.0f,0.0f, 1.0f,0.0f,1.0f, 0.0f,0.0f,1.0f,
+	 1.0f,0.0f,0.0f, 1.0f,1.0f,0.0f, 1.0f,1.0f,1.0f, 1.0f,0.0f,1.0f,
+	 0.0f,0.0f,0.0f, 0.0f,0.0f,1.0f, 0.0f,1.0f,1.0f, 0.0f,1.0f,0.0f
 };
 
 const GLfloat CUBE_COLOR_ARRAY[] =
@@ -90,23 +90,59 @@ const GLubyte CUBE_INDEX_ARRAY[] =
 const int NUM_CUBE_VERTICES = sizeof(CUBE_VERTEX_ARRAY) / (3*sizeof(GLfloat));
 const int NUM_CUBE_INDICES  = sizeof(CUBE_INDEX_ARRAY) / sizeof(GLubyte);
 
+extern GLuint cube_vbo_id;
+extern GLuint cube_ebo_id;
 
+static void initCube(){
+	glGenBuffers(1,&cube_ebo_id);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, NUM_CUBE_INDICES*sizeof(GLubyte), CUBE_INDEX_ARRAY, GL_STATIC_DRAW);
+	glGenBuffers(1,&cube_vbo_id);
+	glBindBuffer(GL_ARRAY_BUFFER, cube_vbo_id);
+		// alloc space
+		GLsizeiptr size3 =  3*NUM_CUBE_VERTICES*sizeof(GLfloat);
+		//int size2 =  2*NUM_CUBE_VERTICES*sizeof(GLfloat);
+		glBufferData(GL_ARRAY_BUFFER, 2*size3, 0, GL_STATIC_DRAW); 
+		// fill vertices
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size3, CUBE_VERTEX_ARRAY2); 
 
+		// fill normals
+		glBufferSubData(GL_ARRAY_BUFFER, size3, size3, CUBE_NORMAL_ARRAY);
+		// fill texcoords
+		//glBufferSubData(GL_ARRAY_BUFFER, 2*size3, size2, CUBE_NORMAL_ARRAY);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	
+};
 //-----------------------------------------------------------------------------
 // Name: drawCube()
 // Desc: 
 //-----------------------------------------------------------------------------
-inline void drawCube()
+static void drawCube()
 {
-   glEnableClientState(GL_VERTEX_ARRAY);
-   glVertexPointer(3, GL_FLOAT, 0, CUBE_VERTEX_ARRAY2);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ebo_id);
+	glBindBuffer(GL_ARRAY_BUFFER, cube_vbo_id);
+	   glEnableClientState(GL_VERTEX_ARRAY);
+	   glEnableClientState(GL_NORMAL_ARRAY);
+		glVertexPointer(3, GL_FLOAT, 0, BUFFER_OFFSET(0));
+		glNormalPointer(GL_FLOAT, 0, BUFFER_OFFSET(3*NUM_CUBE_VERTICES*sizeof(GLfloat)));
+		//glDrawArrays(GL_QUADS, 0, NUM_CUBE_VERTICES);
+	   glDrawElements(GL_QUADS, NUM_CUBE_INDICES, GL_UNSIGNED_BYTE, BUFFER_OFFSET(0)); 
+	//                  CUBE_INDEX_ARRAY);
 
-	glDrawArrays(GL_QUADS, 0, NUM_CUBE_VERTICES);
-//   glDrawElements(GL_QUADS, NUM_CUBE_INDICES, GL_UNSIGNED_BYTE, 
-//                  CUBE_INDEX_ARRAY);
+	   glDisableClientState(GL_VERTEX_ARRAY);
+	   glDisableClientState(GL_NORMAL_ARRAY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+};
 
-   glDisableClientState(GL_VERTEX_ARRAY);
-}
-
+inline void drawPlane(){
+	
+};
+inline void initPlane(){
+	
+};
 
 #endif // __CUBE_MODEL_H__

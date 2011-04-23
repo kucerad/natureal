@@ -19,6 +19,7 @@
 
 #include "pgr2model.h"
 #include <assert.h>
+#include "../common/models/cube.h"
 #include "World.h"
 
 // GLOBAL CONSTANTS____________________________________________________________
@@ -30,6 +31,10 @@ const GLfloat VECTOR_RENDER_SCALE = 0.20f;
 GLfloat  g_SceneRot[]           = {0.0f, 0.0f, 0.0f, 1.0f};   
 GLfloat  g_SceneTraZ            = 10.0f; // Scene translation along z-axis
 GLfloat  g_SceneScale           = 1.0f;
+
+GLuint cube_vbo_id				= 0;
+GLuint cube_ebo_id				= 0;
+
 
 bool     g_ShowVertexNormals    =  true; // Show vertex normal/tangent/binormal
 bool     g_FaceNormals          =  true; // Show face normal
@@ -83,6 +88,11 @@ void cbDisplay()
 }
 void initApp()
 {
+	// set cube vbo
+	initCube();
+	//set plane vbo
+	//initPlane();
+
 	world.init();
 
 }
@@ -98,14 +108,24 @@ void cbInitGL()
 
    // Set OpenGL state variables
    glClearColor(0.2f, 0.2f, 0.5f, 1.0f);
-   glEnable(GL_DEPTH_TEST);
    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+   
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	glMaterialfv(GL_FRONT_AND_BACK,  GL_AMBIENT, material_amd);
+	glMaterialfv(GL_FRONT_AND_BACK,  GL_DIFFUSE, material_amd);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_spe);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128);
+   glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_CULL_FACE);
+	glPointSize(1.f);
    glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_NORMALIZE);
-   glLineWidth(2.0f);
+   glLineWidth(1.0f);
+
+    
 
    // init app
    initApp();

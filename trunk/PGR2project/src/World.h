@@ -6,9 +6,11 @@
 #include "SkyBox.h"
 #include "BBox.h"
 #include "Camera.h"
+#include "Light.h"
+#include "Fog.h"
+#include "TextureManager.h"
 
-class World :
-	public SceneModel
+class World
 {
 public:
 	World(void);
@@ -19,11 +21,11 @@ public:
 
 	void update(float time);
 
-	void translate(v3 movVector);
+	void translate(v3 &movVector);
 
-	void rotate(v3 axis, float angleRad);
+	void rotate(v3 &axis, float angleRad);
 
-	void scale(v3 scaleVector);
+	void scale(v3 &scaleVector);
 
 // attributes:
 	vector<SceneModel*> v_models;
@@ -31,7 +33,10 @@ public:
 	Terrain				*p_terrain;
 	BBox				*box;
 	Camera				*p_activeCamera;
-
+	Light				*p_activeLight;
+	Fog					*p_fog;
+	TextureManager		textureManager;
+	
 };
 
 #endif
