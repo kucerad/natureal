@@ -66,6 +66,19 @@ class Vector4
 //		inline float w() const					{ return w;	}
 		inline Vector3	xyz()					{ return Vector3(x, y, z);	}
 
+		inline float lenght()
+		{
+			return sqrt(x*x+y*y+z*z+w*w);
+		}
+		inline void normalize()
+		{
+			float norm = 1.0/lenght();
+			x = x*norm;
+			y = y*norm;
+			z = z*norm;
+			w = w*norm;
+		}
+
 		inline Vector4& operator = (const Vector4& copy)
 		{
 			x = copy.x;

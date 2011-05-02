@@ -5,12 +5,13 @@
 #include "../common/png.h"
 #include "settings.h"
 #include "utils.h"
+#include "Shader.h"
 
 class Terrain :
 	public SceneModel
 {
 public:
-	Terrain(TextureManager *texManager);
+	Terrain(TextureManager *texManager, ShaderManager *shManager);
 	~Terrain(void);
 
 	void draw();
@@ -58,7 +59,7 @@ public:
 
 	vector<int>		textureIds;
 
-	GLint	shaderID;
+	Shader *	shader;
 
 };
 

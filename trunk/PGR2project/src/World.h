@@ -9,6 +9,8 @@
 #include "Light.h"
 #include "Fog.h"
 #include "TextureManager.h"
+#include "Grass.h"
+#include "Planter.h"
 
 class World
 {
@@ -35,6 +37,10 @@ public:
 	Camera				*p_activeCamera;
 	Light				*p_activeLight;
 	Fog					*p_fog;
+
+	Grass				*p_grass_prototype;
+	Vegetation			*p_grass_growth;
+
 	TextureManager		textureManager;
 	
 };

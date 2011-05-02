@@ -95,6 +95,10 @@ extern GLuint cube_ebo_id;
 extern GLuint plane_vbo_id;
 extern GLuint plane_ebo_id;
 
+static void deleteCube(){
+	glDeleteBuffers(1,&cube_ebo_id);
+	glDeleteBuffers(1,&cube_vbo_id);
+}
 static void initCube(){
 	glGenBuffers(1,&cube_ebo_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ebo_id);
@@ -171,7 +175,6 @@ const GLubyte PLANE_INDEX_ARRAY[] =
 const int NUM_PLANE_VERTICES = sizeof(PLANE_VERTEX_ARRAY) / (3*sizeof(GLfloat));
 const int NUM_PLANE_INDICES  = sizeof(PLANE_INDEX_ARRAY) / sizeof(GLubyte);
 
-
 static void drawPlane(){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, plane_ebo_id);
 	glBindBuffer(GL_ARRAY_BUFFER, plane_vbo_id);
@@ -181,7 +184,6 @@ static void drawPlane(){
 		glVertexPointer(3, GL_FLOAT, 0, BUFFER_OFFSET(0));
 		glNormalPointer(GL_FLOAT, 0, BUFFER_OFFSET(3*NUM_PLANE_VERTICES*sizeof(GLfloat)));
 		glTexCoordPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(6*NUM_PLANE_VERTICES*sizeof(GLfloat)));
-		//glDrawArrays(GL_QUADS, 0, NUM_PLANE_VERTICES);
 	    glDrawElements(GL_QUADS, NUM_PLANE_INDICES, GL_UNSIGNED_BYTE, BUFFER_OFFSET(0)); 
 	   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	   glDisableClientState(GL_VERTEX_ARRAY);
@@ -191,6 +193,11 @@ static void drawPlane(){
 
 
 };
+static void deletePlane(){
+	glDeleteBuffers(1,&plane_ebo_id);
+	glDeleteBuffers(1,&plane_vbo_id);
+}
+
 static void initPlane(){
 	glGenBuffers(1,&plane_ebo_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, plane_ebo_id);

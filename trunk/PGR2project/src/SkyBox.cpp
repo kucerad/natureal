@@ -4,8 +4,8 @@ SkyBox::SkyBox():
 {
 }
 
-SkyBox::SkyBox(TextureManager *texManager, string filename):
-	SceneModel(texManager)
+SkyBox::SkyBox(TextureManager *texManager, ShaderManager *shManager, string filename):
+	SceneModel(texManager, shManager)
 {
 	// load textures...
 	char fname[100];
@@ -23,13 +23,15 @@ SkyBox::SkyBox(TextureManager *texManager, string filename):
 
 SkyBox::~SkyBox(void)
 {
+	// delete plane
 }
 
 void SkyBox::draw()
 {
 	glDisable(GL_LIGHTING);
-	glColor3f(1,1,1);
-	glMatrixMode(GL_MODELVIEW);
+	glColor3f(1.0,1.0,1.0);
+   glMatrixMode(GL_MODELVIEW);
+   glPushMatrix();
 	glTranslate(p_activeCamera->getPosition());
 	glScale(v3(SKYBOX_SIZE));
 	
@@ -87,7 +89,7 @@ void SkyBox::draw()
 	drawPlane();	
 	textureManager->unbindTexture(textureIds[1]);
 	glPopMatrix();
-	
+   glPopMatrix();	
 	glEnable(GL_LIGHTING);
 }
 

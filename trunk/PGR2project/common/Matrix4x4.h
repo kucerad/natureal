@@ -56,6 +56,49 @@ class Matrix4x4
 				m[i] = copy.m[i];
 			}
 		}
+		inline void scale(v3 &scaleVector)
+		{
+			m[0]  *= scaleVector.x;
+			m[5]  *= scaleVector.y;
+			m[10] *= scaleVector.z;
+		}
+
+		inline void translate(v3 &moveVector)
+		{
+			m[12] += moveVector.x;
+			m[13] += moveVector.y;				
+			m[14] += moveVector.z;
+		}
+
+
+		inline void rotate(v3 &axis, float angleRad)
+		{
+			float sina = sin(angleRad);
+			float cosa = cos(angleRad);
+			float omcosa= 1.f-cosa;
+			float  m0 = cosa+omcosa*axis.x*axis.x;
+			float  m1 = omcosa*axis.x*axis.y + axis.z*sina;
+			float  m2 = omcosa*axis.x*axis.z + axis.y*sina;;
+			float  m3 = 0.f;
+			float  m4 = omcosa*axis.x*axis.y - axis.z*sina;
+			float  m5 = omcosa*axis.y*axis.y;
+			float  m6 = omcosa*axis.x*axis.z + axis.x*sina;
+			float  m7 = 0.f;
+			float  m8 = omcosa*axis.x*axis.z + axis.y*sina;
+			float  m9 = omcosa*axis.y*axis.z - axis.x*sina;;
+			float m10 = omcosa*axis.z*axis.z;
+			float m11 = 0.f;
+			float m12 = 0.f;
+			float m13 = 0.f;
+			float m14 = 0.f;
+			float m15 = 1.f;
+			Matrix4x4 rot(m0,  m1,  m2,  m3,
+				          m4,  m5,  m6,  m7,
+				          m8,  m9, m10, m11,
+				         m12, m13, m14, m15);
+			(*this) = rot * (*this);
+		}
+
 
 		inline operator const float*() const	{ return m;	}
 		inline operator float*()				{ return m;	}

@@ -19,7 +19,7 @@
 
 int g_WinWidth             = 800;   // Window width
 int g_WinHeight            = 600;   // Window height
-
+float g_time			   = 0.0f;
 #include "pgr2model.h"
 #include <assert.h>
 #include "../common/models/cube.h"
@@ -90,8 +90,11 @@ void cbDisplay()
       if (g_ShowVertexNormals)   g_pModel->renderVertexNormals(VECTOR_RENDER_SCALE);
       if (g_FaceNormals)         g_pModel->renderFaceNormals(VECTOR_RENDER_SCALE);  
    }
+   g_time+=TIME_STEP;
+  // printf("time: %f\n", g_time);
    world.draw();
 }
+
 void initApp()
 {
 	// set cube vbo
@@ -101,6 +104,15 @@ void initApp()
 
 	world.init();
 
+}
+void deinitApp()
+{
+	deletePlane();
+	deleteCube();
+
+	world.~World();
+	printf("deinit done\n");
+	system("PAUSE");
 }
 
 //-----------------------------------------------------------------------------
@@ -323,8 +335,7 @@ void cbMousePositionChanged(int x, int y)
 //-----------------------------------------------------------------------------
 int main(int argc, char* argv[]) 
 {
-
-   return common_main(g_WinWidth, g_WinHeight,
+   int output = common_main(g_WinWidth, g_WinHeight,
                       "[PGR2] Semestral project",
                       cbInitGL,              // init GL callback function
                       cbDisplay,             // display callback function
@@ -338,4 +349,7 @@ int main(int argc, char* argv[])
                       cbMousePositionChanged // mouse motion callback function
 #endif
                       );
+   deinitApp();
+
+   return output;
 }

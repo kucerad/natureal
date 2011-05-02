@@ -22,12 +22,13 @@ void BBox::draw()
 {
 	glMatrixMode(GL_MODELVIEW);
 	glColor(color);
-	glPushAttrib( GL_POLYGON_BIT );
-	
+	glPushAttrib( GL_POLYGON_BIT | GL_LIGHTING_BIT | GL_FOG_BIT);
+		
 	glPushMatrix();
 	glTranslate(minCorner);
 	glScale(sizes);
-	
+		glDisable(GL_LIGHTING);
+		glDisable(GL_FOG);
 		glPolygonMode(GL_FRONT_AND_BACK, drawMode);
 	drawCube();
 	glPopMatrix();

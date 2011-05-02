@@ -1,8 +1,8 @@
 #include "Terrain.h"
 
 
-Terrain::Terrain(TextureManager *texManager):
-	SceneModel(texManager)
+Terrain::Terrain(TextureManager *texManager, ShaderManager *shManager):
+	SceneModel(texManager, shManager)
 {
 	heightMap		= NULL;
 	dim_x			= 0;
@@ -15,30 +15,29 @@ Terrain::Terrain(TextureManager *texManager):
 	vertices 		= NULL;
 	normals  		= NULL;
 	elements 		= NULL;
-	shaderID		= 0;
 	reduction		= 1;
+	shader			= NULL;
 }
 
 
 Terrain::~Terrain(void)
 {
+	glDeleteBuffers(1, &vboId);
+	glDeleteBuffers(1, &eboId);
 	SAFE_DELETE_ARRAY_PTR( heightMap );
 	SAFE_DELETE_ARRAY_PTR(vertices);
 	SAFE_DELETE_ARRAY_PTR(normals);
 	SAFE_DELETE_ARRAY_PTR(elements);
+	SAFE_DELETE_PTR(shader);
 }
 
 void Terrain::draw()
 {
-	glUseProgram(shaderID);
-		
-		// bind textures
-		for (int i=0; i<TERRAIN_TEX_COUNT; i++){
-			textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
-		}
-		// set data_texture
-		//glUniform1i(locations[BRANCH_DATA_TEXTURE], heightTexture->unitId);
-			
+	// bind textures
+	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
+		textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
+	}
+	shader->use(true);		
 		// bind index buffer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,eboId);
 		glBindBuffer(GL_ARRAY_BUFFER, vboId); 
@@ -50,7 +49,10 @@ void Terrain::draw()
 		   // draw VBOs...
 			glVertexPointer(channels[VERTEX], glTypes[VERTEX], 0, BUFFER_OFFSET(offsets[VERTEX]));
 			glNormalPointer(glTypes[NORMAL], 0, BUFFER_OFFSET( offsets[NORMAL] ) );
+			
+			glActiveTexture(GL_TEXTURE0);
 			glClientActiveTexture(GL_TEXTURE0);
+			
 			glTexCoordPointer(channels[TEXCOORD0], glTypes[TEXCOORD0], 0, BUFFER_OFFSET(offsets[TEXCOORD0]));
 			
 			glDrawElements(GL_TRIANGLE_STRIP, eboCount, GL_UNSIGNED_INT, BUFFER_OFFSET(offsets[INDEX]));
@@ -68,7 +70,7 @@ void Terrain::draw()
 			textureManager->unbindTexture(textureIds[i]);
 		}
 	// turn off shader
-	glUseProgram(0);
+	shader->use(false);
 }
 
 void Terrain::drawNormals()
@@ -94,13 +96,17 @@ void Terrain::drawNormals()
 	 
 void Terrain::init()
 {
+	// load & create shaders
+	shader = new Shader();
+	shader->loadShader(TERRAIN_VS_FILENAME, TERRAIN_FS_FILENAME);
+
 	// load heightmap
 	loadHeightMap(HEIGHTMAP_SOURCE);
 
 	// load textures
 	loadTextures(TERRAIN_TEX_NAME, TERRAIN_TEX_COUNT);
 
-	reduction = 10;
+	reduction = 50;
 	dim_x = hdim_x/reduction;
 	dim_y = hdim_y/reduction;
 	drawingMethod = GL_TRIANGLE_STRIP;
@@ -273,7 +279,8 @@ void Terrain::loadTextures(string filename, int count){
 	for (int i=0; i<count; i++){
 		sprintf(def_filename, filename.c_str(), i+1);
 		sprintf(sh_name, "terrain_tex_%02i", i+1);
-		texId = textureManager->loadTexture( string(def_filename) , string(sh_name));
+		texId = textureManager->loadTexture( string(def_filename) , string(sh_name), i, true);
+		shader->linkTexture(textureManager->getTexture(texId));
 		textureIds.push_back(texId);
 	}
 
@@ -285,14 +292,14 @@ float Terrain::getHeightAt(float x, float y)
 	int ix,iy;
 	ix = (int) x;
 	iy = (int) y;
-	return getHeightAt(ix,iy);
-	/*
+	//return getHeightAt(ix,iy);
+	
 	float tx = x-ix;
 	float ty = y-iy;
 	float h3 = (1-ty)*getHeightAt(ix,iy) + ty*getHeightAt(ix, iy+1);
 	float h4 = (1-ty)*getHeightAt(ix+1,iy) + ty*getHeightAt(ix+1, iy+1); 
 	return (1-tx)*h3 + (tx)*h4;
-	*/
+	//*/
 }
 float Terrain::getHeightAt(int x, int y)
 {

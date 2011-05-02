@@ -18,7 +18,7 @@ class SkyBox :
 {
 public:
 	SkyBox(void);
-	SkyBox(TextureManager *texManager, string filename);
+	SkyBox(TextureManager *texManager, ShaderManager *shManager, string filename);
 	~SkyBox(void);
 
 	void draw();

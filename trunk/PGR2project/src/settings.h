@@ -14,17 +14,27 @@
 
 #define BUFFER_OFFSET(i) ((char*) NULL + (i))
 
-#define HEIGHTMAP_SOURCE "terrain/terrain2.png"
-#define HEIGHTMAP_SCALE 0.001
-#define HEIGHTMAP_INITHEIGHT -5
+#define TIME_STEP 0.1f
 
-#define TERRAIN_TEX_COUNT 1
-#define TERRAIN_TEX_NAME "terrain/terrain_tex_%02i.png"
+#define HEIGHTMAP_SOURCE		"textures/terrain/terrain2.png"
+#define HEIGHTMAP_SCALE			0.001
+#define HEIGHTMAP_INITHEIGHT	0
 
-#define SKYBOX_TEX_FILENAMES "skybox/512/nightsky_%s.png"
-#define SKYBOX_SIZE			 800
+#define TERRAIN_TEX_COUNT		5
+#define TERRAIN_TEX_NAME		"textures/terrain/terrain_tex_%02i.png"
+#define TERRAIN_VS_FILENAME		"shaders/terrain/terrain_vs.glsl"
+#define TERRAIN_FS_FILENAME		"shaders/terrain/terrain_fs.glsl"
 
-#define HUMAN_HEIGHT 5.f
+#define GRASS_COUNT				100
+#define GRASS_TEX_NAME			"textures/grass/grass_01.png"
+#define GRASS_WAVE_TEX_NAME		"textures/grass/dudv_01.png"
+#define GRASS_VS_FILENAME		"shaders/grass/grass_vs.glsl"
+#define GRASS_FS_FILENAME		"shaders/grass/grass_fs.glsl"
+
+#define SKYBOX_TEX_FILENAMES	"textures/skybox/512/sahara_%s.png"
+#define SKYBOX_SIZE				800
+
+#define HUMAN_HEIGHT			5.f
 
 static enum Attribs{
 	INDEX,
@@ -51,10 +61,9 @@ static enum Attribs{
 	VBO_ATR_COUNT
 };
 
-
-
 extern GLint    g_WinWidth;   // Window width
 extern GLint    g_WinHeight;   // Window height
+extern float	g_time;
 
 static v4 sunAmb  = v4(0.05,0.05, 0.2, 1.0);
 static v4 sunDif  = v4(1.0,1.0, 1.0, 1.0);
@@ -62,6 +71,8 @@ static v4 sunSpe  = v4(1.0,1.0, 0.9, 1.0);
 
 static GLfloat material_amd[4] = {0.6f, 0.6f, 0.6f, 1.0f};
 static GLfloat material_spe[4] = {0.3f, 0.3f, 0.3f, 1.0f};
+
+
 
 using namespace std;
 

@@ -10,7 +10,7 @@ public:
 	Texture(void);
 	~Texture(void);
 	
-	void load(string filename);
+	void load(string filename, GLint unitNumber=0, bool buildMipmaps=false, GLint wrapMode=GL_REPEAT, GLint filterMode=GL_LINEAR);
 
 	void bind(GLenum texUnit);
 	void unbind();

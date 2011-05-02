@@ -44,6 +44,7 @@ void Light::draw()
 		drawCube();
 	glPopMatrix();
 }
+
 void Light::turnOn()
 {
 	glEnable(GL_LIGHTING);
@@ -54,6 +55,7 @@ void Light::turnOff()
 {
 	glDisable(lightId);
 }
+
 void Light::setup(GLuint lid, v3 &pos, v3 &dir, v4 &ambi, v4 &diff, v4 &spec, float cutOff, float exp)
 {
 	lightId = lid;
