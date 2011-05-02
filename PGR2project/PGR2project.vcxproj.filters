@@ -69,6 +69,22 @@
     <ClInclude Include="src\Fog.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ioutils.h">
+      <Filter>IOfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Grass.h">
+      <Filter>Scene\Vegetation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vegetation.h">
+      <Filter>Scene\Vegetation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Planter.h">
+      <Filter>Scene\Vegetation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
@@ -88,6 +104,9 @@
     </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{b79f5d01-3772-4efc-a3a3-8b651143d496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Vegetation">
+      <UniqueIdentifier>{c3fcf724-e6d3-4202-8ae7-ffb42d391303}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -132,5 +151,35 @@
     <ClCompile Include="src\Fog.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ioutils.cpp">
+      <Filter>IOfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Grass.cpp">
+      <Filter>Scene\Vegetation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vegetation.cpp">
+      <Filter>Scene\Vegetation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Planter.cpp">
+      <Filter>Scene\Vegetation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\terrain\terrain_fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\terrain\terrain_vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\grass\grass_fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\grass\grass_vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

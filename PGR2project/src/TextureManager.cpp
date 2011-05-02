@@ -9,11 +9,16 @@ TextureManager::TextureManager(void)
 TextureManager::~TextureManager(void)
 {
 }
+Texture * TextureManager::getTexture(int texId)
+{
+	return textures[texId];
+}
 
-int TextureManager::loadTexture(string filename,string inShaderName)
+
+int TextureManager::loadTexture(string filename,string inShaderName, GLint unitNumber, bool buildMipmaps, GLint wrapMode, GLint filterMode)
 {
 	Texture *texture = new Texture();
-	texture->load(filename);
+	texture->load(filename, unitNumber, buildMipmaps, wrapMode, filterMode);
 	texture->inShaderName = inShaderName;
 	textures.push_back(texture);
 	return textures.size()-1;

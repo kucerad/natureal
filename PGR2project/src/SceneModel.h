@@ -6,12 +6,13 @@
 #include "../common/models/cube.h"
 #include "utils.h"
 #include "TextureManager.h"
+#include "ShaderManager.h"
 
 class SceneModel
 {
 public:
 	SceneModel();
-	SceneModel(TextureManager *texManager);
+	SceneModel(TextureManager *texManager, ShaderManager *shManager);
 	~SceneModel(void);
 
 	virtual void draw()=0;
@@ -27,6 +28,7 @@ public:
 	virtual void scale(v3 &scaleVector)=0;
 
 	TextureManager *textureManager;
+	ShaderManager  *shaderManager;
 };
 #endif
 
