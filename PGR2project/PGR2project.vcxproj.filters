@@ -85,6 +85,9 @@
       <Filter>Scene\Vegetation</Filter>
     </ClInclude>
     <ClInclude Include="src\ShaderManager.h" />
+    <ClInclude Include="common\Vector2.h">
+      <Filter>MathUtils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">

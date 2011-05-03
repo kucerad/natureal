@@ -43,9 +43,11 @@ public:
 	void bakeToVBO();
 	
 	int			textureId;
-	//int			textureWaveId;
+	int			shaderId;
+	Shader*		shader;
+	int			textureWaveId;
 	GLuint		vboId;
-	Shader	*   shader;
+	
 	
 };
 

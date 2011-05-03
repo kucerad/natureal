@@ -24,13 +24,14 @@ void main()
 	if (gl_MultiTexCoord0.t>0.0){
 		// shift upper vertices...
 		float posWeight = 0.1;
+		//dudv = texture2D(grass_wave_texture, wind_direction*time+position.xz).xy;
 		dudv = vec2(wind_direction.x*sin(time+posWeight*position.x), wind_direction.y*sin(time+posWeight*position.y));
 
 	}
 	position.x = dudv.x + position.x;
 	position.z = dudv.y + position.z;
 	gl_Position = gl_ProjectionMatrix * (position);//gl_ModelViewMatrix * gl_Vertex;
-	
+	//gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	vec2 d = dudv*5.0;
 	
 	//gl_FrontColor = vec4(d*0.5+0.5, 0.0, 1.0);

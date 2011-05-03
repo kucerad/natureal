@@ -97,6 +97,7 @@ void cbDisplay()
 
 void initApp()
 {
+
 	// set cube vbo
 	initCube();
 	//set plane vbo

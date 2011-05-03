@@ -11,7 +11,8 @@
 
 #include "Vector4.h"
 #include <assert.h>
-
+#include <cstdio>
+using namespace std;
 
 class Matrix4x4
 {
@@ -56,6 +57,15 @@ class Matrix4x4
 				m[i] = copy.m[i];
 			}
 		}
+		inline void printOut()
+		{
+			printf("MATRIX:\n");
+				printf("\t %f %f %f %f\n", m[0], m[4], m[8] , m[12]);
+				printf("\t %f %f %f %f\n", m[1], m[5], m[9] , m[13]);
+				printf("\t %f %f %f %f\n", m[2], m[6], m[10], m[14]);
+				printf("\t %f %f %f %f\n", m[3], m[7], m[11], m[15]);
+		}
+
 		inline void scale(v3 &scaleVector)
 		{
 			m[0]  *= scaleVector.x;
@@ -78,15 +88,15 @@ class Matrix4x4
 			float omcosa= 1.f-cosa;
 			float  m0 = cosa+omcosa*axis.x*axis.x;
 			float  m1 = omcosa*axis.x*axis.y + axis.z*sina;
-			float  m2 = omcosa*axis.x*axis.z + axis.y*sina;;
+			float  m2 = omcosa*axis.x*axis.z - axis.y*sina;;
 			float  m3 = 0.f;
 			float  m4 = omcosa*axis.x*axis.y - axis.z*sina;
-			float  m5 = omcosa*axis.y*axis.y;
-			float  m6 = omcosa*axis.x*axis.z + axis.x*sina;
+			float  m5 = cosa + omcosa*axis.y*axis.y;
+			float  m6 = omcosa*axis.y*axis.z + axis.x*sina;
 			float  m7 = 0.f;
 			float  m8 = omcosa*axis.x*axis.z + axis.y*sina;
 			float  m9 = omcosa*axis.y*axis.z - axis.x*sina;;
-			float m10 = omcosa*axis.z*axis.z;
+			float m10 = cosa + omcosa*axis.z*axis.z;
 			float m11 = 0.f;
 			float m12 = 0.f;
 			float m13 = 0.f;

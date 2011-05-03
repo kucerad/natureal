@@ -20,6 +20,7 @@ public:
 					GLenum geometry_primitive_out);
 
 	void use(int shaderId, bool turnOn);
+	Shader* getShader(int shaderId);
 	
 	vector<Shader*> shaders;
 };

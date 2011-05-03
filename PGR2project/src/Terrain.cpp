@@ -15,7 +15,6 @@ Terrain::Terrain(TextureManager *texManager, ShaderManager *shManager):
 	vertices 		= NULL;
 	normals  		= NULL;
 	elements 		= NULL;
-	reduction		= 1;
 	shader			= NULL;
 }
 
@@ -101,22 +100,30 @@ void Terrain::init()
 	shader->loadShader(TERRAIN_VS_FILENAME, TERRAIN_FS_FILENAME);
 
 	// load heightmap
-	loadHeightMap(HEIGHTMAP_SOURCE);
+	int resolution_x = TERRAIN_RESOLUTION_X;
+	int resolution_y = TERRAIN_RESOLUTION_Y;
+	float size_x = TERRAIN_SIZE_X;
+	float size_y = TERRAIN_SIZE_Y;
+	float step_x =size_x/float(resolution_x);
+	float step_y =size_y/float(resolution_y);
+	red_x = 1.f/step_x;
+	red_y = 1.f/step_y;
+
+	loadHeightMap(HEIGHTMAP_SOURCE, resolution_x, resolution_y);
 
 	// load textures
 	loadTextures(TERRAIN_TEX_NAME, TERRAIN_TEX_COUNT);
 
-	reduction = 50;
-	dim_x = hdim_x/reduction;
-	dim_y = hdim_y/reduction;
+	dim_x = resolution_x;
+	dim_y = resolution_y;
 	drawingMethod = GL_TRIANGLE_STRIP;
+	
 	// create grid of triangles
 	glGenBuffers(1, &eboId);
 	glGenBuffers(1, &vboId);
 	int ch = 3;
-	float step_x = 1.f, step_y = 1.f;
-	step_x *=reduction;
-	step_y *=reduction;
+
+	
 	vertices = new GLfloat[dim_x*dim_y*ch];
 	normals  = new GLfloat[dim_x*dim_y*ch];
 	texCoords  = new GLfloat[dim_x*dim_y*2];
@@ -155,25 +162,24 @@ void Terrain::init()
 	float tex_cnt_x = 100.f;
 	float tex_cnt_y = 100.f;
 
-	sz_x = dim_x*reduction;
-	sz_y = dim_y*reduction;
-	float sx2 = sz_x/2;
-	float sy2 = sz_y/2;
+	sz_x = size_x;
+	sz_y = size_y;
+	float sx2 = sz_x/2.f;
+	float sy2 = sz_y/2.f;
 	int hx, hy;
 	for (x=0; x<dim_x; x++){
 		for (y=0; y<dim_y; y++){
-			hx = x*reduction;
-			hy = y*reduction;
+
 			vertices[(x*dim_y + y)*ch + 0] = x*step_x - sx2;//x
-			vertices[(x*dim_y + y)*ch + 1] = getHeightAt(hx,hy);//height
+			vertices[(x*dim_y + y)*ch + 1] = getHeightAt(x,y);//height
 			vertices[(x*dim_y + y)*ch + 2] = y*step_y - sy2;//y
 			
 			// normals
 			v3 normal;
 			
-			normal.x = getHeightAt(hx-reduction,hy) - getHeightAt(hx+reduction,hy);
-			normal.y = reduction;
-			normal.z = getHeightAt(hx,hy-reduction) - getHeightAt(hx,hy+reduction);
+			normal.x = getHeightAt(x-1,y) - getHeightAt(x+1,y);
+			normal.y = 1.f;
+			normal.z = getHeightAt(x,y-1) - getHeightAt(x,y+1);
 			normal.normalize();
 
 			if (normal.y<0){
@@ -256,21 +262,6 @@ void Terrain::scale(v3 &scaleVector)
 
 }
 	 
-void Terrain::loadHeightMap(string filename)
-{
-	PNG inputFile;
-	inputFile.load(filename);
-	hdim_x = inputFile.width;
-	hdim_y = inputFile.height;
-	unsigned char * data = inputFile.getData();
-
-	int size = hdim_x*hdim_y;
-	heightMap = new float[size];
-
-	for (int i=0; i<size; i++){
-		heightMap[i] = 256*data[2*i]+data[2*i + 1];
-	}
-}
 
 void Terrain::loadTextures(string filename, int count){
 	char def_filename [100];
@@ -286,28 +277,95 @@ void Terrain::loadTextures(string filename, int count){
 
 }
 
-float Terrain::getHeightAt(float x, float y)
+void Terrain::loadHeightMap(string filename, int res_x, int res_y)
+{
+	PNG inputFile;
+	inputFile.load(filename);
+	dim_x = inputFile.width;
+	dim_y = inputFile.height;
+	unsigned char * data = inputFile.getData();
+
+	int size = dim_x*dim_y;
+	float * originalHeightMap = new float[size];
+	int i,x,y;
+
+	for (i=0; i<size; i++){
+		originalHeightMap[i] = 256*data[2*i]+data[2*i + 1];
+	}
+	// recalculate to the given resolution (use linear interpolation...)
+	size = res_x*res_y;
+	heightMap = new float[size];
+	float step_x = float(dim_x)/float(res_x);
+	float step_y = float(dim_y)/float(res_y);
+	
+	for(x=0; x<res_x; x++)
+	{
+		for(y=0; y<res_y; y++)
+		{
+			heightMap[x*res_y + y] = getHeightAt(originalHeightMap, dim_x, dim_y, float(x*step_x), float(y*step_y));
+		}
+	}
+	SAFE_DELETE_ARRAY_PTR(originalHeightMap);
+
+}
+
+float Terrain::getHeightAt(float *map, int res_x, int res_y, float x, float y)
 {
 	// interpolate height
 	int ix,iy;
 	ix = (int) x;
 	iy = (int) y;
-	//return getHeightAt(ix,iy);
+	
 	
 	float tx = x-ix;
 	float ty = y-iy;
-	float h3 = (1-ty)*getHeightAt(ix,iy) + ty*getHeightAt(ix, iy+1);
-	float h4 = (1-ty)*getHeightAt(ix+1,iy) + ty*getHeightAt(ix+1, iy+1); 
+	float h3 = (1-ty)*getHeightAt(map, res_x, res_y, ix,iy) + ty*getHeightAt(map, res_x, res_y, ix, iy+1);
+	float h4 = (1-ty)*getHeightAt(map, res_x, res_y, ix+1,iy) + ty*getHeightAt(map, res_x, res_y, ix+1, iy+1); 
 	return (1-tx)*h3 + (tx)*h4;
-	//*/
 }
-float Terrain::getHeightAt(int x, int y)
+
+float Terrain::getHeightAt(float *map, int res_x, int res_y, int x, int y)
 {
-	int dx = hdim_x;
-	int dy = hdim_y;
+	int dx = res_x;
+	int dy = res_y;
 	x = min(max(x,0),dx-1);
 	y = min(max(y,0),dy-1);
+	float hCorrection = map[dx/2*dy + dy/2];
+	return HEIGHTMAP_SCALE*(map[x*dy + y]-hCorrection)+HEIGHTMAP_INITHEIGHT;	
+
+}
+
+float Terrain::getHeightAt(float x, float y)
+{
+	//x+=5.f;
+	//y+=5.f;
+	// recalc in raster position from space coords
+	x *= red_x;
+	y *= red_y;
+	
+	// interpolate height
+	int ix,iy;
+	ix = (int) x;
+	iy = (int) y;
+	
+	//return getHeightAt(ix,iy);	
+	
+	float tx = x-ix;
+	float ty = y-iy;
+	float h3 = (1-ty)*getHeightAt(ix,iy)   + ty*getHeightAt(ix, iy+1);
+	float h4 = (1-ty)*getHeightAt(ix+1,iy) + ty*getHeightAt(ix+1, iy+1); 
+	return (1-tx)*h3 + (tx)*h4;
+}
+
+float Terrain::getHeightAt(int x, int y)
+{
+	int dx = dim_x;
+	int dy = dim_y;
+	x = min(max(x,0),dx-1);
+	y = min(max(y,0),dy-1);
+	return heightMap[x*dy + y];
+	/*
 	float hCorrection = heightMap[dx/2*dy + dy/2];
-	//printf("h[%i, %i, dy=%i, s=%i] = %f\n", x,y,dy,x*dy + y, HEIGHTMAP_SCALE*(heightMap[x*dy + y]-hCorrection)+HEIGHTMAP_INITHEIGHT);
 	return HEIGHTMAP_SCALE*(heightMap[x*dy + y]-hCorrection)+HEIGHTMAP_INITHEIGHT;	
+	*/
 }

@@ -21,6 +21,10 @@
 #define HEIGHTMAP_INITHEIGHT	0
 
 #define TERRAIN_TEX_COUNT		5
+#define TERRAIN_SIZE_X			500.f
+#define TERRAIN_SIZE_Y			500.f
+#define TERRAIN_RESOLUTION_X	100
+#define TERRAIN_RESOLUTION_Y	100
 #define TERRAIN_TEX_NAME		"textures/terrain/terrain_tex_%02i.png"
 #define TERRAIN_VS_FILENAME		"shaders/terrain/terrain_vs.glsl"
 #define TERRAIN_FS_FILENAME		"shaders/terrain/terrain_fs.glsl"

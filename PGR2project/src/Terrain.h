@@ -29,18 +29,18 @@ public:
 
 	void scale(v3 &scaleVector);
 
-	void loadHeightMap(string filename);
+	void loadHeightMap(string filename, int res_x, int res_y);
 	void loadTextures(string filename, int count);
 
+	
 	float getHeightAt(float x, float y);
 	float getHeightAt(int x, int y);
 // attributes:
 
 	float*	heightMap;
 	int		dim_x, dim_y;
-	int		hdim_x, hdim_y;
+	float   red_x, red_y;
 	float	sz_x, sz_y;
-	int		reduction;
 	GLuint	drawingMethod;
 	GLuint	vboId;
 	GLuint	vboCount;
@@ -60,7 +60,9 @@ public:
 	vector<int>		textureIds;
 
 	Shader *	shader;
-
+private:
+	float getHeightAt(float *map, int res_x, int res_y, float x, float y);
+	float getHeightAt(float *map, int res_x, int res_y, int x, int y);
 };
 
 #endif
