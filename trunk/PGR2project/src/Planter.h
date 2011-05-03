@@ -3,6 +3,7 @@
 
 #include "settings.h"
 #include "Terrain.h"
+#include "../common/Vector2.h"
 #include "Vegetation.h"
 #include <ctime>
 

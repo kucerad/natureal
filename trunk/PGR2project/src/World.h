@@ -42,6 +42,7 @@ public:
 	Vegetation			*p_grass_growth;
 
 	TextureManager		textureManager;
+	ShaderManager		shaderManager;
 	
 };
 

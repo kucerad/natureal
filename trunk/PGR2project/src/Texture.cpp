@@ -4,7 +4,6 @@
 Texture::Texture(void)
 {
 	id = 0;
-
 }
 
 

@@ -1,6 +1,6 @@
 #include "SkyBox.h"
 SkyBox::SkyBox():
-	SceneModel(NULL)
+	SceneModel(NULL, NULL)
 {
 }
 

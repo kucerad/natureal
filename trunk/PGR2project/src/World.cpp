@@ -43,7 +43,7 @@ void World::init()
 	p_fog = new Fog();
 	p_fog->init();
 	
-	p_terrain = new Terrain(&textureManager);
+	p_terrain = new Terrain(&textureManager,&shaderManager);
 	p_terrain->init();
 
 	box = new BBox(v3(0,0,0),v3(10,10,10),v3(1,1,1));
@@ -53,11 +53,11 @@ void World::init()
 	p_activeCamera->setTerrain(p_terrain);
 	p_activeCamera->setMode(CameraMode::FREE);
 
-	p_skybox = new SkyBox(&textureManager, SKYBOX_TEX_FILENAMES);
+	p_skybox = new SkyBox(&textureManager, &shaderManager, SKYBOX_TEX_FILENAMES);
 	p_skybox->init();
 	p_skybox->p_activeCamera = p_activeCamera;
 
-	p_grass_prototype = new Grass(&textureManager);
+	p_grass_prototype = new Grass(&textureManager,&shaderManager);
 	p_grass_prototype->init();
 
 	p_activeLight = new Light();
@@ -70,9 +70,6 @@ void World::init()
 	p_grass_growth = p_grass_prototype->getCopy();
 	planter.plantVegetation(p_grass_prototype, p_grass_growth);
 	p_grass_growth->bakeToVBO();
-
-	
-	system("PAUSE");
 
 }
 void World::update(float i_time)

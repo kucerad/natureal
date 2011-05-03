@@ -9,17 +9,17 @@ Grass::Grass(TextureManager *texManager, ShaderManager *shManager):
 	shader		= NULL;
 }
 Grass::Grass(Grass* copy):
-	Vegetation(copy->textureManager)
+	Vegetation(copy->textureManager, copy->shaderManager)
 {
 	textureId	= copy->textureId;
 	vboId		= copy->vboId;
 	shader		= copy->shader;
+	shaderId	= copy->shaderId;
 }
 
 Grass::~Grass(void)
 {
 	glDeleteBuffers(1, &vboId);
-	SAFE_DELETE_PTR(shader);
 	printf("Grass is deleted\n");
 }
 void Grass::bakeToVBO()
@@ -39,12 +39,13 @@ void Grass::bakeToVBO()
 		pVBOdata[p + 1] = v.position.y;
 		pVBOdata[p + 2] = v.position.z;
 
-		int o = v.sizePosition*cross_vertexCount;
+		int o = v.sizePosition*VBOdataCount;
 		pVBOdata[o + p + 0] = v.normal.x;
 		pVBOdata[o + p + 1] = v.normal.y;
 		pVBOdata[o + p + 2] = v.normal.z;
 
-		o += v.sizeNormal*cross_vertexCount;
+		o += v.sizeNormal*VBOdataCount;
+		p = v.sizeTexCoord*i;
 		pVBOdata[o + p + 0] = v.texCoord.x;
 		pVBOdata[o + p + 1] = v.texCoord.y;
 	}
@@ -57,25 +58,39 @@ void Grass::bakeToVBO()
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
 		glBufferData(GL_ARRAY_BUFFER, VBOdataSize, pVBOdata, GL_STATIC_DRAW); 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
+	/*
+	printf("VBO\n");
+	int size = VBOdataSize/sizeof(GLfloat);
+	for (int i=0; i<size; i++)
+	{
+		if (i==offsets.position/sizeof(GLfloat)){
+			printf ("\npositions\n");
+		}
+		if (i==offsets.normal/sizeof(GLfloat)){
+			printf ("\nnormals\n");
+		}
+		if (i==offsets.texCoord/sizeof(GLfloat)){
+			printf ("\ntexcoords\n");
+		} 
+		printf(" %f", pVBOdata[i]);
+	} 
+	*/
 	// ebo
 	pEBOdata = NULL;
 	EBOdataCount= 0;
 }
 
-
-
 void Grass::init()
 {
 	// shader
-	shader = new Shader();
-	shader->loadShader(GRASS_VS_FILENAME, GRASS_FS_FILENAME);
-
+	shaderId = shaderManager->loadShader(GRASS_VS_FILENAME, GRASS_FS_FILENAME);
+	shader = shaderManager->getShader(shaderId);
+	
 	// texture
 	textureId = textureManager->loadTexture(GRASS_TEX_NAME, "grass_tex", 0, false);
-	//textureWaveId = textureManager->loadTexture(GRASS_TEX_NAME, "grass_wave_tex", 1, false, GL_REPEAT, GL_NEAREST);
+	textureWaveId = textureManager->loadTexture(GRASS_TEX_NAME, "grass_wave_tex", 1, false, GL_REPEAT, GL_NEAREST);
 	shader->linkTexture(textureManager->getTexture(textureId));
-	//shader->linkTexture(textureManager->getTexture(textureWaveId));
+	shader->linkTexture(textureManager->getTexture(textureWaveId));
 	VBOdataCount = cross_vertexCount;
 	// fill vertices...
 	for (int i=0; i<cross_vertexCount; i++)
@@ -99,11 +114,12 @@ void Grass::init()
 		v.texCoord.x = CROSS_VERTEX_ARRAY[o + p + 0];
 		v.texCoord.y = CROSS_VERTEX_ARRAY[o + p + 1];
 
+		/*
 		printf("VERTEX: \n");
 		printf("\tpos: %f %f %f\n", v.position.x, v.position.y, v.position.z);
 		printf("\tnor: %f %f %f\n", v.normal.x,   v.normal.y,   v.normal.z);
 		printf("\ttex: %f %f\n",v.texCoord.x, v.texCoord.y);
-
+		*/
 		vertices.push_back(v);
 	}
 	
@@ -138,6 +154,7 @@ Vegetation* Grass::getCopy()
 void Grass::draw()
 {
 	textureManager->bindTexture(textureId, GL_TEXTURE0);
+	textureManager->bindTexture(textureWaveId, GL_TEXTURE1);
 	shader->use(true);
 	shader->setTime(g_time);
 	glDisable(GL_CULL_FACE);
@@ -159,6 +176,6 @@ void Grass::draw()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glEnable(GL_CULL_FACE);
 	shader->use(false);
-	//textureManager->unbindTexture(textureWaveId);
+	textureManager->unbindTexture(textureWaveId);
 	textureManager->unbindTexture(textureId);
 }

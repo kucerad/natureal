@@ -3,7 +3,7 @@
 //  Terrain FRAGMENT shader   
 //
 //==============================================================================
-#define SCALE 0.1
+#define SCALE 1.0
 
 uniform sampler2D terrain_tex_01;
 uniform sampler2D terrain_tex_02;

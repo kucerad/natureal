@@ -13,6 +13,10 @@ ShaderManager::~ShaderManager(void)
 		SAFE_DELETE_PTR(shaders[i]);
 	}
 }
+Shader* ShaderManager::getShader(int shaderId)
+{
+	return shaders[shaderId];
+}
 
 int ShaderManager::loadShader(string vs_filename, string fs_filename)
 {

@@ -95,6 +95,7 @@
     <ClInclude Include="common\models\cube.h" />
     <ClInclude Include="common\png.h" />
     <ClInclude Include="common\tools.h" />
+    <ClInclude Include="common\Vector2.h" />
     <ClInclude Include="common\Vector3.h" />
     <ClInclude Include="common\Vector4.h" />
     <ClInclude Include="src\BBox.h" />
