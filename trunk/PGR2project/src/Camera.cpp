@@ -3,6 +3,8 @@
 GLuint edges[] = {0,1, 2,3, 4,5, 6,7, 0,2,2,4,4,6,6,0, 1,3,3,5,5,7,7,1};
 
 Camera::Camera() {
+	activityFactor = 0.f;
+	human_movement = v3(0.f);
 	step = 0.5f;
 	terrain = NULL;
 	corners[0] = Vector4(-1.0f, -1.0f, -1.0f, 1.0f); //left, bottom, near
@@ -50,7 +52,7 @@ void Camera::setPositon(v3 _v) {
 }
 
 v3 Camera::getPosition(void) {
-	return position;
+	return position+human_movement;
 }
 
 void Camera::setDirection(float x, float y, float z) {
@@ -185,11 +187,13 @@ void Camera::shoot()
   gluPerspective(fov, (GLfloat)g_WinWidth/g_WinHeight, near, far);  
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt(position.x, position.y, position.z,
-			position.x+direction.x, position.y+direction.y,position.z + direction.z,
-			upVector.x, upVector.y, upVector.z);
+  v3 p(position+human_movement);
+  gluLookAt(p.x				, p.y				, p.z				,
+			p.x+direction.x	, p.y+direction.y	, p.z + direction.z	,
+			upVector.x		, upVector.y		, upVector.z		);
 
 }
+
 void Camera::setup(v3 & pos, v3 & dir, v3 &up, int *w, int *h, float fo, float n, float fa)
 {
 	position	= pos;
@@ -205,6 +209,7 @@ void Camera::setup(v3 & pos, v3 & dir, v3 &up, int *w, int *h, float fo, float n
 void Camera::move(v3 & dist)
 {
 	position = position + dist;
+	
 	if (terrain!=NULL && mode!=FREE){
 		float x = position.x +terrain->sz_x/2.0;
 		float z = position.z +terrain->sz_y/2.0;
@@ -215,11 +220,17 @@ void Camera::move(v3 & dist)
 		case TERRAIN_CONNECTED:
 			position.y = terrain->getHeightAt(x, z)+HUMAN_HEIGHT;
 			break;
+		case WALK:
+			activityFactor += HUMAN_ACTIVITY_INCR;
+			activityFactor = min(activityFactor, HUMAN_MAX_ACTIVITY);
+			position.y = terrain->getHeightAt(x,z)+HUMAN_HEIGHT;
+
 		}
 
 	}
 	// restrict to the world cube
 }
+
 void Camera::rotate(v3 & axis, float angle)
 {
 	static const v3 up(0.f, 1.f, 0.f);
@@ -236,6 +247,7 @@ void Camera::rotate(v3 & axis, float angle)
 		//upVector = up;
 	//}
 }
+
 void Camera::zoom(float fovy)
 {
 	fov = fovy;
@@ -251,3 +263,16 @@ void Camera::setMode(CameraMode m)
 	mode = m;
 }
 
+void Camera::update(double _time){
+	time = _time;
+	switch (g_cameraMode){
+		case WALK:
+		// human is calming down...
+		activityFactor *= HUMAN_ACTIVITY_DECAY;
+		activityFactor = max(activityFactor, HUMAN_MIN_ACTIVITY);
+		// calc human movement
+		human_movement.y = HUMAN_BREATH_AMPL*sin(time*activityFactor*HUMAN_BREATH_FREQ);
+		//printf("act: %f \n", activityFactor);
+		break;
+	}
+}

@@ -15,7 +15,6 @@ Shader::~Shader(void)
 	printf("Shader destroyed.\n");
 }
 
-
 bool Shader::loadShader(string vs_filename, string fs_filename)
 {
 	const char* pVertexShaderFileName    = vs_filename.c_str();
@@ -236,7 +235,7 @@ void Shader::use(bool isTurnedOn)
 
 void Shader::setTime(float in_time)
 {
-	//printf("set time: %f, loc: %i\n", g_time, timeLocation);
+	//printf("set time: %f, loc: %i\n", in_time, timeLocation);
 	glUniform1f(timeLocation, in_time);
 }
 
@@ -313,3 +312,62 @@ void Shader::destroy()
 	}
 }
 
+int		Shader::getLocation(string var_name)
+{
+	int loc = glGetUniformLocation(programID, var_name.c_str());
+	if (loc>=0){
+		// valid uniform
+		int out = locations.size();
+		locations.push_back(loc);
+		return out;
+	}
+	return -1;
+}
+void	Shader::setUniform1i(int locIndex, int value)
+{
+	glUniform1i(locations[locIndex], value);
+}
+void    Shader::setUniform2i(int locIndex, int value1, int value2)
+{
+	glUniform2i(locations[locIndex], value1, value2);
+}
+void	Shader::setUniform3i(int locIndex, int value1, int value2, int value3)
+{
+	glUniform3i(locations[locIndex], value1, value2, value3);
+}
+void    Shader::setUniform4i(int locIndex, int value1, int value2, int value3, int value4)
+{
+	glUniform4i(locations[locIndex], value1, value2, value3, value4);
+}
+void	Shader::setUniform1f(int locIndex, float value)
+{
+	glUniform1f(locations[locIndex], value);
+}
+void    Shader::setUniform2f(int locIndex, float value1, float value2)
+{
+	glUniform2f(locations[locIndex], value1, value2);
+}
+void	Shader::setUniform3f(int locIndex, float value1, float value2, float value3)
+{
+	glUniform3f(locations[locIndex], value1, value2, value3);
+}
+void    Shader::setUniform4f(int locIndex, float value1, float value2, float value3, float value4)
+{
+	glUniform4f(locations[locIndex], value1, value2, value3, value4);
+}
+void	Shader::setUniformfp(int locIndex, float* values, int count)
+{
+	glUniform4fv(locations[locIndex], count, values);
+}
+void    Shader::setUniform2v(int locIndex, v2 value)
+{
+	glUniform2f(locations[locIndex],value.x, value.y);
+}
+void	Shader::setUniform3v(int locIndex, v3 value)
+{
+	glUniform3f(locations[locIndex], value.x, value.y, value.z);
+}
+void    Shader::setUniform4v(int locIndex, v4 value)
+{
+	glUniform4f(locations[locIndex], value.x, value.y, value.z, value.w);
+}

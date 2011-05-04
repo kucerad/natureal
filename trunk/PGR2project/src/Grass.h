@@ -32,7 +32,7 @@ public:
 
 	void init();
 
-	void update(float time);
+	void update(double time);
 
 	void translate(v3 &movVector);
 
@@ -42,6 +42,11 @@ public:
 	
 	void bakeToVBO();
 	
+	v3	 transformTexCoords(v3 &origTexCoords);
+	void fixTexType();
+
+	int			texPart_x;
+	int			texPart_y;
 	int			textureId;
 	int			shaderId;
 	Shader*		shader;

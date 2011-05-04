@@ -24,7 +24,7 @@ int Planter::plantVegetation(Vegetation* prototype, Vegetation *growth)
 	float ymax =  100.0;
 	float tsx = terrain->sz_x/2.0;
 	float tsy = terrain->sz_y/2.0;
-	float minDist = 2.0f;
+	float minDist = 1.5f;
 	v3 distVector;
 	int i;
 	bool valid;
@@ -71,6 +71,7 @@ int Planter::plantVegetation(Vegetation* prototype, Vegetation *growth)
 		transform.scale(v3(randomf(0.3f, 1.1f)));
 		transform.rotate(v3(0.f, 1.f, 0.f), randomf(0.f, PI/4.f));
 		transform.translate(candidate);
+		prototype->fixTexType();
 		// transform all vertices of vegetation
 		for (int i=0; i<prototype->VBOdataCount; i++)
 		{
@@ -78,7 +79,7 @@ int Planter::plantVegetation(Vegetation* prototype, Vegetation *growth)
 			//printf("pos: %f, %f, %f, %f\n", v.position.x, v.position.y, v.position.z, v.position.w);
 			v.position = transform*v.position;
 			//printf("popos: %f, %f, %f, %f\n", v.position.x, v.position.y, v.position.z, v.position.w);
-				
+			v.texCoord = prototype->transformTexCoords(v.texCoord);	
 			v.normal   = (transform*v.normal);
 			v.normal.normalize();
 			growth->vertices.push_back(v);

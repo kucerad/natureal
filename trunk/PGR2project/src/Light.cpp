@@ -16,7 +16,7 @@ void Light::init()
 	
 }
 
-void Light::update(float time)
+void Light::update(double time)
 {
 
 }

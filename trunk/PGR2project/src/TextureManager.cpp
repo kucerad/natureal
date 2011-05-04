@@ -8,6 +8,9 @@ TextureManager::TextureManager(void)
 
 TextureManager::~TextureManager(void)
 {
+	for (int i=0; i<textures.size(); i++){
+		SAFE_DELETE_PTR(textures[i]);
+	}
 }
 Texture * TextureManager::getTexture(int texId)
 {

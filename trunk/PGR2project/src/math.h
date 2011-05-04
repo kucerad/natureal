@@ -2,6 +2,9 @@
 #define _MATH_H
 
 #include <time.h>
+#include <cmath>
+#include <cfloat>
+#include <random>
 
 const double PI			= 3.1415926536;
 const double HALF_PI	= 0.5*PI;
@@ -12,6 +15,9 @@ inline float randomf(float minf, float maxf){
 	//srand(unsigned int(clock()));
 	lastRandom = rand();
 	return float((double(lastRandom)/RAND_MAX)*(maxf-minf)) + minf; 
+}
+inline int randomi(int mini, int maxi){
+	return int((double(rand())/RAND_MAX)*(maxi-mini)) + mini; 
 }
 
 #endif

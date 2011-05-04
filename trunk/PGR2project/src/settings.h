@@ -11,6 +11,7 @@
 #include "../common/Vector3.h"
 #include "../common/Vector4.h"
 #include "../common/Matrix4x4.h"
+#include "globals.h"
 
 #define BUFFER_OFFSET(i) ((char*) NULL + (i))
 
@@ -18,19 +19,23 @@
 
 #define HEIGHTMAP_SOURCE		"textures/terrain/terrain2.png"
 #define HEIGHTMAP_SCALE			0.001
-#define HEIGHTMAP_INITHEIGHT	0
+#define HEIGHTMAP_INITHEIGHT	5
 
 #define TERRAIN_TEX_COUNT		5
 #define TERRAIN_SIZE_X			500.f
 #define TERRAIN_SIZE_Y			500.f
-#define TERRAIN_RESOLUTION_X	100
-#define TERRAIN_RESOLUTION_Y	100
+#define TERRAIN_RESOLUTION_X	50
+#define TERRAIN_RESOLUTION_Y	50
 #define TERRAIN_TEX_NAME		"textures/terrain/terrain_tex_%02i.png"
 #define TERRAIN_VS_FILENAME		"shaders/terrain/terrain_vs.glsl"
 #define TERRAIN_FS_FILENAME		"shaders/terrain/terrain_fs.glsl"
 
+extern	v4						g_terrain_border_values;
+extern	v4						g_terrain_border_widths;
+
 #define GRASS_COUNT				100
-#define GRASS_TEX_NAME			"textures/grass/grass_01.png"
+//#define GRASS_TEX_NAME			"textures/grass/grass_01.png"
+#define GRASS_TEX_NAME			"textures/grass/grass_multitextureVert.png"
 #define GRASS_WAVE_TEX_NAME		"textures/grass/dudv_01.png"
 #define GRASS_VS_FILENAME		"shaders/grass/grass_vs.glsl"
 #define GRASS_FS_FILENAME		"shaders/grass/grass_fs.glsl"
@@ -38,7 +43,21 @@
 #define SKYBOX_TEX_FILENAMES	"textures/skybox/512/sahara_%s.png"
 #define SKYBOX_SIZE				800
 
-#define HUMAN_HEIGHT			5.f
+#define WATER_VS_FILENAME		"shaders/water/water_vs.glsl"
+#define WATER_FS_FILENAME		"shaders/water/water_fs.glsl"
+#define WATER_HEIGHT			0.f
+
+
+#define HUMAN_HEIGHT			2.f
+#define HUMAN_BREATH_FREQ		1.2f
+#define HUMAN_BREATH_AMPL		0.15f
+#define HUMAN_ACTIVITY_DECAY    0.995f
+#define HUMAN_ACTIVITY_INCR	    0.01f
+#define HUMAN_MIN_ACTIVITY	    0.1f
+#define HUMAN_MAX_ACTIVITY	    1.5f
+extern CameraMode g_cameraMode;
+
+
 
 static enum Attribs{
 	INDEX,
@@ -67,7 +86,8 @@ static enum Attribs{
 
 extern GLint    g_WinWidth;   // Window width
 extern GLint    g_WinHeight;   // Window height
-extern float	g_time;
+extern double	g_time;
+
 
 static v4 sunAmb  = v4(0.05,0.05, 0.2, 1.0);
 static v4 sunDif  = v4(1.0,1.0, 1.0, 1.0);

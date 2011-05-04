@@ -16,10 +16,21 @@
 //-----------------------------------------------------------------------------
 #define USE_ANTTWEAKBAR
 #define TEST 0
+#include "../common/Vector4.h"
+#include "globals.h"
+#define TERRAIN_INIT_BORDER_VAL v4(13.0f, 10.0f, 5.0f, -1.0f)
+#define TERRAIN_INIT_BORDER_WID v4(0.6f, 1.5f, 0.4f, 2.f)
 
+v4	g_terrain_border_values = TERRAIN_INIT_BORDER_VAL;
+v4	g_terrain_border_widths = TERRAIN_INIT_BORDER_WID;
+
+CameraMode g_cameraMode = WALK;
 int g_WinWidth             = 800;   // Window width
 int g_WinHeight            = 600;   // Window height
-float g_time			   = 0.0f;
+double g_time			   = 0.0;
+CTimer timer;
+
+
 #include "pgr2model.h"
 #include <assert.h>
 #include "../common/models/cube.h"
@@ -90,14 +101,27 @@ void cbDisplay()
       if (g_ShowVertexNormals)   g_pModel->renderVertexNormals(VECTOR_RENDER_SCALE);
       if (g_FaceNormals)         g_pModel->renderFaceNormals(VECTOR_RENDER_SCALE);  
    }
-   g_time+=TIME_STEP;
-  // printf("time: %f\n", g_time);
+   g_time=timer.RealTime();
+   world.update(g_time);
+   //printf("time: %fL\n", g_time);
    world.draw();
+   
 }
 
 void initApp()
 {
+#if TEST
+	// TEST START
+	
+	// do whatever u want... 
 
+	system("PAUSE");
+	
+	exit(1);
+	// TEST END
+#endif
+	timer.Reset();
+	timer.Start();
 	// set cube vbo
 	initCube();
 	//set plane vbo
@@ -110,6 +134,8 @@ void deinitApp()
 {
 	deletePlane();
 	deleteCube();
+
+	timer.Stop();
 
 	world.~World();
 	printf("deinit done\n");
@@ -126,7 +152,7 @@ void cbInitGL()
    initGUI();
 
    // Set OpenGL state variables
-   glClearColor(0.2f, 0.2f, 0.5f, 1.0f);
+   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
    
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

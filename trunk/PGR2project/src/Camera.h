@@ -4,12 +4,6 @@
 #include "settings.h"
 #include "Terrain.h"
 
-enum CameraMode{
-	FREE,
-	TERRAIN_RESTRICTED,
-	TERRAIN_CONNECTED
-};
-
 class Camera
 {
 public:
@@ -43,6 +37,7 @@ public:
 	void draw();
 	void shoot();
 
+	void update(double _time);
 	void move(v3 & dist);
 	void rotate(v3 & axis, float angle);
 	void zoom(float fovy);
@@ -53,6 +48,9 @@ public:
 private:
 	Terrain * terrain;
 	CameraMode mode;
+	v3 human_movement;
+	float activityFactor;
+	double time;
 	v3 position;
 	v3 direction;
 	v3 upVector;

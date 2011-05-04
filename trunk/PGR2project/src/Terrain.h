@@ -21,7 +21,7 @@ public:
 
 	void init();
 
-	void update(float time);
+	void update(double time);
 
 	void translate(v3 &movVector);
 
@@ -60,9 +60,15 @@ public:
 	vector<int>		textureIds;
 
 	Shader *	shader;
+	bool		cut;
+	bool		flip;
 private:
 	float getHeightAt(float *map, int res_x, int res_y, float x, float y);
 	float getHeightAt(float *map, int res_x, int res_y, int x, int y);
+
+	int border_values_location;
+	int border_widths_location;
+	int heightInterval_location;
 };
 
 #endif

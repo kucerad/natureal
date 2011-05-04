@@ -10,6 +10,7 @@ World::World(void)
 	p_fog			= NULL;
 	p_grass_prototype= NULL;
 	p_grass_growth	= NULL;
+	p_water			= NULL;
 }
 
 
@@ -22,19 +23,50 @@ World::~World(void)
 	SAFE_DELETE_PTR(p_fog);
 	SAFE_DELETE_PTR(p_grass_prototype);
 	SAFE_DELETE_PTR(p_grass_growth);
+	SAFE_DELETE_PTR(p_water);
+	textureManager.~TextureManager();
+	shaderManager.~ShaderManager();
+	printf("WORLD deleted.......\n"); 
 }
 
 void World::draw()
 {
+	// 1st pass (water)
 	p_activeCamera->shoot();
-	p_skybox->draw();
-	p_fog->turnOn();
+	p_water->activeCamera = p_activeCamera;
+	p_water->beginReflection();
+		p_skybox->draw();
+		p_terrain->cut = true;
+		p_terrain->flip= true;
+		p_terrain->draw();
+	p_water->endReflection();
+
+	// 2nd pass (other...)
+	p_water->draw();
+	
+	
+	//p_fog->turnOn();
+	//glPushMatrix();
+	//glScalef(1.f, -1.f, 1.f);
 	p_terrain->draw();
+	p_skybox->draw();
+	//glPopMatrix();
 	box->draw();
-	p_grass_growth->draw();
+	
+	
+	glEnable(GL_BLEND);
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	p_grass_growth->draw();	
+	glDisable(GL_BLEND);
+
+	
+	p_water->showTexture(0,0,200,200);
+	
 	//p_terrain->drawNormals();
-	p_fog->turnOff();
+	//p_fog->turnOff();
 }
+void World::drawForWater(){}
+void World::drawForLOD(){}
 
 void World::init()
 {
@@ -51,11 +83,15 @@ void World::init()
 	p_activeCamera = new Camera();
 	p_activeCamera->setup(v3(0.0,0.f,0.f), v3(0.0,0.f,-1.f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
 	p_activeCamera->setTerrain(p_terrain);
-	p_activeCamera->setMode(CameraMode::FREE);
+	p_activeCamera->setMode(g_cameraMode);
 
 	p_skybox = new SkyBox(&textureManager, &shaderManager, SKYBOX_TEX_FILENAMES);
 	p_skybox->init();
 	p_skybox->p_activeCamera = p_activeCamera;
+
+	p_water = new WaterSurface(&textureManager, &shaderManager);
+	p_water->init();  // create FBOs...
+
 
 	p_grass_prototype = new Grass(&textureManager,&shaderManager);
 	p_grass_prototype->init();
@@ -64,17 +100,19 @@ void World::init()
 	p_activeLight->setup(GL_LIGHT0, v3(0,10,0), v3(0,-1,0), sunAmb, sunDif, sunSpe, 180, 0.0);
 	p_activeLight->turnOn();
 	
-	printf("WORLD CREATED:\n");
 
 	Planter planter(p_terrain);
 	p_grass_growth = p_grass_prototype->getCopy();
 	planter.plantVegetation(p_grass_prototype, p_grass_growth);
 	p_grass_growth->bakeToVBO();
+	printf("WORLD CREATED:\n");
 
 }
-void World::update(float i_time)
+void World::update(double i_time)
 {
-	g_time = i_time;
+	p_activeCamera->setMode(g_cameraMode);
+	p_activeCamera->update(i_time);
+	//g_time = i_time;
 	/*int modelCnt = v_models.size();
 	for (int i=0; i<modelCnt; i++){
 		v_models[i]->update(time);

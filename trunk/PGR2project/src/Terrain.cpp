@@ -16,6 +16,8 @@ Terrain::Terrain(TextureManager *texManager, ShaderManager *shManager):
 	normals  		= NULL;
 	elements 		= NULL;
 	shader			= NULL;
+	cut				= false;
+	flip			= false;
 }
 
 
@@ -31,12 +33,26 @@ Terrain::~Terrain(void)
 }
 
 void Terrain::draw()
-{
+{	
 	// bind textures
 	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
 		textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
 	}
-	shader->use(true);		
+	shader->use(true);
+	shader->setUniform4v(border_values_location, g_terrain_border_values);
+	shader->setUniform4v(border_widths_location, g_terrain_border_widths);
+	if (cut){
+		if (flip){
+			shader->setUniform2f(heightInterval_location, WATER_HEIGHT, 1000.f);
+		}
+		else{
+			shader->setUniform2f(heightInterval_location, -1000.f, WATER_HEIGHT);
+		}
+	} else {
+		shader->setUniform2f(heightInterval_location, -1000.f, 1000.f);
+	}
+	cut		= false;
+	flip	= false;
 		// bind index buffer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,eboId);
 		glBindBuffer(GL_ARRAY_BUFFER, vboId); 
@@ -98,6 +114,9 @@ void Terrain::init()
 	// load & create shaders
 	shader = new Shader();
 	shader->loadShader(TERRAIN_VS_FILENAME, TERRAIN_FS_FILENAME);
+	border_values_location = shader->getLocation("border_values");
+	border_widths_location = shader->getLocation("border_widths");
+	heightInterval_location = shader->getLocation("visibleHeightInterval");
 
 	// load heightmap
 	int resolution_x = TERRAIN_RESOLUTION_X;
@@ -242,7 +261,7 @@ void Terrain::init()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 	
-void Terrain::update(float time)
+void Terrain::update(double time)
 {
 	
 }

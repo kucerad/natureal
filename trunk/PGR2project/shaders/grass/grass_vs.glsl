@@ -21,6 +21,8 @@ void main()
 	vec4 vertex = gl_Vertex;
 	eye = vec3(position);
 	vec2 dudv = vec2(0.0, 0.0);
+	//float h = mod(gl_MultiTexCoord0.t*3.0,3.0);
+
 	if (gl_MultiTexCoord0.t>0.0){
 		// shift upper vertices...
 		float posWeight = 0.1;

@@ -9,7 +9,8 @@ Texture::Texture(void)
 
 Texture::~Texture(void)
 {
-
+	glDeleteTextures(1, &id);
+	printf("texture: %s deleted.\n", inShaderName.c_str());
 }
 
 
