@@ -3,6 +3,7 @@
 
 #include "settings.h"
 #include "Texture.h"
+#include "utils.h"
 
 class TextureManager
 {

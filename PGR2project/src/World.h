@@ -11,6 +11,7 @@
 #include "TextureManager.h"
 #include "Grass.h"
 #include "Planter.h"
+#include "WaterSurface.h"
 
 class World
 {
@@ -18,10 +19,13 @@ public:
 	World(void);
 	~World(void);
 	void draw();
+	void drawForWater();
+	void drawForLOD();
+	
 
 	void init();
 
-	void update(float time);
+	void update(double time);
 
 	void translate(v3 &movVector);
 
@@ -37,6 +41,7 @@ public:
 	Camera				*p_activeCamera;
 	Light				*p_activeLight;
 	Fog					*p_fog;
+	WaterSurface		*p_water;
 
 	Grass				*p_grass_prototype;
 	Vegetation			*p_grass_growth;

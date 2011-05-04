@@ -8,8 +8,9 @@
 
 #ifndef __VECTOR3_H__
 #define __VECTOR3_H__
-#include "../src/math.h"
 #include <math.h>
+#include "../src/math.h"
+
 #include <stdlib.h>
 #include <cstdio>
 

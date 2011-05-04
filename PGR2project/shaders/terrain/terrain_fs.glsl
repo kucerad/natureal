@@ -10,6 +10,10 @@ uniform sampler2D terrain_tex_02;
 uniform sampler2D terrain_tex_03;
 uniform sampler2D terrain_tex_04;
 uniform sampler2D terrain_tex_05;
+uniform vec4    border_widths;
+uniform vec4	border_values;
+uniform vec2	visibleHeightInterval;
+
 
 varying vec3	eye;
 varying vec3	normal;
@@ -17,6 +21,9 @@ varying float	height;
 
 void main()
 {
+	if (height>visibleHeightInterval.y || height<visibleHeightInterval.x){
+		discard;
+	}
 	vec3 N = normalize(normal);
 	vec3 L = normalize(gl_LightSource[0].position.xyz- eye);
 	vec3 E = normalize(-eye);
@@ -34,8 +41,8 @@ void main()
 	// multitexturing :
 
 	vec4 tex_color, tex_color1, tex_color2;
-	vec4 border_values	= vec4(10.0, 5.0, 2.0, 0.0);
-	vec4 border_widths  = vec4(5.0, 2.0, 1.0, 0.5);
+	//vec4 border_values	= vec4(10.0, 5.0, 2.0, 0.0);
+	//vec4 border_widths  = vec4(5.0, 2.0, 1.0, 0.5);
 
 
 	if (height > border_values.x)

@@ -97,7 +97,7 @@ void SkyBox::init()
 {
 }
 
-void SkyBox::update(float time)
+void SkyBox::update(double time)
 {
 
 }

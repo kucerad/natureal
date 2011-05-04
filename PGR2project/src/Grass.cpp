@@ -125,7 +125,7 @@ void Grass::init()
 	
 }
 
-void Grass::update(float time)
+void Grass::update(double time)
 {
 
 }
@@ -178,4 +178,18 @@ void Grass::draw()
 	shader->use(false);
 	textureManager->unbindTexture(textureWaveId);
 	textureManager->unbindTexture(textureId);
+}
+
+void Grass::fixTexType()
+{
+	texPart_x = randomi(0,6);
+}
+
+v3	 Grass::transformTexCoords(v3 &origTexCoords)
+{
+	// randomly select type...
+	float sixth = 1.f/6.f;
+
+	// for given type return proper texcoords
+	return v3((texPart_x+origTexCoords.x)*sixth, origTexCoords.y, 0.f);
 }

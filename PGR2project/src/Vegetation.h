@@ -37,7 +37,7 @@ public:
 
 	virtual void init()=0;
 
-	virtual void update(float time)=0;
+	virtual void update(double time)=0;
 
 	virtual void translate(v3 &movVector)=0;
 
@@ -47,6 +47,8 @@ public:
 
 	virtual void bakeToVBO()=0;
 
+	virtual void fixTexType()=0;
+	virtual v3	 transformTexCoords(v3 &origTexCoords)=0;
 
 	vector<VertexInfo>	vertices;
 	v3					position;

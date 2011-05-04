@@ -13,7 +13,7 @@ public:
 
 	void init();
 
-	void update(float time);
+	void update(double time);
 
 	void translate(v3 &movVector);
 

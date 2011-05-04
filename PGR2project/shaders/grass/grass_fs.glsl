@@ -29,5 +29,7 @@ void main()
 	if (tex_color.a<0.1){
 		discard;
 	}
-	gl_FragColor = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color;// +Is;
+	vec4 color = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color;
+	color.a = tex_color.a;
+	gl_FragColor = color;
 }

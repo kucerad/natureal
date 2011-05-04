@@ -84,9 +84,18 @@
     <ClInclude Include="src\Planter.h">
       <Filter>Scene\Vegetation</Filter>
     </ClInclude>
-    <ClInclude Include="src\ShaderManager.h" />
     <ClInclude Include="common\Vector2.h">
       <Filter>MathUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\globals.h" />
+    <ClInclude Include="common\timer.h">
+      <Filter>MathUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WaterSurface.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderManager.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +178,15 @@
     <ClCompile Include="src\Planter.cpp">
       <Filter>Scene\Vegetation</Filter>
     </ClCompile>
-    <ClCompile Include="src\ShaderManager.cpp" />
+    <ClCompile Include="common\timer.cpp">
+      <Filter>MathUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WaterSurface.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\terrain\terrain_fs.glsl">
@@ -182,6 +199,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\grass\grass_vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\water\water_fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\water\water_vs.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

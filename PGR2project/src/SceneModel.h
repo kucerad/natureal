@@ -19,7 +19,7 @@ public:
 
 	virtual void init()=0;
 
-	virtual void update(float time)=0;
+	virtual void update(double time)=0;
 
 	virtual void translate(v3 &movVector)=0;
 
