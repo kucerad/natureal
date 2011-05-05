@@ -19,9 +19,10 @@ public:
 	World(void);
 	~World(void);
 	void draw();
-	void drawForWater();
+	void drawUnderWater();
+	void drawReflection();
 	void drawForLOD();
-	
+	void windowSizeChanged(int width, int height);
 
 	void init();
 

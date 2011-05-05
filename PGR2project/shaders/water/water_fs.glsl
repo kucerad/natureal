@@ -44,20 +44,16 @@ void main(void)
 	//
 	//const float exponent = 64.0;
 	//
-	//vec4 lightTS	= normalize(light_pos);
+	//vec4 lightTS	    = normalize(light_pos);
 	//vec4 viewt		= normalize(eyeVector);
 	//vec4 disdis		= texture2D(water_dudvmap, vec2(movement2 * tscale));
-	//vec4 dist		= texture2D(water_dudvmap, vec2(movement1 + disdis*sca2));
-	//vec4 fdist		= dist;
-	//fdist = fdist * two + mone;
-	//fdist = normalize(fdist);
-	//fdist *= sca;
+	//vec4 dist		    = texture2D(water_dudvmap, vec2(movement1 + disdis*sca2));
+	//vec4 fdist		= normalize(dist* two + mone)*sca;
 
 	//load normalmap
 		//vec4 nmap = texture2D(water_normalmap, vec2(movement1 + disdis*sca2));
-		//nmap = (nmap-ofive) * two;
+		//nmap = nmap * two + mone;
 		//vec4 vNorm = normalize(nmap);
-		//vNorm = normalize(nmap);
 
 	//get projective texcoords
 	vec4 tmp = vec4(1.0 / projectedVertex.w);
@@ -72,7 +68,9 @@ void main(void)
 
 	//load reflection,refraction and depth texture
 	vec4 refTex = texture2D(water_reflection, vec2(tmp));
-	vec4 refl = refTex;
+	vec4 reflection = refTex;
+	reflection.a = 0.5;
+
 		//vec4 refr   = texture2D(water_refraction, vec2(tmp));
 		//vec4 wdepth = texture2D(water_depthmap, vec2(tmp));
 
@@ -87,18 +85,13 @@ void main(void)
 
 	//calculate fresnel and inverted fresnel
 		//vec4 invfres = vec4( dot(vNorm, viewt) );
-		//vec4 fres = vec4(1.0) -invfres ;
+		//vec4 fres = vec4(1.0) - invfres ;
 
 	//calculate reflection and refraction
-		//refr *= invfres;
-		//refr *= invdepth;
-		//temp = waterColor * wdepth * invfres;
-		//refr += temp;
+		//refr = refr * invfres * invdepth + (waterColor * wdepth * invfres);
 		//refl *= fres;
 
 	//add reflection and refraction
-		//tmp = refr + refl;
-
-	gl_FragColor = refl;
-	//gl_FragColor = tmp + specular;
+	gl_FragColor = reflection;
+	//gl_FragColor = refr + refl + specular;
 }

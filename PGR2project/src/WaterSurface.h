@@ -24,6 +24,7 @@ public:
 
 	void scale(v3 &scaleVector);
 
+	void windowSizeChanged(int width, int height);
 	void beginReflection();
 	void endReflection();
 	void showTexture(int x, int y, int szx, int szy);

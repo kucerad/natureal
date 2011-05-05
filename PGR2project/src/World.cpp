@@ -34,22 +34,20 @@ void World::draw()
 	// 1st pass (water)
 	p_activeCamera->shoot();
 	p_water->activeCamera = p_activeCamera;
+	// WATER REFLECTION RENDER
 	p_water->beginReflection();
-		p_skybox->draw();
-		p_terrain->cut = true;
-		p_terrain->flip= true;
-		p_terrain->draw();
+		drawReflection();
 	p_water->endReflection();
+	// WATER REFRACTION RENDER
+	//p_water
 
 	// 2nd pass (other...)
-	p_water->draw();
-	
-	
 	//p_fog->turnOn();
 	//glPushMatrix();
 	//glScalef(1.f, -1.f, 1.f);
 	p_terrain->draw();
 	p_skybox->draw();
+	p_water->draw();
 	//glPopMatrix();
 	box->draw();
 	
@@ -65,7 +63,20 @@ void World::draw()
 	//p_terrain->drawNormals();
 	//p_fog->turnOff();
 }
-void World::drawForWater(){}
+
+void World::drawUnderWater(){}
+void World::drawReflection(){
+	p_skybox->draw();
+	p_terrain->cut = true;
+	p_terrain->flip= true;
+	p_terrain->draw();
+}
+
+void World::windowSizeChanged(int width, int height)
+{
+	p_water->windowSizeChanged(width, height);
+}
+
 void World::drawForLOD(){}
 
 void World::init()
@@ -100,11 +111,20 @@ void World::init()
 	p_activeLight->setup(GL_LIGHT0, v3(0,10,0), v3(0,-1,0), sunAmb, sunDif, sunSpe, 180, 0.0);
 	p_activeLight->turnOn();
 	
-
+	// plant grass
 	Planter planter(p_terrain);
 	p_grass_growth = p_grass_prototype->getCopy();
-	planter.plantVegetation(p_grass_prototype, p_grass_growth);
-	p_grass_growth->bakeToVBO();
+	planter.init(p_grass_prototype, p_grass_growth, GRASS_MIN_HEIGHT, GRASS_MAX_HEIGHT, GRASS_MIN_DIST, 100, 100 );
+	planter.plantVegetationCount(g_GrassCount);
+	
+
+	// plant trees
+	//planter.height_min = TREE1_MIN_HEIGHT;
+	//planter.height_max = TREE1_MAX_HEIGHT;
+	//planter.minDist = 3.f;
+	//planter.res_x = 100;
+	//planter.res_y = 100;
+	//planter.desiredCount = 100;
 	printf("WORLD CREATED:\n");
 
 }

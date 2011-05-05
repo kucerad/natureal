@@ -39,6 +39,13 @@ extern	v4						g_terrain_border_widths;
 #define GRASS_WAVE_TEX_NAME		"textures/grass/dudv_01.png"
 #define GRASS_VS_FILENAME		"shaders/grass/grass_vs.glsl"
 #define GRASS_FS_FILENAME		"shaders/grass/grass_fs.glsl"
+#define GRASS_MIN_HEIGHT		10.f
+#define GRASS_MAX_HEIGHT		15.f
+#define GRASS_MIN_DIST			2.f
+extern int						g_GrassCount;
+
+#define TREE1_MIN_HEIGHT		2.f
+#define TREE1_MAX_HEIGHT		7.f
 
 #define SKYBOX_TEX_FILENAMES	"textures/skybox/512/sahara_%s.png"
 #define SKYBOX_SIZE				800
@@ -46,15 +53,18 @@ extern	v4						g_terrain_border_widths;
 #define WATER_VS_FILENAME		"shaders/water/water_vs.glsl"
 #define WATER_FS_FILENAME		"shaders/water/water_fs.glsl"
 #define WATER_HEIGHT			0.f
-
+#define WATER_DUDV_MAP			"textures/water/water_dudv.png"
+#define WATER_NORMAL_MAP		"textures/water/water_normal.png"
+//#define WATER_DUDV_MAP			"textures/water/water_dudv.png"
+//#define WATER_DUDV_MAP			"textures/water/water_dudv.png"
 
 #define HUMAN_HEIGHT			2.f
 #define HUMAN_BREATH_FREQ		1.2f
 #define HUMAN_BREATH_AMPL		0.15f
-#define HUMAN_ACTIVITY_DECAY    0.995f
+#define HUMAN_ACTIVITY_DECAY    0.992f
 #define HUMAN_ACTIVITY_INCR	    0.01f
 #define HUMAN_MIN_ACTIVITY	    0.1f
-#define HUMAN_MAX_ACTIVITY	    1.5f
+#define HUMAN_MAX_ACTIVITY	    1.3f
 extern CameraMode g_cameraMode;
 
 
@@ -89,12 +99,12 @@ extern GLint    g_WinHeight;   // Window height
 extern double	g_time;
 
 
-static v4 sunAmb  = v4(0.05,0.05, 0.2, 1.0);
+static v4 sunAmb  = v4(0.9,0.9, 1.0, 1.0);
 static v4 sunDif  = v4(1.0,1.0, 1.0, 1.0);
-static v4 sunSpe  = v4(1.0,1.0, 0.9, 1.0);
+static v4 sunSpe  = v4(0.5,0.5, 0.6, 1.0);
 
 static GLfloat material_amd[4] = {0.6f, 0.6f, 0.6f, 1.0f};
-static GLfloat material_spe[4] = {0.3f, 0.3f, 0.3f, 1.0f};
+static GLfloat material_spe[4] = {.5f, .5f, .5f, 1.0f};
 
 
 

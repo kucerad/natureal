@@ -27,7 +27,7 @@ void main(void)
 	
 
 	// light direction 
-		//temp = lightpos - gl_Vertex;
+		//temp = gl_LightSource[0].position - gl_Vertex;
 	// light dir in tangent space
 		//light_pos.x = dot(temp, tangent);
 		//light_pos.y = dot(temp, binormal);
@@ -47,7 +47,7 @@ void main(void)
 	projectedVertex = gl_ModelViewProjectionMatrix * gl_Vertex;
 
 	// eye vector
-		//temp = viewpos - gl_Vertex;
+		//temp = - (gl_ModelVIewMatrix * gl_Vertex);
 	// eye vector in tangent space
 		//eyeVector.x = dot(temp, tangent);
 		//eyeVector.y = dot(temp, binormal);
