@@ -24,6 +24,9 @@ Grass::~Grass(void)
 }
 void Grass::bakeToVBO()
 {
+	if (vboId>0){
+		glDeleteBuffers(1, &vboId);
+	}
 	// vbo
 	VBOdataCount = vertices.size();
 	int vboSize = VBOdataCount*(VertexInfo::sizePosition+VertexInfo::sizeNormal+VertexInfo::sizeTexCoord);

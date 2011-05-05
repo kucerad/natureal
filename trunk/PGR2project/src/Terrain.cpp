@@ -47,7 +47,7 @@ void Terrain::draw()
 		}
 		else{
 			shader->setUniform2f(heightInterval_location, -1000.f, WATER_HEIGHT);
-		}
+		} 
 	} else {
 		shader->setUniform2f(heightInterval_location, -1000.f, 1000.f);
 	}

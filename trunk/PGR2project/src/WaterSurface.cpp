@@ -38,9 +38,12 @@ void WaterSurface::draw()
 
 }
 
+
 void WaterSurface::init()
 {
 	// init textures & buffers
+	//textureManager->loadTexture(...);
+
 	glGenTextures(1, &cbID);
 		glBindTexture(GL_TEXTURE_2D, cbID);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -66,14 +69,14 @@ void WaterSurface::init()
 	   
 
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-	 assert(glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT)==GL_FRAMEBUFFER_COMPLETE_EXT);
+	 assert(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)==GL_FRAMEBUFFER_COMPLETE_EXT);
 	 assert( glGetError() == GL_NO_ERROR );
 	 printf("WATER framebuffers initialized successfully, fb %i,cb %i, db %i\n", fbID, cbID, dbID);
 	 
 	 // init shaders...
 	 int shaderID = shaderManager->loadShader(WATER_VS_FILENAME, WATER_FS_FILENAME);
 	 shader = shaderManager->getShader(shaderID);
-	 water_reflection_loc = shader->getLocation("water_reflection");
+ 	 water_reflection_loc = shader->getLocation("water_reflection");
 }
 
 void WaterSurface::update(double time)
@@ -96,6 +99,16 @@ void WaterSurface::scale(v3 &scaleVector)
 
 }
 
+void WaterSurface::windowSizeChanged(int width, int height)
+{
+	// reinit framebuffers...
+		glBindTexture(GL_TEXTURE_2D, cbID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		glBindTexture(GL_TEXTURE_2D, dbID );
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		glBindTexture(GL_TEXTURE_2D, 0 );
+}
+
 void WaterSurface::beginReflection()
 {
 	glEnable(GL_CULL_FACE);
@@ -108,16 +121,21 @@ void WaterSurface::beginReflection()
 		// nastavit transformaci...
 		glPushMatrix();
 		
-		glTranslatef(0.0f, WATER_HEIGHT, 0.0f);
+		
 		if (activeCamera->getPosition().y>=WATER_HEIGHT){
-			glScalef(1.0, -1.0, 1.0); // flip Y
+			glTranslatef(0.0f, WATER_HEIGHT, 0.0f);
+			glScalef(1.f, -1.f, 1.f); // flip Y
 			glCullFace(GL_FRONT);
+		} else {
+			glScalef(1.f, 0.5f, 1.f);
+			glTranslatef(0.0f, WATER_HEIGHT-1.f, 0.0f);
 		}
 		
 		//double plane[4] = {0.0, 1.0, 0.0, -0.5};  // slow on my GPU
 		//glEnable(GL_CLIP_PLANE0);
 		//glClipPlane(GL_CLIP_PLANE0, plane);//GLenum buffers[2] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};//, GL_DEPTH_ATTACHMENT_EXT };
 }
+
 
 void WaterSurface::endReflection()
 {

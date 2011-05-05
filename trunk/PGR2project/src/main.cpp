@@ -24,7 +24,8 @@
 v4	g_terrain_border_values = TERRAIN_INIT_BORDER_VAL;
 v4	g_terrain_border_widths = TERRAIN_INIT_BORDER_WID;
 
-CameraMode g_cameraMode = WALK;
+CameraMode g_cameraMode = FREE;
+int	g_GrassCount			= 1000;
 int g_WinWidth             = 800;   // Window width
 int g_WinHeight            = 600;   // Window height
 double g_time			   = 0.0;
@@ -280,6 +281,7 @@ void cbWindowSizeChanged(int width, int height)
 {
    g_WinWidth  = width;
    g_WinHeight = height;
+   world.windowSizeChanged(width,height);
 }
 void activateANTMouse()
 {
