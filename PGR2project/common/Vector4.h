@@ -59,7 +59,11 @@ class Vector4
 		}
 		inline operator const float*() const	{ return &x;	}
 		inline operator float*()				{ return &x;	}
-	
+		
+		inline float dot(const Vector4& vec) const
+		{
+			return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
+		}
 //		inline float x() const					{ return x;	}
 //		inline float y() const					{ return y;	}
 //		inline float z() const					{ return z;	}

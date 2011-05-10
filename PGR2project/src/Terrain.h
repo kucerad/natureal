@@ -15,7 +15,8 @@ public:
 	~Terrain(void);
 
 	void draw();
-	
+	void drawUnderWater();
+
 	void drawNormals();
 
 

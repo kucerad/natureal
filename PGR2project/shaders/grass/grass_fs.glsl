@@ -31,5 +31,6 @@ void main()
 	}
 	vec4 color = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color;
 	color.a = tex_color.a;
-	gl_FragColor = color;
+	gl_FragData[0] = color;
+	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
 }

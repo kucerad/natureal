@@ -18,16 +18,19 @@ Shader* ShaderManager::getShader(int shaderId)
 	return shaders[shaderId];
 }
 
-int ShaderManager::loadShader(string vs_filename, string fs_filename)
+int ShaderManager::loadShader(string shname, string vs_filename, string fs_filename)
 {
 	int out = shaders.size();
-	Shader* sh = new Shader();
-	sh->loadShader(vs_filename, fs_filename);
+	Shader* sh = new Shader(shname);
+	if (!sh->loadShader(vs_filename, fs_filename)){
+		pauseAndExit();
+	}
 	shaders.push_back(sh);
 	return out;
 }
 
-int ShaderManager::loadShader(	string vs_filename,
+int ShaderManager::loadShader(string shname,
+				string vs_filename,
 				string fs_filename,
 				string gs_filename,
 				GLint  geometry_vertices_out,
@@ -35,8 +38,10 @@ int ShaderManager::loadShader(	string vs_filename,
 				GLenum geometry_primitive_out)
 {
 	int out = shaders.size();
-	Shader* sh = new Shader();
-	sh->loadShader(vs_filename, fs_filename, gs_filename, geometry_vertices_out, geometry_primitive_in, geometry_primitive_out);
+	Shader* sh = new Shader(shname);
+	if (!sh->loadShader(vs_filename, fs_filename, gs_filename, geometry_vertices_out, geometry_primitive_in, geometry_primitive_out)){
+		pauseAndExit();
+	}
 	shaders.push_back(sh);
 	return out;
 }

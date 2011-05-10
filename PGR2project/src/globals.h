@@ -9,4 +9,9 @@ enum CameraMode{
 	WALK
 };
 
+struct Statistics{
+	float	fps;
+	int		primitives;
+};
+
 #endif

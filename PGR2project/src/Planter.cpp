@@ -1,7 +1,6 @@
 #include "Planter.h"
 
-Planter::Planter(Terrain *_terrain):
-	terrain(_terrain)
+Planter::Planter()
 {
 
 }
@@ -12,24 +11,26 @@ Planter::~Planter(void)
 }
 
 
-void Planter::init(Vegetation*  _prototype, 
-				   Vegetation*	_growth,
+void Planter::init( Terrain*	_terrain,
+					Vegetation* _prototype, 
+					Vegetation*	_growth,
 					float		_height_min,
 					float		_height_max,
 					float		_minDist,
 					int			_res_x,
 					int			_res_y)
 {
-	prototype  = _prototype; 
-	growth	   = _growth;
-	height_min = _height_min;
-	height_max = _height_max;
-	minDist    = _minDist;
-	res_x      = _res_x;
-	res_y      = _res_y;	
-	count	   = 0;
-	float tsx  = terrain->sz_x/2.0;
-	float tsy  = terrain->sz_y/2.0;
+	terrain		= _terrain;
+	prototype	= _prototype; 
+	growth		= _growth;
+	height_min	= _height_min;
+	height_max	= _height_max;
+	minDist		= _minDist;
+	res_x		= _res_x;
+	res_y		= _res_y;	
+	count		= 0;
+	float tsx	= terrain->sz_x/2.0;
+	float tsy	= terrain->sz_y/2.0;
 
 	// get candidates array
 	float step_x = terrain->sz_x/float(res_x);
@@ -53,17 +54,19 @@ void Planter::init(Vegetation*  _prototype,
 	}
 }
 
-void Planter::plantVegetationCount(int _count)
+int Planter::plantVegetationCount(int _count)
 {
 	// if count > max ... no change
 	// if count <0		... 
 	int diff = _count-count;
+	printf("diff = %i\n", diff);
 	int i;
 	if (diff>0){
 		// add
 		for (i=0; i<diff; i++){
 			add();
 		}
+		printf("count = %i\n", count);
 	} else if (diff<0){
 		// erase
 		for(i=diff; i<0; i++){
@@ -72,6 +75,7 @@ void Planter::plantVegetationCount(int _count)
 	}
 	// prepare for VBO
 	for (int i=0; i<realPositions.size(); i++){
+		count = 0;
 		v3 candidate = realPositions[i];
 		m4 transform;
 		transform.scale(v3(randomf(0.3f, 1.1f)));
@@ -95,6 +99,7 @@ void Planter::plantVegetationCount(int _count)
 		//BACKSPACE(k);
 	}
 	bakeVBO();
+	return count;
 }
 
 void Planter::add()
@@ -109,7 +114,7 @@ void Planter::add()
 			v3 can = candidates[i];
 			v3 distV = candidate - can;
 			float distance = distV.length();
-			if (distance>0 && distance<minDist){
+			if (distance<minDist){
 				// invalid
 				candidates.erase(candidates.begin()+i);
 				i--;
@@ -135,7 +140,6 @@ void Planter::add()
 			growth->vertices.push_back(v);
 		}
 		count++;
-
 	}
 }
 void Planter::bakeVBO(){
@@ -147,7 +151,6 @@ void Planter::erase()
 	if (realPositions.size()>0){
 		candidates.push_back(realPositions[realPositions.size()-1]);
 		realPositions.erase(realPositions.end()-1);
-		
 	}
 }
 

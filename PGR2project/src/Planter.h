@@ -10,16 +10,17 @@
 class Planter
 {
 public:
-	Planter(Terrain *_terrain);
+	Planter();
 	~Planter(void);
-	void init(	Vegetation* _prototype, 
+	void init(	Terrain *_terrain,
+				Vegetation* _prototype, 
 				Vegetation*	_growth,
 				float		_height_min,
 				float		_height_max,
 				float		_minDist,
 				int			_res_x,
 				int			_res_y);
-	void plantVegetationCount(int _count);
+	int plantVegetationCount(int _count);
 	void add();
 	void erase();
 	void bakeVBO();

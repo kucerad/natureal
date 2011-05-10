@@ -3,7 +3,7 @@
 
 Light::Light()
 {
-
+	positionFixedToSkybox = v3(0.0,0.0,0.0);
 }
 
 
@@ -37,12 +37,16 @@ void Light::scale(v3 &scaleVector)
 }
 void Light::draw()
 {
+	glPushAttrib(GL_LIGHTING_BIT);
+	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-		glTranslate(position);
-		glColor(v3(1,1,1));
-		drawCube();
+		glTranslate(g_light_position);
+		glColor4f(1.0,1.0,0.6,1.0);
+		glutSolidSphere(10.0, 5, 5);
 	glPopMatrix();
+	glEnable(GL_LIGHTING);
+	glPopAttrib();
 }
 
 void Light::turnOn()

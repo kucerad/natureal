@@ -103,6 +103,7 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Fog.h" />
     <ClInclude Include="src\globals.h" />
+    <ClInclude Include="src\GodRays.h" />
     <ClInclude Include="src\Grass.h" />
     <ClInclude Include="src\IniSettings.h" />
     <ClInclude Include="src\ioutils.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="src\Terrain.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextureManager.h" />
+    <ClInclude Include="src\Tree1.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Vegetation.h" />
     <ClInclude Include="src\WaterSurface.h" />
@@ -130,6 +132,7 @@
     <ClCompile Include="src\BBox.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Fog.cpp" />
+    <ClCompile Include="src\GodRays.cpp" />
     <ClCompile Include="src\Grass.cpp" />
     <ClCompile Include="src\IniSettings.cpp" />
     <ClCompile Include="src\ioutils.cpp" />
@@ -144,15 +147,22 @@
     <ClCompile Include="src\Terrain.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\Tree1.cpp" />
     <ClCompile Include="src\Vegetation.cpp" />
     <ClCompile Include="src\WaterSurface.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\godrays\godrays_fs.glsl" />
+    <None Include="shaders\godrays\godrays_vs.glsl" />
     <None Include="shaders\grass\grass_fs.glsl" />
     <None Include="shaders\grass\grass_vs.glsl" />
+    <None Include="shaders\skybox\skybox_fs.glsl" />
+    <None Include="shaders\skybox\skybox_vs.glsl" />
     <None Include="shaders\terrain\terrain_fs.glsl" />
     <None Include="shaders\terrain\terrain_vs.glsl" />
+    <None Include="shaders\tree\tree_fs.glsl" />
+    <None Include="shaders\tree\tree_vs.glsl" />
     <None Include="shaders\water\water_fs.glsl" />
     <None Include="shaders\water\water_vs.glsl" />
   </ItemGroup>

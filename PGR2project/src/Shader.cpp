@@ -1,7 +1,8 @@
 #include "Shader.h"
 
-Shader::Shader(void)
+Shader::Shader(string shname)
 {
+	name		 = shname;
 	programID	 = 0;
 	vertexShID	 = 0;
 	geometryShID = 0;
@@ -10,16 +11,15 @@ Shader::Shader(void)
 
 Shader::~Shader(void)
 {
-	printf("Shader deleting...\n");
 	destroy();
-	printf("Shader destroyed.\n");
+	printf("Shader %s destroyed.\n", name.c_str());
 }
 
 bool Shader::loadShader(string vs_filename, string fs_filename)
 {
 	const char* pVertexShaderFileName    = vs_filename.c_str();
 	const char* pFragmentShaderFileName	 = fs_filename.c_str();
-	printf("# COMPILE SHADERS\n");
+	printf("# COMPILE %s SHADERS\n", name.c_str());
 
 	destroy();
 
@@ -109,7 +109,7 @@ bool Shader::loadShader(
 	const char* pGeometryShaderFileName  = gs_filename.c_str();
 	const char* pFragmentShaderFileName	 = fs_filename.c_str();
 						
-	printf("# COMPILE SHADERS\n");
+	printf("# COMPILE %s SHADERS\n", name.c_str());
 
 	destroy();
 

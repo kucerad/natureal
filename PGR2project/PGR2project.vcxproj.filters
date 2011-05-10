@@ -25,9 +25,6 @@
     <ClInclude Include="src\SceneModel.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\SkyBox.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Terrain.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -57,17 +54,11 @@
     <ClInclude Include="src\math.h">
       <Filter>MathUtils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Light.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\TextureManager.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Texture.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Fog.h">
-      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader.h">
       <Filter>Core</Filter>
@@ -97,6 +88,21 @@
     <ClInclude Include="src\ShaderManager.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tree1.h">
+      <Filter>Scene\Vegetation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fog.h">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SkyBox.h">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GodRays.h">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
@@ -120,6 +126,9 @@
     <Filter Include="Scene\Vegetation">
       <UniqueIdentifier>{c3fcf724-e6d3-4202-8ae7-ffb42d391303}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\Atmosphere">
+      <UniqueIdentifier>{33a023e1-68ac-4acf-91f3-db961ad1ddb8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pgr2model.cpp">
@@ -129,9 +138,6 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\SkyBox.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Terrain.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -151,17 +157,11 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\World.cpp" />
-    <ClCompile Include="src\Light.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\TextureManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Texture.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Fog.cpp">
-      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader.cpp">
       <Filter>Core</Filter>
@@ -187,6 +187,21 @@
     <ClCompile Include="src\ShaderManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tree1.cpp">
+      <Filter>Scene\Vegetation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Fog.cpp">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkyBox.cpp">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GodRays.cpp">
+      <Filter>Scene\Atmosphere</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\terrain\terrain_fs.glsl">
@@ -205,6 +220,24 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\water\water_vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\tree\tree_fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\tree\tree_vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\godrays\godrays_fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\godrays\godrays_vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\skybox\skybox_fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\skybox\skybox_vs.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

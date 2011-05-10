@@ -29,7 +29,6 @@ Terrain::~Terrain(void)
 	SAFE_DELETE_ARRAY_PTR(vertices);
 	SAFE_DELETE_ARRAY_PTR(normals);
 	SAFE_DELETE_ARRAY_PTR(elements);
-	SAFE_DELETE_PTR(shader);
 }
 
 void Terrain::draw()
@@ -53,6 +52,52 @@ void Terrain::draw()
 	}
 	cut		= false;
 	flip	= false;
+		// bind index buffer
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,eboId);
+		glBindBuffer(GL_ARRAY_BUFFER, vboId); 
+		   // enable states
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		   // draw VBOs...
+			glVertexPointer(channels[VERTEX], glTypes[VERTEX], 0, BUFFER_OFFSET(offsets[VERTEX]));
+			glNormalPointer(glTypes[NORMAL], 0, BUFFER_OFFSET( offsets[NORMAL] ) );
+			
+			glActiveTexture(GL_TEXTURE0);
+			glClientActiveTexture(GL_TEXTURE0);
+			
+			glTexCoordPointer(channels[TEXCOORD0], glTypes[TEXCOORD0], 0, BUFFER_OFFSET(offsets[TEXCOORD0]));
+			
+			glDrawElements(GL_TRIANGLE_STRIP, eboCount, GL_UNSIGNED_INT, BUFFER_OFFSET(offsets[INDEX]));
+			
+		   // disable
+		   
+		   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		   glDisableClientState(GL_NORMAL_ARRAY);
+		   glDisableClientState(GL_VERTEX_ARRAY);
+		// unbind buffers
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		// unbind textures
+		for (int i=0; i<TERRAIN_TEX_COUNT; i++){
+			textureManager->unbindTexture(textureIds[i]);
+		}
+	// turn off shader
+	shader->use(false);
+}
+
+void Terrain::drawUnderWater(){
+	// bind textures
+	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
+		textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
+	}
+	shader->use(true);
+	shader->setUniform4v(border_values_location, g_terrain_border_values);
+	shader->setUniform4v(border_widths_location, g_terrain_border_widths);
+	
+	shader->setUniform2f(heightInterval_location,-1000.f, WATER_HEIGHT);
+		
 		// bind index buffer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,eboId);
 		glBindBuffer(GL_ARRAY_BUFFER, vboId); 
@@ -112,8 +157,8 @@ void Terrain::drawNormals()
 void Terrain::init()
 {
 	// load & create shaders
-	shader = new Shader();
-	shader->loadShader(TERRAIN_VS_FILENAME, TERRAIN_FS_FILENAME);
+	int shaderID = shaderManager->loadShader("Terrain", TERRAIN_VS_FILENAME, TERRAIN_FS_FILENAME);
+	shader = shaderManager->getShader(shaderID);
 	border_values_location = shader->getLocation("border_values");
 	border_widths_location = shader->getLocation("border_widths");
 	heightInterval_location = shader->getLocation("visibleHeightInterval");
@@ -197,7 +242,7 @@ void Terrain::init()
 			v3 normal;
 			
 			normal.x = getHeightAt(x-1,y) - getHeightAt(x+1,y);
-			normal.y = 1.f;
+			normal.y = step_x;
 			normal.z = getHeightAt(x,y-1) - getHeightAt(x,y+1);
 			normal.normalize();
 

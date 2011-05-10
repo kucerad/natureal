@@ -7,6 +7,7 @@
 #include "../common/Vector4.h"
 #include "ioutils.h"
 #include "Texture.h"
+#include "utils.h"
 
 struct Uniformi{
 	GLint location;
@@ -16,7 +17,7 @@ struct Uniformi{
 class Shader
 {
 public:
-	Shader(void);
+	Shader(string name);
 	~Shader(void);
 
 	GLuint programID;
@@ -57,6 +58,7 @@ private:
 	GLuint fragmentShID;
 
 	vector<Uniformi> uniforms;
+	string name;
 	
 
 };

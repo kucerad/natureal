@@ -10,8 +10,11 @@
 #include "Fog.h"
 #include "TextureManager.h"
 #include "Grass.h"
+#include "Tree1.h"
 #include "Planter.h"
 #include "WaterSurface.h"
+#include "GodRays.h"
+
 
 class World
 {
@@ -41,14 +44,21 @@ public:
 	BBox				*box;
 	Camera				*p_activeCamera;
 	Light				*p_activeLight;
+	GodRays				*p_godRays;
 	Fog					*p_fog;
 	WaterSurface		*p_water;
 
 	Grass				*p_grass_prototype;
 	Vegetation			*p_grass_growth;
+	Tree1				*p_tree1_prototype;
+	Vegetation			*p_tree1_growth;
 
 	TextureManager		textureManager;
 	ShaderManager		shaderManager;
+
+	// planters
+	Planter				grass_planter;
+	Planter				tree1_planter;
 	
 };
 
