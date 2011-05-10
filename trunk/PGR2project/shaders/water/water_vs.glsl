@@ -9,8 +9,8 @@
 //varying vec4 movement2;
 varying vec4 projectedVertex;
 //varying vec4 eyeVector;
-//uniform vec4 viewpos, lightpos;
-//uniform float time, time2;
+uniform vec4 viewpos, lightpos;
+uniform float time, time2;
 //unit 0 = water_reflection
 //unit 1 = water_refraction
 //unit 2 = water_normalmap
@@ -18,42 +18,40 @@ varying vec4 projectedVertex;
 //unit 4 = water_depthmap
 void main(void)
 {
-	vec4 temp;
+	vec4 temp;/*
 	// create tangent space coordinate base system [FIXED]
-		//vec4 tangent	= vec4(1.0, 0.0, 0.0, 0.0);
-		//vec4 norm		= vec4(0.0, 1.0, 0.0, 0.0);
-		//vec4 binormal	= vec4(0.0, 0.0, 1.0, 0.0);
+		vec4 tangent	= vec4(1.0, 0.0, 0.0, 0.0);
+		vec4 norm		= vec4(0.0, 1.0, 0.0, 0.0);
+		vec4 binormal	= vec4(0.0, 0.0, 1.0, 0.0);
 
 	
 
 	// light direction 
-		//temp = gl_LightSource[0].position - gl_Vertex;
+		temp = gl_LightSource[0].position - gl_Vertex;
 	// light dir in tangent space
-		//light_pos.x = dot(temp, tangent);
-		//light_pos.y = dot(temp, binormal);
-		//light_pos.z = dot(temp, norm);
-		//light_pos.w = 0.0;
+		light_pos.x = dot(temp, tangent);
+		light_pos.y = dot(temp, binormal);
+		light_pos.z = dot(temp, norm);
+		light_pos.w = 0.0;
 
-		//vec4 t1 = vec4(0.0, -time, 0.0,0.0);
-		//vec4 t2 = vec4(0.0, -time2, 0.0,0.0);
+		vec4 t1 = vec4(0.0, -time, 0.0,0.0);
+		vec4 t2 = vec4(0.0, -time2, 0.0,0.0);
 
 		//mat4 mtx = gl_TextureMatrix[0]; // maybe useful below...
 	// refraction vector
-		//movement1 = gl_MultiTexCoord0 + t1;
+		movement1 = gl_MultiTexCoord0 + t1;
 	// normal vector
-		//movement2 = gl_MultiTexCoord0 + t2;
-
-	// dudv vector
-	projectedVertex = gl_ModelViewProjectionMatrix * gl_Vertex;
+		movement2 = gl_MultiTexCoord0 + t2;
 
 	// eye vector
-		//temp = - (gl_ModelVIewMatrix * gl_Vertex);
+		temp = (gl_ModelViewMatrix * gl_Vertex);
 	// eye vector in tangent space
-		//eyeVector.x = dot(temp, tangent);
-		//eyeVector.y = dot(temp, binormal);
-		//eyeVector.z = dot(temp, norm);
-		//eyeVector.w = 0.0;
-
+		eyeVector.x = dot(temp, tangent);
+		eyeVector.y = dot(temp, binormal);
+		eyeVector.z = dot(temp, norm);
+		eyeVector.w = 0.0;
+		*/
+	projectedVertex = gl_ModelViewProjectionMatrix * gl_Vertex;
 	gl_Position = projectedVertex;
 }
 

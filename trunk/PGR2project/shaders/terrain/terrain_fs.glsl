@@ -69,8 +69,9 @@ void main()
 		tex_color2 = texture2D(terrain_tex_05, gl_TexCoord[0].st*SCALE);
 		tex_color = mix(tex_color2, tex_color1, min(max((height - border_values.w)/border_widths.w, 0.0), 1.0));
 	}
-	//float depth = gl_FragDepth;
-	//vec4 fogColor = vec4(0.9, 0.9, 1.0, 1.0);
+	float depth = gl_FragDepth;
+	vec4 fogColor = vec4(0.0, 0.0, 1.0, 1.0);
 
-	gl_FragColor = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color +Is;// + depth*fogColor;
+	gl_FragData[0] = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color +Is + depth*fogColor;
+	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
 }

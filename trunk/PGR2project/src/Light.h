@@ -28,6 +28,7 @@ public:
 // attributes
 
 	v3 position;
+	v3 positionFixedToSkybox;
 	v3 direction;
 	GLuint lightId;
 };

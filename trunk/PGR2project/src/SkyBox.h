@@ -3,6 +3,7 @@
 
 #include "SceneModel.h"
 #include "Camera.h"
+#include "Light.h"
 
 static const string appendices[] = {
 	"north",
@@ -37,6 +38,7 @@ public:
 
 	vector<int> textureIds;
 	Camera* p_activeCamera;
+	Light*	p_light;
 };
 
 #endif

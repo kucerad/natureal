@@ -14,9 +14,9 @@
 
 //uniform sampler2D water_normalmap;
 uniform sampler2D water_reflection;
-//uniform sampler2D water_refraction;
+uniform sampler2D water_refraction;
 //uniform sampler2D water_dudvmap;
-//uniform sampler2D water_depthmap;
+uniform sampler2D water_depthmap;
 //uniform vec4 waterColor;
 
 //varying vec4 light_pos; //lightpos
@@ -31,6 +31,7 @@ varying vec4 projectedVertex; //for projection
 //unit 3 = water_dudvmap
 //unit 4 = water_depthmap
 
+const vec4 waterColor = vec4(0.1,0.36,0.51,1.0);
 void main(void)
 {
 	//vec4 waterColor;
@@ -67,12 +68,11 @@ void main(void)
 	tmp = clamp(tmp, 0.001, 0.999);
 
 	//load reflection,refraction and depth texture
-	vec4 refTex = texture2D(water_reflection, vec2(tmp));
-	vec4 reflection = refTex;
-	reflection.a = 0.5;
+	vec4 reflection = texture2D(water_reflection, vec2(tmp));
+	//reflection.a = 0.5;
 
-		//vec4 refr   = texture2D(water_refraction, vec2(tmp));
-		//vec4 wdepth = texture2D(water_depthmap, vec2(tmp));
+		vec4 refr   = texture2D(water_refraction, vec2(tmp));
+		vec4 wdepth = texture2D(water_depthmap, vec2(tmp));
 
 		//wdepth = vec4(pow(wdepth.x, 4.0));
 		//vec4 invdepth = 1.0 - wdepth;
@@ -92,6 +92,14 @@ void main(void)
 		//refl *= fres;
 
 	//add reflection and refraction
-	gl_FragColor = reflection;
+	float depthFactor = 0.9;
+	float frag_depth = gl_FragDepth; 
+	float water_depth = wdepth.x;
+	float factor = abs(frag_depth-water_depth)*depthFactor;
+	float factor3 = factor*factor*factor;
+	//gl_FragData[0] = reflection*0.2 + 0.2*refr + abs(wdepth-frag_depth)*depthFactor*waterColor;
+	gl_FragData[0] = reflection*0.2 + (1-factor3)*refr + factor3*waterColor;
 	//gl_FragColor = refr + refl + specular;
+	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
+	
 }

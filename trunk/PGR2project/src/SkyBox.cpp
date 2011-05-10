@@ -29,10 +29,16 @@ SkyBox::~SkyBox(void)
 void SkyBox::draw()
 {
 	glDisable(GL_LIGHTING);
-	glColor3f(1.0,1.0,1.0);
+	
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
+    // move with user...
 	glTranslate(p_activeCamera->getPosition());
+	if (g_godraysEnabled && !g_drawingReflection){
+		p_light->positionFixedToSkybox = p_light->position + p_activeCamera->getPosition();
+		p_light->draw();
+	}
+	glColor3f(1.0,1.0,1.0);
 	glScale(v3(SKYBOX_SIZE));
 	
 	// down 

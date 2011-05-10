@@ -25,17 +25,28 @@ v4	g_terrain_border_values = TERRAIN_INIT_BORDER_VAL;
 v4	g_terrain_border_widths = TERRAIN_INIT_BORDER_WID;
 
 CameraMode g_cameraMode = FREE;
-int	g_GrassCount			= 1000;
-int g_WinWidth             = 800;   // Window width
-int g_WinHeight            = 600;   // Window height
-double g_time			   = 0.0;
-CTimer timer;
-
+int g_WinWidth				= 800;   // Window width
+int g_WinHeight				= 600;   // Window height
+double g_time				= 0.0;
+CTimer						timer;
+Statistics					g_Statistics;
 
 #include "pgr2model.h"
 #include <assert.h>
 #include "../common/models/cube.h"
 #include "World.h"
+
+bool tqAvailable			= false;
+GLuint tqid					= 0;
+GLint result_available		= 0;
+
+v3 g_light_position			= LIGHT_POSITION;
+bool g_godraysEnabled		= false;
+bool g_drawingReflection	= false;
+bool g_showTextures			= false;
+
+int	g_GrassCount			= GRASS_COUNT;
+int	g_Tree1Count			= TREE1_COUNT;
 
 // GLOBAL CONSTANTS____________________________________________________________
 const GLfloat VECTOR_RENDER_SCALE = 0.20f;
@@ -104,8 +115,33 @@ void cbDisplay()
    }
    g_time=timer.RealTime();
    world.update(g_time);
-   //printf("time: %fL\n", g_time);
-   world.draw();
+   
+   // if timer query available
+   if (tqAvailable){
+	    // measure on GPU
+		//if (result_available){
+			
+			glBeginQuery(GL_TIME_ELAPSED, tqid);
+		//}
+		world.draw();		
+		//if (result_available)
+			glEndQuery(GL_TIME_ELAPSED);
+		
+		GLuint64EXT time = 0;
+		glGetQueryObjectui64vEXT(tqid, GL_QUERY_RESULT, &time); // blocking CPU
+		g_Statistics.fps = 1000000000.0/ double(time);
+		//printf("FPS: %f\n",g_Statistics.fps);
+		//glGetQueryObjectiv(tqid, GL_QUERY_RESULT_AVAILABLE, &result_available);
+		//printf("avail: %s\n",result_available?"yes":"no");
+   } else {
+	    world.draw();
+		// must block CPU to measure time here
+		glFinish();
+		double timeDiff = timer.RealTime() - g_time;
+		g_Statistics.fps = 1.0 / (timeDiff);
+   }
+   
+
    
 }
 
@@ -130,6 +166,12 @@ void initApp()
 
 	world.init();
 
+	// timer query extension?
+	if (isExtensionSupported(TIME_QUERY_EXTENSION)){
+		tqAvailable = true;
+		glGenQueries(1, &tqid);
+	}
+
 }
 void deinitApp()
 {
@@ -139,8 +181,11 @@ void deinitApp()
 	timer.Stop();
 
 	world.~World();
-	printf("deinit done\n");
-	system("PAUSE");
+	if (tqAvailable){
+		glDeleteQueries(1, &tqid);
+	}
+	printf("deinit done, bye\n");
+	//system("PAUSE");
 }
 
 //-----------------------------------------------------------------------------
@@ -207,31 +252,44 @@ void initGUI()
       " label='file' group=Model help='Model file name.' ");
    TwAddButton(controlBar, "load_new_model", loadNewModelCB, NULL, 
       " label='load model' group=Model help='Load new model.' ");
+   TwAddVarRO(controlBar, "fps", TW_TYPE_FLOAT, &(g_Statistics.fps), 
+	   " label='fps' group=Render help='frames per second' ");
+   TwAddVarRW(controlBar, "x_translate", TW_TYPE_FLOAT, &(g_light_position.x), 
+	   " label='x' group=Light help='x translation' ");
+   TwAddVarRW(controlBar, "y_translate", TW_TYPE_FLOAT, &(g_light_position.y), 
+	   " label='y' group=Light help='y translation' ");
+   TwAddVarRW(controlBar, "z_translate", TW_TYPE_FLOAT, &(g_light_position.z), 
+	   " label='z' group=Light help='z translation' ");   
+   TwAddVarRW(controlBar, "godrays", TW_TYPE_BOOLCPP, &(g_godraysEnabled), 
+	   " label='God rays enabled' group=Light help='enable/disable god rays' ");  
 
-   TwAddVarRW(controlBar, "vertex_normals", TW_TYPE_BOOLCPP, 
-      &g_ShowVertexNormals, " label='vertex normals' \
-      group=Render help='Show vertex normal, tangent, binormal.' ");
-   TwAddVarRW(controlBar, "face_normals", TW_TYPE_BOOLCPP, &g_FaceNormals, 
-      " label='face normals' group=Render help='Show face normals.' ");
-   TwAddVarRW(controlBar, "transparency", TW_TYPE_BOOLCPP, &g_Transparency, 
-      " label='transparency' group=Render \
-      help='Render transparent meshes.'");
-   TwAddVarRW(controlBar, "wiremode", TW_TYPE_BOOLCPP, &g_WireMode,
-      " label='wire mode' group=Render help='Toggle wire mode.' ");
-   TwAddVarRW(controlBar, "face_culling", TW_TYPE_BOOLCPP, &g_FaceCulling,
-      " label='face culling' group=Render  help='Toggle face culling.' ");
-   TwAddVarRW(controlBar, "alpha_threshold", TW_TYPE_FLOAT, &g_AlphaThreshold,
-      " label='alpha threshold' group=Render min=0 max=1 step=0.01 \
-       help='Alpha test threshold.' ");
-   TwAddVarRW(controlBar, "Translate", TW_TYPE_FLOAT, &g_SceneTraZ, 
-      " group='Scene' label='translate Z' min=1 max=1000 step=0.5 \
-       help='Scene translation.' ");
-   TwAddVarRW(controlBar, "Scale", TW_TYPE_FLOAT, &g_SceneScale, 
-      " group='Scene' label='scale' min=0 max=10 step=0.01 \
-       help='Scene scale.' ");
-   TwAddVarRW(controlBar, "SceneRotation", TW_TYPE_QUAT4F, &g_SceneRot, 
-      " group='Scene' label='Scene rotation' open \
-      help='Change the scene orientation.' ");
+   TwAddVarRW(controlBar, "fbos", TW_TYPE_BOOLCPP, &(g_showTextures), 
+	   " label='Show FBOs' group=Debug help='enable/disable FBO display' "); 
+   //TwAddVarRW(controlBar, "vertex_normals", TW_TYPE_BOOLCPP, 
+   //   &g_ShowVertexNormals, " label='vertex normals' \
+   //   group=Render help='Show vertex normal, tangent, binormal.' ");
+   //
+   //TwAddVarRW(controlBar, "face_normals", TW_TYPE_BOOLCPP, &g_FaceNormals, 
+   //   " label='face normals' group=Render help='Show face normals.' ");
+   //TwAddVarRW(controlBar, "transparency", TW_TYPE_BOOLCPP, &g_Transparency, 
+   //   " label='transparency' group=Render \
+   //   help='Render transparent meshes.'");
+   //TwAddVarRW(controlBar, "wiremode", TW_TYPE_BOOLCPP, &g_WireMode,
+   //   " label='wire mode' group=Render help='Toggle wire mode.' ");
+   //TwAddVarRW(controlBar, "face_culling", TW_TYPE_BOOLCPP, &g_FaceCulling,
+   //   " label='face culling' group=Render  help='Toggle face culling.' ");
+   //TwAddVarRW(controlBar, "alpha_threshold", TW_TYPE_FLOAT, &g_AlphaThreshold,
+   //   " label='alpha threshold' group=Render min=0 max=1 step=0.01 \
+   //    help='Alpha test threshold.' ");
+   //TwAddVarRW(controlBar, "Translate", TW_TYPE_FLOAT, &g_SceneTraZ, 
+   //   " group='Scene' label='translate Z' min=1 max=1000 step=0.5 \
+   //    help='Scene translation.' ");
+   //TwAddVarRW(controlBar, "Scale", TW_TYPE_FLOAT, &g_SceneScale, 
+   //   " group='Scene' label='scale' min=0 max=10 step=0.01 \
+   //    help='Scene scale.' ");
+   //TwAddVarRW(controlBar, "SceneRotation", TW_TYPE_QUAT4F, &g_SceneRot, 
+   //   " group='Scene' label='Scene rotation' open \
+   //   help='Change the scene orientation.' ");
 #endif
 }
 

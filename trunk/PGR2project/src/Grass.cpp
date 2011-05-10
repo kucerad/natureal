@@ -34,13 +34,14 @@ void Grass::bakeToVBO()
 	pVBOdata = new float[vboSize];//CROSS_VERTEX_ARRAY;
 
 	// fill vbo array
+	float scale = GRASS_SCALE;
 	for (int i=0; i<VBOdataCount; i++)
 	{
 		VertexInfo v = vertices[i];
 		int p = v.sizePosition*i;
-		pVBOdata[p + 0] = v.position.x;
-		pVBOdata[p + 1] = v.position.y;
-		pVBOdata[p + 2] = v.position.z;
+		pVBOdata[p + 0] = v.position.x*scale;
+		pVBOdata[p + 1] = v.position.y*scale;
+		pVBOdata[p + 2] = v.position.z*scale;
 
 		int o = v.sizePosition*VBOdataCount;
 		pVBOdata[o + p + 0] = v.normal.x;
@@ -86,7 +87,7 @@ void Grass::bakeToVBO()
 void Grass::init()
 {
 	// shader
-	shaderId = shaderManager->loadShader(GRASS_VS_FILENAME, GRASS_FS_FILENAME);
+	shaderId = shaderManager->loadShader("Grass", GRASS_VS_FILENAME, GRASS_FS_FILENAME);
 	shader = shaderManager->getShader(shaderId);
 	
 	// texture

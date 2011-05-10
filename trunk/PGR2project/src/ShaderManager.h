@@ -11,8 +11,9 @@ public:
 	ShaderManager(void);
 	~ShaderManager(void);
 
-	int loadShader(string vs_filename, string fs_filename);
-	int loadShader(	string vs_filename,
+	int loadShader( string shname, string vs_filename, string fs_filename);
+	int loadShader(	string shname,
+					string vs_filename,
 					string fs_filename,
 					string gs_filename,
 					GLint  geometry_vertices_out,

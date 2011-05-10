@@ -27,12 +27,21 @@ public:
 	void windowSizeChanged(int width, int height);
 	void beginReflection();
 	void endReflection();
-	void showTexture(int x, int y, int szx, int szy);
-	GLuint fbID;
-	GLuint cbID;
-	GLuint dbID;
+	void beginRefraction();
+	void endRefraction();
+
+
+	void showTextures();
+	GLuint fb_refl_ID;
+	GLuint cb_refl_ID;
+	GLuint db_refl_ID;
+	GLuint fb_refr_ID;
+	GLuint cb_refr_ID;
+	GLuint db_refr_ID;
 	Shader* shader;
 	int		water_reflection_loc;
+	int		water_refraction_loc;
+	int		water_depth_loc;
 	v4		viewPos;
 	v4		lightPos;
 	v4		waterColor;
