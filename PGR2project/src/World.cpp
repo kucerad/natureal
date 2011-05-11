@@ -12,6 +12,8 @@ World::World(void)
 	p_grass_growth	= NULL;
 	p_tree1_prototype= NULL;
 	p_tree1_growth	= NULL;
+	p_tree2_prototype= NULL;
+	p_tree2_growth	= NULL;
 	p_water			= NULL;
 }
 
@@ -27,6 +29,8 @@ World::~World(void)
 	SAFE_DELETE_PTR(p_grass_growth);
 	SAFE_DELETE_PTR(p_tree1_prototype);
 	SAFE_DELETE_PTR(p_tree1_growth);
+	SAFE_DELETE_PTR(p_tree2_prototype);
+	SAFE_DELETE_PTR(p_tree2_growth);
 	SAFE_DELETE_PTR(p_water);
 	textureManager.~TextureManager();
 	shaderManager.~ShaderManager();
@@ -60,6 +64,7 @@ void World::draw()
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	p_grass_growth->draw();
 	p_tree1_growth->draw();
+	p_tree2_growth->draw();
 	glDisable(GL_BLEND);
 	
 	if (g_godraysEnabled){
@@ -111,7 +116,7 @@ void World::init()
 	box = new BBox(v3(0,0,0),v3(10,10,10),v3(1,1,1));
 
 	p_activeCamera = new Camera();
-	p_activeCamera->setup(v3(0.0,0.f,0.f), v3(0.0,0.f,-1.f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
+	p_activeCamera->setup(v3(0.0,7.f,0.f), v3(0.0,0.f,-1.f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
 	p_activeCamera->setTerrain(p_terrain);
 	p_activeCamera->setMode(g_cameraMode);
 	
@@ -149,6 +154,7 @@ void World::init()
 						500 );
 	count = grass_planter.plantVegetationCount(g_GrassCount);
 	printf("count: %i\n", count);
+
 	// plant trees
 	printf("Planting trees1...\n");
 	p_tree1_prototype = new Tree1(&textureManager,&shaderManager);
@@ -164,6 +170,24 @@ void World::init()
 						100 );
  	count = tree1_planter.plantVegetationCount(g_Tree1Count);
 	printf("count: %i\n", count);
+
+	// plant trees
+	printf("Planting trees2...\n");
+	p_tree2_prototype = new Tree2(&textureManager,&shaderManager);
+	p_tree2_prototype->init();
+	p_tree2_growth = p_tree2_prototype->getCopy();
+	tree2_planter.init(	p_terrain,
+						p_tree2_prototype,
+						p_tree2_growth,
+						TREE2_MIN_HEIGHT,
+						TREE2_MAX_HEIGHT,
+						TREE2_MIN_DIST,
+						100,
+						100 );
+ 	count = tree2_planter.plantVegetationCount(g_Tree2Count);
+	printf("count: %i\n", count);
+
+
 	printf("WORLD CREATED:\n");
 
 }
