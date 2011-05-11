@@ -24,7 +24,7 @@
 v4	g_terrain_border_values = TERRAIN_INIT_BORDER_VAL;
 v4	g_terrain_border_widths = TERRAIN_INIT_BORDER_WID;
 
-CameraMode g_cameraMode = FREE;
+CameraMode g_cameraMode = TERRAIN_RESTRICTED;
 int g_WinWidth				= 800;   // Window width
 int g_WinHeight				= 600;   // Window height
 double g_time				= 0.0;
@@ -64,9 +64,9 @@ GLuint plane_vbo_id				= 0;
 GLuint plane_ebo_id				= 0;
 
 
-bool     g_ShowVertexNormals    =  false; // Show vertex normal/tangent/binormal
-bool     g_FaceNormals          =  false; // Show face normal
-bool     g_Transparency         =  false; // Draw transparent meshes
+bool     g_ShowVertexNormals    = false; // Show vertex normal/tangent/binormal
+bool     g_FaceNormals          = false; // Show face normal
+bool     g_Transparency         = false; // Draw transparent meshes
 bool     g_WireMode             = false; // Wire mode enabled/disabled
 bool     g_FaceCulling          = true; // Face culling enabled/disabled
 GLfloat  g_AlphaThreshold       = 0.01f; // Alpha test threshold
@@ -225,7 +225,17 @@ void cbInitGL()
    //loadNewModelCB(&g_ModelFileName);
 }
 
+void TW_CALL cbSetTreeCount(const void *value, void *clientData)
+{ 
+	g_Tree1Count = *(const int*)value; // for instance
 
+	world.tree1_planter.plantVegetationCount(g_Tree1Count);
+}
+void TW_CALL cbGetTreeCount(void *value, void *clientData)
+{ 
+	*(int *)value = g_Tree1Count; // for instance
+
+}
 //-----------------------------------------------------------------------------
 // Name: initGUI()
 // Desc: 
@@ -265,6 +275,8 @@ void initGUI()
 
    TwAddVarRW(controlBar, "fbos", TW_TYPE_BOOLCPP, &(g_showTextures), 
 	   " label='Show FBOs' group=Debug help='enable/disable FBO display' "); 
+
+   TwAddVarCB(controlBar, "Tree count", TW_TYPE_INT16, cbSetTreeCount, cbGetTreeCount, NULL, " group='Scene' min=0 max=200 step=1 ");
    //TwAddVarRW(controlBar, "vertex_normals", TW_TYPE_BOOLCPP, 
    //   &g_ShowVertexNormals, " label='vertex normals' \
    //   group=Render help='Show vertex normal, tangent, binormal.' ");

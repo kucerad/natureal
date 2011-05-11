@@ -74,12 +74,14 @@ int Planter::plantVegetationCount(int _count)
 		}
 	}
 	// prepare for VBO
+	growth->vertices.clear();
+	count = 0;
 	for (int i=0; i<realPositions.size(); i++){
-		count = 0;
+		
 		v3 candidate = realPositions[i];
 		m4 transform;
-		transform.scale(v3(randomf(0.3f, 1.1f)));
-		transform.rotate(v3(0.f, 1.f, 0.f), randomf(0.f, PI/4.f));
+		//transform.scale(v3(randomf(0.3f, 1.1f)));
+		//transform.rotate(v3(0.f, 1.f, 0.f), randomf(0.f, PI/4.f));
 		transform.translate(candidate);
 		prototype->fixTexType();
 		// transform all vertices of vegetation
@@ -123,8 +125,8 @@ void Planter::add()
 
 		// save position
 		m4 transform;
-		transform.scale(v3(randomf(0.3f, 1.1f)));
-		transform.rotate(v3(0.f, 1.f, 0.f), randomf(0.f, PI/4.f));
+		//transform.scale(v3(randomf(0.3f, 1.1f)));
+		//transform.rotate(v3(0.f, 1.f, 0.f), randomf(0.f, PI/4.f));
 		transform.translate(candidate);
 		prototype->fixTexType();
 		// transform all vertices of vegetation prototype
