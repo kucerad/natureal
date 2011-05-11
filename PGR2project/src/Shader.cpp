@@ -315,13 +315,13 @@ void Shader::destroy()
 int		Shader::getLocation(string var_name)
 {
 	int loc = glGetUniformLocation(programID, var_name.c_str());
-	if (loc>=0){
+	//if (loc>=0){
 		// valid uniform
 		int out = locations.size();
 		locations.push_back(loc);
 		return out;
-	}
-	return -1;
+	//}
+	//return -1;
 }
 void	Shader::setUniform1i(int locIndex, int value)
 {
