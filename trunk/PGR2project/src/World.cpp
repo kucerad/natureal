@@ -116,7 +116,7 @@ void World::init()
 	box = new BBox(v3(0,0,0),v3(10,10,10),v3(1,1,1));
 
 	p_activeCamera = new Camera();
-	p_activeCamera->setup(v3(0.0,7.f,0.f), v3(0.0,0.f,-1.f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
+	p_activeCamera->setup(v3(-100.0,60.f,60.f), v3(1.0,-0.7f,-0.4f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
 	p_activeCamera->setTerrain(p_terrain);
 	p_activeCamera->setMode(g_cameraMode);
 	

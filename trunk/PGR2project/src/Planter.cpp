@@ -29,9 +29,31 @@ void Planter::init( Terrain*	_terrain,
 	res_x		= _res_x;
 	res_y		= _res_y;	
 	count		= 0;
+
+	recompute();
+}
+
+void Planter::setNewMin(float _min) {
+	height_min = _min;
+	recompute();
+	int c2 = count;
+	count = 0;
+	plantVegetationCount(c2);
+}
+
+void Planter::setNewMax(float _max) {
+	height_max = _max;
+	recompute();
+	int c2 = count;
+	count = 0;
+	plantVegetationCount(c2);
+}
+
+void Planter::recompute() {
+	candidates.clear();
+	realPositions.clear();
 	float tsx	= terrain->sz_x/2.0;
 	float tsy	= terrain->sz_y/2.0;
-
 	// get candidates array
 	float step_x = terrain->sz_x/float(res_x);
 	float step_y = terrain->sz_y/float(res_y);

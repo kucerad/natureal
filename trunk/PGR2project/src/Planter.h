@@ -25,6 +25,9 @@ public:
 	void erase();
 	void bakeVBO();
 	int plantVegetation(Vegetation* prototype, Vegetation* growth);
+	void setNewMin(float _min);
+	void setNewMax(float _max);
+	void recompute();
 	
 	int desiredCount;
 	int count;
