@@ -37,7 +37,7 @@ extern Statistics g_Statistics;
 extern	v4						g_terrain_border_values;
 extern	v4						g_terrain_border_widths;
 
-#define GRASS_COUNT				2000
+#define GRASS_COUNT				200
 //#define GRASS_TEX_NAME			"textures/grass/grass_01.png"
 #define GRASS_TEX_NAME			"textures/grass/grass_multitextureVert.png"
 #define GRASS_WAVE_TEX_NAME		"textures/grass/dudv_01.png"
@@ -45,19 +45,30 @@ extern	v4						g_terrain_border_widths;
 #define GRASS_FS_FILENAME		"shaders/grass/grass_fs.glsl"
 #define GRASS_MIN_HEIGHT		1.f
 #define GRASS_MAX_HEIGHT		5.f
-#define GRASS_MIN_DIST			0.5f
+#define GRASS_MIN_DIST			0.2f
 #define GRASS_SCALE				1.f
 extern int						g_GrassCount;
 
-#define TREE1_COUNT				1000
+#define TREE1_COUNT				50
 #define TREE1_TEX_NAME			"textures/tree1/tree_windbreak.png"
 #define TREE1_VS_FILENAME		"shaders/tree/tree_vs.glsl"
 #define TREE1_FS_FILENAME		"shaders/tree/tree_fs.glsl"
 #define TREE1_MIN_HEIGHT		7.f
-#define TREE1_MAX_HEIGHT		15.f
-#define TREE1_MIN_DIST			20.f
+#define TREE1_MAX_HEIGHT		13.f
+#define TREE1_MIN_DIST			5.f
 #define TREE1_SCALE				5.f
 extern int						g_Tree1Count;
+
+#define TREE2_COUNT				50
+#define TREE2_TEX_NAME			"textures/tree2/pine.png"
+#define TREE2_VS_FILENAME		"shaders/tree/tree_vs.glsl"
+#define TREE2_FS_FILENAME		"shaders/tree/tree_fs.glsl"
+#define TREE2_MIN_HEIGHT		12.f
+#define TREE2_MAX_HEIGHT		20.f
+#define TREE2_MIN_DIST			5.f
+#define TREE2_SCALE				3.f
+extern int						g_Tree2Count;
+
 
 #define SKYBOX_TEX_FILENAMES	"textures/skybox/512/sahara_%s.png"
 #define SKYBOX_SIZE				800

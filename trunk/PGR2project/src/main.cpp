@@ -47,6 +47,7 @@ bool g_showTextures			= false;
 
 int	g_GrassCount			= GRASS_COUNT;
 int	g_Tree1Count			= TREE1_COUNT;
+int	g_Tree2Count			= TREE2_COUNT;
 
 // GLOBAL CONSTANTS____________________________________________________________
 const GLfloat VECTOR_RENDER_SCALE = 0.20f;
@@ -225,17 +226,42 @@ void cbInitGL()
    //loadNewModelCB(&g_ModelFileName);
 }
 
-void TW_CALL cbSetTreeCount(const void *value, void *clientData)
+void TW_CALL cbSetTree2Count(const void *value, void *clientData)
+{ 
+	g_Tree2Count = *(const int*)value; // for instance
+
+	world.tree2_planter.plantVegetationCount(g_Tree2Count);
+}
+void TW_CALL cbGetTree2Count(void *value, void *clientData)
+{ 
+	*(int *)value = g_Tree2Count; // for instance
+
+}
+
+void TW_CALL cbSetTree1Count(const void *value, void *clientData)
 { 
 	g_Tree1Count = *(const int*)value; // for instance
 
 	world.tree1_planter.plantVegetationCount(g_Tree1Count);
 }
-void TW_CALL cbGetTreeCount(void *value, void *clientData)
+void TW_CALL cbGetTree1Count(void *value, void *clientData)
 { 
 	*(int *)value = g_Tree1Count; // for instance
 
 }
+
+void TW_CALL cbSetGrassCount(const void *value, void *clientData)
+{ 
+	g_GrassCount = *(const int*)value;  // for instance
+
+	world.grass_planter.plantVegetationCount(g_GrassCount);
+}
+void TW_CALL cbGetGrassCount(void *value, void *clientData)
+{ 
+    *(int *)value = g_GrassCount;  // for instance
+
+}
+
 //-----------------------------------------------------------------------------
 // Name: initGUI()
 // Desc: 
@@ -258,25 +284,30 @@ void initGUI()
    TwDefine(" Controls position='10 10' size='220 310' refresh=0.1 \
             valueswidth=80 ");
 
+   /*
    TwAddVarRW(controlBar, "model_file", TW_TYPE_STDSTRING, &g_ModelFileName,
       " label='file' group=Model help='Model file name.' ");
    TwAddButton(controlBar, "load_new_model", loadNewModelCB, NULL, 
       " label='load model' group=Model help='Load new model.' ");
    TwAddVarRO(controlBar, "fps", TW_TYPE_FLOAT, &(g_Statistics.fps), 
 	   " label='fps' group=Render help='frames per second' ");
-   TwAddVarRW(controlBar, "x_translate", TW_TYPE_FLOAT, &(g_light_position.x), 
+   +ì+ìdVarRW(controlBar, "x_translate", TW_TYPE_FLOAT, &(g_light_position.x), 
 	   " label='x' group=Light help='x translation' ");
    TwAddVarRW(controlBar, "y_translate", TW_TYPE_FLOAT, &(g_light_position.y), 
 	   " label='y' group=Light help='y translation' ");
    TwAddVarRW(controlBar, "z_translate", TW_TYPE_FLOAT, &(g_light_position.z), 
 	   " label='z' group=Light help='z translation' ");   
+	   */
    TwAddVarRW(controlBar, "godrays", TW_TYPE_BOOLCPP, &(g_godraysEnabled), 
 	   " label='God rays enabled' group=Light help='enable/disable god rays' ");  
-
+   /*
    TwAddVarRW(controlBar, "fbos", TW_TYPE_BOOLCPP, &(g_showTextures), 
 	   " label='Show FBOs' group=Debug help='enable/disable FBO display' "); 
+	   */
+   TwAddVarCB(controlBar, "Tree 2 count", TW_TYPE_INT16, cbSetTree2Count, cbGetTree2Count, NULL, " group='Scene' min=0 max=10000 step=1 ");
+   TwAddVarCB(controlBar, "Tree 1 count", TW_TYPE_INT16, cbSetTree1Count, cbGetTree1Count, NULL, " group='Scene' min=0 max=10000 step=1 ");
+   TwAddVarCB(controlBar, "Grass count", TW_TYPE_INT16, cbSetGrassCount, cbGetGrassCount, NULL, " group='Scene' min=0 max=10000 step=1 ");
 
-   TwAddVarCB(controlBar, "Tree count", TW_TYPE_INT16, cbSetTreeCount, cbGetTreeCount, NULL, " group='Scene' min=0 max=200 step=1 ");
    //TwAddVarRW(controlBar, "vertex_normals", TW_TYPE_BOOLCPP, 
    //   &g_ShowVertexNormals, " label='vertex normals' \
    //   group=Render help='Show vertex normal, tangent, binormal.' ");
@@ -378,6 +409,7 @@ void cbKeyboardChanged(int key, int action)
    switch (key)
    {
       // DA use 'z' instead of 't'
+	   /*
       case 'z' : g_SceneTraZ  += 0.5f;                                   break;
       case 'Z' : g_SceneTraZ  -= (g_SceneTraZ > 0.5) ? 0.5f : 0.0f;      break;
       case 's' : g_SceneScale *= 1.01;                                   break;
@@ -389,6 +421,7 @@ void cbKeyboardChanged(int key, int action)
       case 'c' : g_FaceCulling = !g_FaceCulling;                         break;
       case 'a' : if(g_AlphaThreshold < 0.99f) g_AlphaThreshold += 0.01f; break;
       case 'A' : if(g_AlphaThreshold > 0.01f) g_AlphaThreshold -= 0.01f; break;
+	  */
 	  case ' ' : 
 		  g_MouseModeANT = !g_MouseModeANT;
 		  if (g_MouseModeANT){
