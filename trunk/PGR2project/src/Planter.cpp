@@ -73,6 +73,7 @@ int Planter::plantVegetationCount(int _count)
 			erase();
 		}
 	}
+	
 	// prepare for VBO
 	growth->vertices.clear();
 	count = 0;
