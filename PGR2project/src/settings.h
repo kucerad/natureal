@@ -66,7 +66,7 @@ extern int						g_Tree1Count;
 #define TREE2_MIN_HEIGHT		12.f
 #define TREE2_MAX_HEIGHT		20.f
 #define TREE2_MIN_DIST			5.f
-#define TREE2_SCALE				3.f
+#define TREE2_SCALE				2.f
 extern int						g_Tree2Count;
 
 

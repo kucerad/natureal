@@ -18,11 +18,19 @@
 #define TEST 0
 #include "../common/Vector4.h"
 #include "globals.h"
+#include "settings.h"
 #define TERRAIN_INIT_BORDER_VAL v4(13.0f, 10.0f, 5.0f, -1.0f)
-#define TERRAIN_INIT_BORDER_WID v4(0.6f, 1.5f, 0.4f, 2.f)
+#define TERRAIN_INIT_BORDER_WID v4(2.0f, 2.0f, 2.0f, 2.0f)
 
 v4	g_terrain_border_values = TERRAIN_INIT_BORDER_VAL;
 v4	g_terrain_border_widths = TERRAIN_INIT_BORDER_WID;
+
+float tree2min = TREE2_MIN_HEIGHT;
+float tree2max = TREE2_MAX_HEIGHT;
+float tree1min = TREE1_MIN_HEIGHT;
+float tree1max = TREE1_MAX_HEIGHT;
+float grassmin = GRASS_MIN_HEIGHT;
+float grassmax = GRASS_MAX_HEIGHT;
 
 CameraMode g_cameraMode = TERRAIN_RESTRICTED;
 int g_WinWidth				= 800;   // Window width
@@ -229,37 +237,95 @@ void cbInitGL()
 void TW_CALL cbSetTree2Count(const void *value, void *clientData)
 { 
 	g_Tree2Count = *(const int*)value; // for instance
-
 	world.tree2_planter.plantVegetationCount(g_Tree2Count);
 }
 void TW_CALL cbGetTree2Count(void *value, void *clientData)
 { 
-	*(int *)value = g_Tree2Count; // for instance
-
+	*(int *)value = world.tree2_planter.count; // for instance
 }
 
 void TW_CALL cbSetTree1Count(const void *value, void *clientData)
 { 
 	g_Tree1Count = *(const int*)value; // for instance
-
 	world.tree1_planter.plantVegetationCount(g_Tree1Count);
 }
 void TW_CALL cbGetTree1Count(void *value, void *clientData)
 { 
-	*(int *)value = g_Tree1Count; // for instance
-
+	*(int *)value = world.tree1_planter.count; // for instance
 }
 
 void TW_CALL cbSetGrassCount(const void *value, void *clientData)
 { 
 	g_GrassCount = *(const int*)value;  // for instance
-
 	world.grass_planter.plantVegetationCount(g_GrassCount);
 }
 void TW_CALL cbGetGrassCount(void *value, void *clientData)
 { 
-    *(int *)value = g_GrassCount;  // for instance
+    *(int *)value = world.grass_planter.count;  // for instance
+}
 
+//tree2
+void TW_CALL cbSetTree2Min(const void *value, void *clientData)
+{ 
+	tree2min = *(const float*)value;  // for instance
+	world.tree2_planter.setNewMin(tree2min);
+}
+void TW_CALL cbGetTree2Min(void *value, void *clientData)
+{ 
+    *(float *)value = world.tree2_planter.height_min;  // for instance
+}
+
+void TW_CALL cbSetTree2Max(const void *value, void *clientData)
+{ 
+	tree2max = *(const float*)value;  // for instance
+	world.tree2_planter.setNewMax(tree2max);
+}
+void TW_CALL cbGetTree2Max(void *value, void *clientData)
+{ 
+    *(float *)value = world.tree2_planter.height_max;  // for instance
+}
+
+// tree1
+void TW_CALL cbSetTree1Min(const void *value, void *clientData)
+{ 
+	tree1min = *(const float*)value;  // for instance
+	world.tree1_planter.setNewMin(tree1min);
+}
+void TW_CALL cbGetTree1Min(void *value, void *clientData)
+{ 
+    *(float *)value = world.tree1_planter.height_min;  // for instance
+}
+
+void TW_CALL cbSetTree1Max(const void *value, void *clientData)
+{ 
+	tree1max = *(const float*)value;  // for instance
+	world.tree1_planter.setNewMax(tree1max);
+}
+void TW_CALL cbGetTree1Max(void *value, void *clientData)
+{ 
+    *(float *)value = world.tree1_planter.height_max;  // for instance
+}
+
+
+// grass
+void TW_CALL cbSetGrassMin(const void *value, void *clientData)
+{ 
+	grassmin = *(const float*)value;  // for instance
+	world.grass_planter.setNewMin(grassmin);
+}
+void TW_CALL cbGetGrassMin(void *value, void *clientData)
+{ 
+    *(float *)value = world.grass_planter.height_min;  // for instance
+}
+
+void TW_CALL cbSetGrassMax(const void *value, void *clientData)
+{ 
+	grassmax = *(const float*)value;  // for instance
+	world.grass_planter.setNewMax(grassmax);
+}
+void TW_CALL cbGetGrassMax(void *value, void *clientData)
+{ 
+    *(float *)value = world.grass_planter.height_max;  // for instance
 }
 
 //-----------------------------------------------------------------------------
@@ -281,7 +347,7 @@ void initGUI()
     
    TwWindowSize(g_WinWidth, g_WinHeight);
    TwBar *controlBar = TwNewBar("Controls");
-   TwDefine(" Controls position='10 10' size='220 310' refresh=0.1 \
+   TwDefine(" Controls position='10 10' size='250 370' refresh=0.1 \
             valueswidth=80 ");
 
    /*
@@ -298,15 +364,37 @@ void initGUI()
    TwAddVarRW(controlBar, "z_translate", TW_TYPE_FLOAT, &(g_light_position.z), 
 	   " label='z' group=Light help='z translation' ");   
 	   */
-   TwAddVarRW(controlBar, "godrays", TW_TYPE_BOOLCPP, &(g_godraysEnabled), 
-	   " label='God rays enabled' group=Light help='enable/disable god rays' ");  
    /*
    TwAddVarRW(controlBar, "fbos", TW_TYPE_BOOLCPP, &(g_showTextures), 
 	   " label='Show FBOs' group=Debug help='enable/disable FBO display' "); 
 	   */
-   TwAddVarCB(controlBar, "Tree 2 count", TW_TYPE_INT16, cbSetTree2Count, cbGetTree2Count, NULL, " group='Scene' min=0 max=10000 step=1 ");
-   TwAddVarCB(controlBar, "Tree 1 count", TW_TYPE_INT16, cbSetTree1Count, cbGetTree1Count, NULL, " group='Scene' min=0 max=10000 step=1 ");
-   TwAddVarCB(controlBar, "Grass count", TW_TYPE_INT16, cbSetGrassCount, cbGetGrassCount, NULL, " group='Scene' min=0 max=10000 step=1 ");
+   TwAddVarCB(controlBar, "Tree 2 count", TW_TYPE_INT16, cbSetTree2Count, cbGetTree2Count, NULL, " group='Vegetation' min=0 max=10000 step=1 ");
+   TwAddVarCB(controlBar, "Tree 1 count", TW_TYPE_INT16, cbSetTree1Count, cbGetTree1Count, NULL, " group='Vegetation' min=0 max=10000 step=1 ");
+   TwAddVarCB(controlBar, "Grass count", TW_TYPE_INT16, cbSetGrassCount, cbGetGrassCount, NULL, " group='Vegetation' min=0 max=10000 step=1 ");
+
+    TwAddVarRW(controlBar, "Change1", TW_TYPE_FLOAT, &g_terrain_border_values.x, " group='Surfaces' label='Snow height' min=-5 max=30 step=0.5 help='Snow height' ");
+	TwAddVarRW(controlBar, "Change1a", TW_TYPE_FLOAT, &g_terrain_border_widths.x, " group='Surfaces' label='Snow-rock transition' min=0 max=5 step=0.5 help='Transition 1' ");
+
+    TwAddVarRW(controlBar, "Change2", TW_TYPE_FLOAT, &g_terrain_border_values.y, " group='Surfaces' label='Rock height' min=-5 max=30 step=0.5 help='Rock height' ");
+	TwAddVarRW(controlBar, "Change2a", TW_TYPE_FLOAT, &g_terrain_border_widths.y, " group='Surfaces' label='Rock-grass transition' min=0 max=5 step=0.5 help='Transition 2' ");
+
+    TwAddVarRW(controlBar, "Change3", TW_TYPE_FLOAT, &g_terrain_border_values.z, " group='Surfaces' label='Grass height' min=-5 max=30 step=0.5 help='Grass height' ");
+	TwAddVarRW(controlBar, "Change3a", TW_TYPE_FLOAT, &g_terrain_border_widths.z, " group='Surfaces' label='Grass-clay transition' min=0 max=5 step=0.5 help='Transition 3' ");
+
+    TwAddVarRW(controlBar, "Change4", TW_TYPE_FLOAT, &g_terrain_border_values.w, " group='Surfaces' label='Clay height' min=-5 max=30 step=0.5 help='Clay height' ");
+	TwAddVarRW(controlBar, "Change4a", TW_TYPE_FLOAT, &g_terrain_border_widths.w, " group='Surfaces' label='Clay-ground transition' min=0 max=5 step=0.5 help='Transition 4' ");
+
+   TwAddVarCB(controlBar, "Tree2 MIN", TW_TYPE_FLOAT, cbSetTree2Min, cbGetTree2Min, NULL, " group='Levels' min=-5 max=30 step=1 ");
+   TwAddVarCB(controlBar, "Tree2 MAX", TW_TYPE_FLOAT, cbSetTree2Max, cbGetTree2Max, NULL, " group='Levels' min=-5 max=30 step=1 ");
+
+   TwAddVarCB(controlBar, "Tree1 MIN", TW_TYPE_FLOAT, cbSetTree1Min, cbGetTree1Min, NULL, " group='Levels' min=-5 max=30 step=1 ");
+   TwAddVarCB(controlBar, "Tree1 MAX", TW_TYPE_FLOAT, cbSetTree1Max, cbGetTree1Max, NULL, " group='Levels' min=-5 max=30 step=1 ");
+
+   TwAddVarCB(controlBar, "Grass MIN", TW_TYPE_FLOAT, cbSetGrassMin, cbGetGrassMin, NULL, " group='Levels' min=-5 max=30 step=1 ");
+   TwAddVarCB(controlBar, "Grass MAX", TW_TYPE_FLOAT, cbSetGrassMax, cbGetGrassMax, NULL, " group='Levels' min=-5 max=30 step=1 ");
+
+   TwAddVarRW(controlBar, "godrays", TW_TYPE_BOOLCPP, &(g_godraysEnabled), 
+	   " label='God rays enabled' group=Light help='enable/disable god rays' ");  
 
    //TwAddVarRW(controlBar, "vertex_normals", TW_TYPE_BOOLCPP, 
    //   &g_ShowVertexNormals, " label='vertex normals' \
