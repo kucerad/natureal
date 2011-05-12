@@ -34,14 +34,14 @@ void Grass::bakeToVBO()
 	pVBOdata = new float[vboSize];//CROSS_VERTEX_ARRAY;
 
 	// fill vbo array
-	float scale = GRASS_SCALE;
+	
 	for (int i=0; i<VBOdataCount; i++)
 	{
 		VertexInfo v = vertices[i];
 		int p = v.sizePosition*i;
-		pVBOdata[p + 0] = v.position.x*scale;
-		pVBOdata[p + 1] = v.position.y*scale;
-		pVBOdata[p + 2] = v.position.z*scale;
+		pVBOdata[p + 0] = v.position.x;
+		pVBOdata[p + 1] = v.position.y;
+		pVBOdata[p + 2] = v.position.z;
 
 		int o = v.sizePosition*VBOdataCount;
 		pVBOdata[o + p + 0] = v.normal.x;
@@ -97,14 +97,15 @@ void Grass::init()
 	shader->linkTexture(textureManager->getTexture(textureWaveId));
 	VBOdataCount = cross_vertexCount;
 	// fill vertices...
+	float scale = GRASS_SCALE;
 	for (int i=0; i<cross_vertexCount; i++)
 	{
 		VertexInfo v;
 
 		int p = v.sizePosition*i;
-		v.position.x = CROSS_VERTEX_ARRAY[p + 0];
-		v.position.y = CROSS_VERTEX_ARRAY[p + 1];
-		v.position.z = CROSS_VERTEX_ARRAY[p + 2];
+		v.position.x = CROSS_VERTEX_ARRAY[p + 0]*scale;
+		v.position.y = CROSS_VERTEX_ARRAY[p + 1]*scale;
+		v.position.z = CROSS_VERTEX_ARRAY[p + 2]*scale;
 		v.position.w = 1.f;
 
 		int o = v.sizePosition*cross_vertexCount;

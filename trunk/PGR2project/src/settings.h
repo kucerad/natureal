@@ -46,7 +46,7 @@ extern	v4						g_terrain_border_widths;
 #define GRASS_MIN_HEIGHT		1.f
 #define GRASS_MAX_HEIGHT		5.f
 #define GRASS_MIN_DIST			0.2f
-#define GRASS_SCALE				1.f
+#define GRASS_SCALE				2.f
 extern int						g_GrassCount;
 
 #define TREE1_COUNT				50
@@ -66,7 +66,7 @@ extern int						g_Tree1Count;
 #define TREE2_MIN_HEIGHT		12.f
 #define TREE2_MAX_HEIGHT		20.f
 #define TREE2_MIN_DIST			5.f
-#define TREE2_SCALE				2.f
+#define TREE2_SCALE				6.f
 extern int						g_Tree2Count;
 
 
