@@ -27,7 +27,7 @@ void main(void)
 	//return;
 	//--------------------------------------------------------------------
 	if (lightDirDOTviewDir>0.0){
-		float exposure	= 0.09/NUM_SAMPLES;
+		float exposure	= 0.1/NUM_SAMPLES;
 		float decay		= 1.0 ;
 		float density	= 0.5;
 		float weight	= 6.0;
