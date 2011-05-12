@@ -130,7 +130,11 @@ int Planter::plantVegetationCount(int _count)
 void Planter::add()
 {
 	if (candidates.size()>0){
-		int r = randomi(0, candidates.size());
+		int r = randomi(0, candidates.size()-1);
+		if (r>=candidates.size()){
+			printf("chyba (r=%i, size=%i)\n", r, candidates.size());
+			system("PAUSE");
+		}
 		v3 candidate = candidates[r];
 		realPositions.push_back(candidate);
 		candidates.erase(candidates.begin()+r);

@@ -103,6 +103,9 @@
     <ClInclude Include="src\GodRays.h">
       <Filter>Scene\Atmosphere</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tree2.h">
+      <Filter>Scene\Vegetation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
@@ -201,6 +204,9 @@
     </ClCompile>
     <ClCompile Include="src\GodRays.cpp">
       <Filter>Scene\Atmosphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tree2.cpp">
+      <Filter>Scene\Vegetation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
