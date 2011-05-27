@@ -33,6 +33,7 @@ extern Statistics g_Statistics;
 #define TERRAIN_FS_FILENAME		"shaders/terrain/terrain_fs.glsl"
 #define TERRAIN_UW_FS_FILENAME  "shaders/terrain/terrain_uw_fs.glsl"
 #define TERRAIN_UW_VS_FILENAME  "shaders/terrain/terrain_uw_vs.glsl"
+#define HORIZON_COLOR			v4(0.7f, 0.0f, 0.0f, 1.0f)
 
 extern	v4						g_terrain_border_values;
 extern	v4						g_terrain_border_widths;
@@ -73,6 +74,7 @@ extern int						g_Tree2Count;
 #define SKYBOX_TEX_FILENAMES	"textures/skybox/512/sahara_%s.png"
 #define SKYBOX_SIZE				800
 
+#define WATER_DEPTH_COLOR		v4(0.1, 0.3, 0.5, 1.0)
 #define WATER_VS_FILENAME		"shaders/water/water_vs.glsl"
 #define WATER_FS_FILENAME		"shaders/water/water_fs.glsl"
 #define WATER_HEIGHT			0.f
@@ -125,8 +127,12 @@ extern double	g_time;
 #define GODRAYS_FS_FILENAME		"shaders/godrays/godrays_fs.glsl"
 extern bool g_godraysEnabled;
 #define LIGHT_POSITION			v3(397.f, 142.f, -8.f) // specific for sahara skybox...
-extern v3 g_light_position;
+//#define LIGHT_POSITION			v3(0.f, 10.f, 0.f) 
 #define LIGHT_DIRECTION			v3(0.f, -1.f, 0.f)
+#define SHADOWMAP_RESOLUTION_X  1024
+#define SHADOWMAP_RESOLUTION_Y  1024
+extern v3 g_light_position;
+
 static v4 sunAmb  = v4(0.9,0.9, 1.0, 1.0);
 static v4 sunDif  = v4(1.0,1.0, 1.0, 1.0);
 static v4 sunSpe  = v4(0.5,0.5, 0.6, 1.0);

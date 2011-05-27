@@ -7,7 +7,7 @@ class Light :
 	public SceneModel
 {
 public:
-	Light(void);
+	Light(TextureManager * tm);
 	~Light(void);
 	void draw();
 
@@ -25,12 +25,20 @@ public:
 	void turnOff();
 	void setup(GLuint lid, v3 &pos, v3 &dir, v4 &ambi, v4 &diff, v4 &spec, float cutOff, float exp);
 
+	void showTextures();
+	void beginShadowMap();
+	void endShadowMap();
 // attributes
+
+	GLuint fb_shad_ID; // framebuffer
+	GLuint db_shad_ID; // depth attachment...
+	GLuint cb_shad_ID; // color attachment...
 
 	v3 position;
 	v3 positionFixedToSkybox;
 	v3 direction;
 	GLuint lightId;
+	int shadowMapTMID;
 };
 
 #endif

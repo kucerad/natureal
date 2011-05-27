@@ -6,12 +6,21 @@
 class Fog
 {
 public:
-	Fog(void);
+	Fog(float	_density,
+		float	_start,
+		float	_end,
+		v4		_color);
+
 	~Fog(void);
 
 	void init();
 	void turnOn();
 	void turnOff();
+
+	float	density;
+	float	start;
+	float	end;
+	v4		color;
 };
 
 #endif

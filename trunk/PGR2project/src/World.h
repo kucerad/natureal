@@ -47,6 +47,7 @@ public:
 	Light				*p_activeLight;
 	GodRays				*p_godRays;
 	Fog					*p_fog;
+	Fog					*p_underWaterFog;
 	WaterSurface		*p_water;
 
 	Grass				*p_grass_prototype;

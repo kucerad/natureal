@@ -144,7 +144,7 @@ void WaterSurface::windowSizeChanged(int width, int height)
 
 void WaterSurface::beginReflection()
 {
-	glEnable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fb_refl_ID);
     // prenastavit viewport
 		glViewport(0,0,g_WinWidth, g_WinHeight);
@@ -156,7 +156,7 @@ void WaterSurface::beginReflection()
 		if (activeCamera->getPosition().y>=WATER_HEIGHT){
 			glTranslatef(0.0f, WATER_HEIGHT, 0.0f);
 			glScalef(1.f, -1.f, 1.f); // flip Y
-			glCullFace(GL_FRONT);
+			//glCullFace(GL_FRONT);
 		} else {
 			glScalef(1.f, 2.0f, 1.f);
 			glTranslatef(0.0f, WATER_HEIGHT-1.f, 0.0f);
@@ -170,6 +170,7 @@ void WaterSurface::beginReflection()
 
 void WaterSurface::endReflection()
 {
+	glEnable(GL_CULL_FACE);
 	// vymazat transformaci
 	glPopMatrix();
 	// viewport zpatky...

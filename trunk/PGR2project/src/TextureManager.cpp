@@ -3,6 +3,7 @@
 
 TextureManager::TextureManager(void)
 {
+	shadowMapID = -1;
 }
 
 
@@ -12,6 +13,13 @@ TextureManager::~TextureManager(void)
 		SAFE_DELETE_PTR(textures[i]);
 	}
 }
+
+int TextureManager::addTexture(Texture * texture)
+{
+	textures.push_back(texture);
+	return textures.size()-1;
+}
+
 Texture * TextureManager::getTexture(int texId)
 {
 	return textures[texId];

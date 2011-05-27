@@ -8,6 +8,7 @@ World::World(void)
 	p_skybox		= NULL;
 	p_terrain		= NULL;
 	p_fog			= NULL;
+	p_underWaterFog	= NULL;
 	p_grass_prototype= NULL;
 	p_grass_growth	= NULL;
 	p_tree1_prototype= NULL;
@@ -25,6 +26,7 @@ World::~World(void)
 	SAFE_DELETE_PTR(p_skybox);
 	SAFE_DELETE_PTR(p_terrain);
 	SAFE_DELETE_PTR(p_fog);
+	SAFE_DELETE_PTR(p_underWaterFog);
 	SAFE_DELETE_PTR(p_grass_prototype);
 	SAFE_DELETE_PTR(p_grass_growth);
 	SAFE_DELETE_PTR(p_tree1_prototype);
@@ -39,7 +41,30 @@ World::~World(void)
 
 void World::draw()
 {
-	// 1st pass (water)
+	// preprocess - one pass for LOD & occlusion queries
+
+
+
+	// 1st pass (light shadows - light map...)
+	p_activeLight->beginShadowMap();
+		// render whole shadow casting&recieving scene
+		
+
+		p_terrain->draw();
+		glEnable(GL_BLEND);
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		p_grass_growth->draw();
+		p_tree1_growth->draw();
+		p_tree2_growth->draw();
+		glDisable(GL_BLEND);
+
+		// draw other models...
+
+		// TODO
+
+	p_activeLight->endShadowMap();
+
+	// 2nd pass (water)
 	p_activeCamera->shoot();
 	p_water->activeCamera = p_activeCamera;
 	// WATER REFLECTION RENDER
@@ -48,15 +73,25 @@ void World::draw()
 	p_water->endReflection();
 	// WATER REFRACTION RENDER
 	p_water->beginRefraction();
-		p_terrain->drawUnderWater();
+		drawUnderWater();
 	p_water->endRefraction();
 	//p_water
 
-	// 2nd pass (other...)
+	
+
+
+	// 3rd pass (assembly)
 	//p_fog->turnOn(); 
 	if (g_godraysEnabled){p_godRays->begin();}
 
-	p_terrain->draw();
+	if (p_activeCamera->getPosition().y>=WATER_HEIGHT-1.0){
+		//p_fog->turnOn();
+		p_terrain->drawOverWater();
+		//p_fog->turnOff();
+	}
+	if (p_activeCamera->getPosition().y<=WATER_HEIGHT+1.0){
+		drawUnderWater();
+	}
 	p_skybox->draw();
 	p_water->draw(); // draw water surface
 	
@@ -73,24 +108,37 @@ void World::draw()
 		p_godRays->end();
 	}
 	//box->draw();
-	if(g_showTextures)
+	// draw other models...
+		// TODO
+	if(g_showTextures){
 		p_water->showTextures();
-	
+		p_activeLight->showTextures();
+	}
 	//p_terrain->drawNormals();
 	//p_fog->turnOff();
+	
 }
 
-void World::drawUnderWater(){}
+void World::drawUnderWater(){
+	//p_underWaterFog->turnOn();
+	p_terrain->drawUnderWater();
+	//p_underWaterFog->turnOff();
+}
 void World::drawReflection(){
 	g_drawingReflection = true;
 	p_skybox->draw();
 	p_terrain->cut = true;
 	p_terrain->flip= true;
-	p_terrain->draw();
+	//double plane[4] = {0.0, 1.0, 0.0, -WATER_HEIGHT+0.5};
+	//glEnable(GL_CLIP_PLANE0);
+	//glClipPlane(GL_CLIP_PLANE0, plane);
+	p_terrain->drawOverWater();
+	//glDisable(GL_CLIP_PLANE0);
 	glEnable(GL_BLEND);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	p_grass_growth->draw();
 	p_tree1_growth->draw();
+	p_tree2_growth->draw();
 	glDisable(GL_BLEND);
 	g_drawingReflection = false;
 }
@@ -107,21 +155,25 @@ void World::init()
 {
 	printf("INITIALIZING WORLD:\n");
 	
-	p_fog = new Fog();
+	p_fog = new Fog(0.01f, 50.f, 500.f, v4(HORIZON_COLOR));
 	p_fog->init();
+	p_underWaterFog = new Fog(0.01f, 10.f, 200.f, v4(WATER_DEPTH_COLOR));
+	p_underWaterFog->init();
 	
 	p_terrain = new Terrain(&textureManager,&shaderManager);
 	p_terrain->init();
 
-	box = new BBox(v3(0,0,0),v3(10,10,10),v3(1,1,1));
-
+	//box = new BBox(v3(0,0,0),v3(10,10,10),v3(1,1,1));
+	
 	p_activeCamera = new Camera();
-	p_activeCamera->setup(v3(-100.0,60.f,60.f), v3(1.0,-0.7f,-0.4f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
+	//p_activeCamera->setup(v3(-100.0,60.f,60.f), v3(1.0,-0.7f,-0.4f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
+	p_activeCamera->setup(LIGHT_POSITION, -LIGHT_POSITION, v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
 	p_activeCamera->setTerrain(p_terrain);
 	p_activeCamera->setMode(g_cameraMode);
-	
+
 	// sun
 	p_activeLight = new Light();
+	p_activeLight->init(); // setup framebuffers for shadow mapping
 	p_activeLight->setup(GL_LIGHT0, g_light_position, LIGHT_DIRECTION, sunAmb, sunDif, sunSpe, 180, 0.0);
 	p_activeLight->turnOn();
 
@@ -130,6 +182,9 @@ void World::init()
 	p_skybox->init();
 	p_skybox->p_activeCamera = p_activeCamera;
 	p_skybox->p_light = p_activeLight;
+
+	
+
 
 	p_water = new WaterSurface(&textureManager, &shaderManager);
 	p_water->init();  // create FBOs...
