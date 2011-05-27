@@ -87,6 +87,51 @@ void Terrain::draw()
 	shader->use(false);
 }
 
+void Terrain::drawOverWater(){
+	// bind textures
+	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
+		textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
+	}
+	shader->use(true);
+	shader->setUniform4v(border_values_location, g_terrain_border_values);
+	shader->setUniform4v(border_widths_location, g_terrain_border_widths);
+	shader->setUniform2f(heightInterval_location, WATER_HEIGHT, 1000.f);
+		// bind index buffer
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,eboId);
+		glBindBuffer(GL_ARRAY_BUFFER, vboId); 
+		   // enable states
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		   // draw VBOs...
+			glVertexPointer(channels[VERTEX], glTypes[VERTEX], 0, BUFFER_OFFSET(offsets[VERTEX]));
+			glNormalPointer(glTypes[NORMAL], 0, BUFFER_OFFSET( offsets[NORMAL] ) );
+			
+			glActiveTexture(GL_TEXTURE0);
+			glClientActiveTexture(GL_TEXTURE0);
+			
+			glTexCoordPointer(channels[TEXCOORD0], glTypes[TEXCOORD0], 0, BUFFER_OFFSET(offsets[TEXCOORD0]));
+			
+			glDrawElements(GL_TRIANGLE_STRIP, eboCount, GL_UNSIGNED_INT, BUFFER_OFFSET(offsets[INDEX]));
+			
+		   // disable
+		   
+		   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		   glDisableClientState(GL_NORMAL_ARRAY);
+		   glDisableClientState(GL_VERTEX_ARRAY);
+		// unbind buffers
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		// unbind textures
+		for (int i=0; i<TERRAIN_TEX_COUNT; i++){
+			textureManager->unbindTexture(textureIds[i]);
+		}
+	// turn off shader
+	shader->use(false);
+	flip = false;
+}
+
 void Terrain::drawUnderWater(){
 	// bind textures
 	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
@@ -306,6 +351,11 @@ void Terrain::init()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 	
+void Terrain::connectShadowMap(int shadowMapTMID)
+{
+
+}
+
 void Terrain::update(double time)
 {
 	

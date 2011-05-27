@@ -106,7 +106,7 @@ void cbDisplay()
    glAlphaFunc(GL_GEQUAL, g_AlphaThreshold);
 
    glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
-   if (g_FaceCulling) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
+   //if (g_FaceCulling) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
 
 	// Setup camera
    glLoadIdentity();
@@ -189,7 +189,7 @@ void deinitApp()
 
 	timer.Stop();
 
-	world.~World();
+	//world.~World();
 	if (tqAvailable){
 		glDeleteQueries(1, &tqid);
 	}
@@ -222,7 +222,6 @@ void cbInitGL()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 	glPointSize(1.f);
-   glEnable(GL_LIGHTING);
    glLineWidth(1.0f);
 
     
@@ -355,19 +354,19 @@ void initGUI()
       " label='file' group=Model help='Model file name.' ");
    TwAddButton(controlBar, "load_new_model", loadNewModelCB, NULL, 
       " label='load model' group=Model help='Load new model.' ");
+   */
    TwAddVarRO(controlBar, "fps", TW_TYPE_FLOAT, &(g_Statistics.fps), 
 	   " label='fps' group=Render help='frames per second' ");
-   +ì+ìdVarRW(controlBar, "x_translate", TW_TYPE_FLOAT, &(g_light_position.x), 
+   /*TwAddVarRW(controlBar, "x_translate", TW_TYPE_FLOAT, &(g_light_position.x), 
 	   " label='x' group=Light help='x translation' ");
    TwAddVarRW(controlBar, "y_translate", TW_TYPE_FLOAT, &(g_light_position.y), 
 	   " label='y' group=Light help='y translation' ");
    TwAddVarRW(controlBar, "z_translate", TW_TYPE_FLOAT, &(g_light_position.z), 
 	   " label='z' group=Light help='z translation' ");   
 	   */
-   /*
+   
    TwAddVarRW(controlBar, "fbos", TW_TYPE_BOOLCPP, &(g_showTextures), 
 	   " label='Show FBOs' group=Debug help='enable/disable FBO display' "); 
-	   */
    TwAddVarCB(controlBar, "Tree 2 count", TW_TYPE_INT16, cbSetTree2Count, cbGetTree2Count, NULL, " group='Vegetation' min=0 max=10000 step=1 ");
    TwAddVarCB(controlBar, "Tree 1 count", TW_TYPE_INT16, cbSetTree1Count, cbGetTree1Count, NULL, " group='Vegetation' min=0 max=10000 step=1 ");
    TwAddVarCB(controlBar, "Grass count", TW_TYPE_INT16, cbSetGrassCount, cbGetGrassCount, NULL, " group='Vegetation' min=0 max=10000 step=1 ");

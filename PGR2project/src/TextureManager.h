@@ -15,6 +15,8 @@ public:
 	void		bindTexture(int texId, GLenum texUnit);
 	void		unbindTexture(int texId);
 	Texture *	getTexture(int texId);
+	int			addTexture(Texture * texture);
+	int			shadowMapID;
 private:
 	vector<Texture*> textures;
 };

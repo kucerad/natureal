@@ -132,6 +132,9 @@
     <Filter Include="Scene\Atmosphere">
       <UniqueIdentifier>{33a023e1-68ac-4acf-91f3-db961ad1ddb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\Vegetation\AdvTree">
+      <UniqueIdentifier>{08001247-cfce-441b-a527-2a15df92ed96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pgr2model.cpp">

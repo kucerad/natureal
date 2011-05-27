@@ -10,6 +10,7 @@ uniform sampler2D terrain_tex_02;
 uniform sampler2D terrain_tex_03;
 uniform sampler2D terrain_tex_04;
 uniform sampler2D terrain_tex_05;
+uniform sampler2D shadowMap;
 uniform vec4    border_widths;
 uniform vec4	border_values;
 uniform vec2	visibleHeightInterval;
@@ -18,10 +19,14 @@ uniform vec2	visibleHeightInterval;
 varying vec3	eye;
 varying vec3	normal;
 varying float	height;
+//varying float	fogFactor;
 
 void main()
 {
 	if (height>visibleHeightInterval.y || height<visibleHeightInterval.x){
+		//gl_FragData[0] = vec4(1.0, 0.0, 0.0, 1.0);
+		//gl_FragData[1] = vec4(0.0, 1.0, 0.0, 1.0);
+		//return;
 		discard;
 	}
 	vec3 N = normalize(normal);
@@ -69,9 +74,8 @@ void main()
 		tex_color2 = texture2D(terrain_tex_05, gl_TexCoord[0].st*SCALE);
 		tex_color = mix(tex_color2, tex_color1, min(max((height - border_values.w)/border_widths.w, 0.0), 1.0));
 	}
-	float depth = gl_FragDepth;
-	vec4 fogColor = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 color = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color +Is;
 
-	gl_FragData[0] = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color +Is + depth*fogColor;
+	gl_FragData[0] = color;// mix(gl_Fog.color, color, fogFactor );
 	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
 }
