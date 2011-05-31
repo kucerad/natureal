@@ -45,11 +45,10 @@ void World::draw()
 
 
 
-	// 1st pass (light shadows - light map...)
+	// 1st pass (light shadows - create shadow map...)
 	p_activeLight->beginShadowMap();
 		// render whole shadow casting&recieving scene
-		
-
+		p_terrain->cut = false;
 		p_terrain->draw();
 		glEnable(GL_BLEND);
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -66,6 +65,13 @@ void World::draw()
 
 	// 2nd pass (water)
 	p_activeCamera->shoot();
+
+	m4 camViewMatrixInverse = p_activeCamera->getViewMatrix().getInverse();
+
+	g_LightMVPCameraVInverseMatrix	= p_activeLight->MVPmatrix * camViewMatrixInverse;
+	g_LightMVCameraVInverseMatrix	= p_activeLight->MVmatrix * camViewMatrixInverse;
+	g_LightPMatrix					= p_activeLight->Pmatrix;
+
 	p_water->activeCamera = p_activeCamera;
 	// WATER REFLECTION RENDER
 	p_water->beginReflection();
@@ -154,28 +160,31 @@ void World::drawForLOD(){}
 void World::init()
 {
 	printf("INITIALIZING WORLD:\n");
-	
+
+
 	p_fog = new Fog(0.01f, 50.f, 500.f, v4(HORIZON_COLOR));
 	p_fog->init();
 	p_underWaterFog = new Fog(0.01f, 10.f, 200.f, v4(WATER_DEPTH_COLOR));
 	p_underWaterFog->init();
 	
 	p_terrain = new Terrain(&textureManager,&shaderManager);
-	p_terrain->init();
+	
 
 	//box = new BBox(v3(0,0,0),v3(10,10,10),v3(1,1,1));
 	
 	p_activeCamera = new Camera();
+	p_activeCamera->setup(HUMAN_POSITION, HUMAN_DIRECTION, v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
 	//p_activeCamera->setup(v3(-100.0,60.f,60.f), v3(1.0,-0.7f,-0.4f), v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
-	p_activeCamera->setup(LIGHT_POSITION, -LIGHT_POSITION, v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
+	//p_activeCamera->setup(LIGHT_POSITION, -LIGHT_POSITION, v3(0.0,1.f,0.f), &g_WinWidth, &g_WinHeight, 60.0, 1.f, 1000.f);
 	p_activeCamera->setTerrain(p_terrain);
 	p_activeCamera->setMode(g_cameraMode);
 
 	// sun
-	p_activeLight = new Light();
+	p_activeLight = new Light(&textureManager);
 	p_activeLight->init(); // setup framebuffers for shadow mapping
 	p_activeLight->setup(GL_LIGHT0, g_light_position, LIGHT_DIRECTION, sunAmb, sunDif, sunSpe, 180, 0.0);
 	p_activeLight->turnOn();
+	p_activeLight->initShadowMapping(p_activeCamera, SHADOWMAP_RESOLUTION_X);
 
 	// sky
 	p_skybox = new SkyBox(&textureManager, &shaderManager, SKYBOX_TEX_FILENAMES);
@@ -183,7 +192,7 @@ void World::init()
 	p_skybox->p_activeCamera = p_activeCamera;
 	p_skybox->p_light = p_activeLight;
 
-	
+	p_terrain->init();
 
 
 	p_water = new WaterSurface(&textureManager, &shaderManager);

@@ -28,6 +28,7 @@ public:
 	void bakeToVBO();
 	
 	v3	 transformTexCoords(v3 &origTexCoords);
+	
 	void fixTexType();
 
 	int			texPart_x;

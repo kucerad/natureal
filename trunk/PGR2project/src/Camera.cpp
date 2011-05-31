@@ -113,18 +113,16 @@ void Camera::handleMouseMove(int x, int y)
 
 m4 Camera::getViewMatrix() {
 	m4 view;
-	
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-
-	gluLookAt(position.x, position.y, position.z,
-				direction.x + position.x, direction.y + position.y, direction.z + position.z,
-				0.0f, 1.0f, 0.0f);
+	v3 p(position+human_movement);
+	gluLookAt(p.x				, p.y				, p.z				,
+			  p.x+direction.x	, p.y+direction.y	, p.z + direction.z	,
+			  upVector.x		, upVector.y		, upVector.z		);
 
 	glGetFloatv(GL_MODELVIEW_MATRIX, view); //obtaining view matrix
 	glPopMatrix();
-
 	return view;
 }
 

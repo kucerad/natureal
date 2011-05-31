@@ -371,3 +371,11 @@ void    Shader::setUniform4v(int locIndex, v4 value)
 {
 	glUniform4f(locations[locIndex], value.x, value.y, value.z, value.w);
 }
+void	Shader::setUniformMatrix(int locIndex, m4 & matrix)
+{
+	glUniformMatrix4fv(locations[locIndex],1,false, matrix.m);
+}
+void	Shader::setBoolean(int locIndex, bool value)
+{
+	setUniform1i(locIndex, value?1:0);
+}

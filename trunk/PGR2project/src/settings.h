@@ -17,7 +17,7 @@
 
 #define TIME_STEP 0.1f
 #define TIME_QUERY_EXTENSION	"GL_EXT_timer_query"
-extern Statistics g_Statistics;
+
 
 #define HEIGHTMAP_SOURCE		"textures/terrain/terrain2.png"
 #define HEIGHTMAP_SCALE			0.001
@@ -35,20 +35,20 @@ extern Statistics g_Statistics;
 #define TERRAIN_UW_VS_FILENAME  "shaders/terrain/terrain_uw_vs.glsl"
 #define HORIZON_COLOR			v4(0.7f, 0.0f, 0.0f, 1.0f)
 
-extern	v4						g_terrain_border_values;
-extern	v4						g_terrain_border_widths;
+
+
 
 #define GRASS_COUNT				200
 //#define GRASS_TEX_NAME			"textures/grass/grass_01.png"
 #define GRASS_TEX_NAME			"textures/grass/grass_multitextureVert.png"
-#define GRASS_WAVE_TEX_NAME		"textures/grass/dudv_01.png"
+#define GRASS_WAVE_TEX_NAME		"textures/grass/dudv_02.png"
 #define GRASS_VS_FILENAME		"shaders/grass/grass_vs.glsl"
 #define GRASS_FS_FILENAME		"shaders/grass/grass_fs.glsl"
 #define GRASS_MIN_HEIGHT		1.f
 #define GRASS_MAX_HEIGHT		5.f
 #define GRASS_MIN_DIST			0.2f
 #define GRASS_SCALE				2.f
-extern int						g_GrassCount;
+
 
 #define TREE1_COUNT				50
 #define TREE1_TEX_NAME			"textures/tree1/tree_windbreak.png"
@@ -58,7 +58,7 @@ extern int						g_GrassCount;
 #define TREE1_MAX_HEIGHT		13.f
 #define TREE1_MIN_DIST			5.f
 #define TREE1_SCALE				5.f
-extern int						g_Tree1Count;
+
 
 #define TREE2_COUNT				50
 #define TREE2_TEX_NAME			"textures/tree2/pine.png"
@@ -68,7 +68,7 @@ extern int						g_Tree1Count;
 #define TREE2_MAX_HEIGHT		20.f
 #define TREE2_MIN_DIST			5.f
 #define TREE2_SCALE				6.f
-extern int						g_Tree2Count;
+
 
 
 #define SKYBOX_TEX_FILENAMES	"textures/skybox/512/sahara_%s.png"
@@ -90,7 +90,8 @@ extern int						g_Tree2Count;
 #define HUMAN_ACTIVITY_INCR	    0.01f
 #define HUMAN_MIN_ACTIVITY	    0.1f
 #define HUMAN_MAX_ACTIVITY	    1.3f
-extern CameraMode g_cameraMode;
+#define HUMAN_POSITION          v3(0.0, 10.0, 0.0)
+#define HUMAN_DIRECTION			v3(0.0, 0.0, -1.0)
 
 
 
@@ -119,19 +120,17 @@ static enum Attribs{
 	VBO_ATR_COUNT
 };
 
-extern GLint    g_WinWidth;   // Window width
-extern GLint    g_WinHeight;   // Window height
-extern double	g_time;
+
 
 #define GODRAYS_VS_FILENAME		"shaders/godrays/godrays_vs.glsl"
 #define GODRAYS_FS_FILENAME		"shaders/godrays/godrays_fs.glsl"
-extern bool g_godraysEnabled;
+
 #define LIGHT_POSITION			v3(397.f, 142.f, -8.f) // specific for sahara skybox...
-//#define LIGHT_POSITION			v3(0.f, 10.f, 0.f) 
+//#define LIGHT_POSITION			v3(10.f, 300.f, 0.f) 
 #define LIGHT_DIRECTION			v3(0.f, -1.f, 0.f)
-#define SHADOWMAP_RESOLUTION_X  1024
-#define SHADOWMAP_RESOLUTION_Y  1024
-extern v3 g_light_position;
+#define SHADOWMAP_RESOLUTION_X  2048
+#define SHADOWMAP_RESOLUTION_Y  2048
+
 
 static v4 sunAmb  = v4(0.9,0.9, 1.0, 1.0);
 static v4 sunDif  = v4(1.0,1.0, 1.0, 1.0);
@@ -140,8 +139,7 @@ static v4 sunSpe  = v4(0.5,0.5, 0.6, 1.0);
 static GLfloat material_amd[4] = {0.6f, 0.6f, 0.6f, 1.0f};
 static GLfloat material_spe[4] = {.5f, .5f, .5f, 1.0f};
 
-extern bool g_drawingReflection;
-extern bool g_showTextures;
+
 
 
 using namespace std;

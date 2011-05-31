@@ -15,6 +15,9 @@ Tree1::Tree1(Tree1* copy):
 	vboId		= copy->vboId;
 	shader		= copy->shader;
 	shaderId	= copy->shaderId;
+	LCmatrixLoc = copy->LCmatrixLoc;
+	fastModeLoc	= copy->fastModeLoc;
+	shadowMappingEnabledLoc = copy->shadowMappingEnabledLoc;
 }
 
 Tree1::~Tree1(void)
@@ -88,6 +91,11 @@ void Tree1::init()
 	// shader
 	shaderId = shaderManager->loadShader("Tree1", TREE1_VS_FILENAME, TREE1_FS_FILENAME);
 	shader = shaderManager->getShader(shaderId);
+	// shadow map
+	shader->linkTexture(textureManager->getTexture(textureManager->shadowMapID));
+	LCmatrixLoc					= shader->getLocation("LightMVPCameraVInverseMatrix");
+	shadowMappingEnabledLoc		= shader->getLocation("shadowMappingEnabled");
+	fastModeLoc					= shader->getLocation("fastMode");
 	
 	// textury
 	textureId = textureManager->loadTexture(TREE1_TEX_NAME, "tree1_tex", 0, false);
@@ -161,6 +169,10 @@ void Tree1::draw()
 	//textureManager->bindTexture(textureWaveId, GL_TEXTURE1);
 	shader->use(true);
 	//shader->setTime(g_time);
+	shader->setBoolean(fastModeLoc, g_fastMode);
+	shader->setBoolean(shadowMappingEnabledLoc, g_ShadowMappingEnabled);
+	shader->setUniformMatrix(LCmatrixLoc, g_LightMVPCameraVInverseMatrix );
+
 	glDisable(GL_CULL_FACE);
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
 		glEnableClientState(GL_VERTEX_ARRAY);

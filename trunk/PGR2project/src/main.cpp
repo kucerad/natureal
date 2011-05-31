@@ -17,8 +17,8 @@
 #define USE_ANTTWEAKBAR
 #define TEST 0
 #include "../common/Vector4.h"
-#include "globals.h"
 #include "settings.h"
+
 #define TERRAIN_INIT_BORDER_VAL v4(13.0f, 10.0f, 5.0f, -1.0f)
 #define TERRAIN_INIT_BORDER_WID v4(2.0f, 2.0f, 2.0f, 2.0f)
 
@@ -43,6 +43,7 @@ Statistics					g_Statistics;
 #include <assert.h>
 #include "../common/models/cube.h"
 #include "World.h"
+#include "globals.h"
 
 bool tqAvailable			= false;
 GLuint tqid					= 0;
@@ -50,8 +51,14 @@ GLint result_available		= 0;
 
 v3 g_light_position			= LIGHT_POSITION;
 bool g_godraysEnabled		= false;
+bool g_fastMode				= false;
 bool g_drawingReflection	= false;
 bool g_showTextures			= false;
+bool g_ShadowMappingEnabled	= false;
+m4 g_LightMVPCameraVInverseMatrix;
+m4 g_LightMVCameraVInverseMatrix;
+m4 g_LightPMatrix;
+Light* g_shadowLight;
 
 int	g_GrassCount			= GRASS_COUNT;
 int	g_Tree1Count			= TREE1_COUNT;
