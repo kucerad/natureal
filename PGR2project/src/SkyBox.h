@@ -35,7 +35,9 @@ public:
 	void scale(v3 &scaleVector);
 
 	void loadFromFiles(string filename);
-
+	
+	void connectShadowMap(int shadowMapTMID);
+	
 	vector<int> textureIds;
 	Camera* p_activeCamera;
 	Light*	p_light;

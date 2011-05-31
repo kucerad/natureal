@@ -27,10 +27,14 @@ public:
 
 	virtual void scale(v3 &scaleVector)=0;
 
-	virtual void connectShadowMap(int shadowMapTMID)=0;
-
 	TextureManager *textureManager;
 	ShaderManager  *shaderManager;
+
+	int fastModeLoc;
+	int	shadowMappingEnabledLoc;
+	int LCmatrixLoc;
+	int LMV_CVImatrixLoc;
+	int LPmatrixLoc;
 };
 #endif
 

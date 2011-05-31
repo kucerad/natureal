@@ -1,6 +1,7 @@
 #ifndef _WORLD_H
 #define _WORLD_H
 
+#include "globals.h"
 #include "scenemodel.h"
 #include "Terrain.h"
 #include "SkyBox.h"

@@ -15,6 +15,11 @@ Grass::Grass(Grass* copy):
 	vboId		= copy->vboId;
 	shader		= copy->shader;
 	shaderId	= copy->shaderId;
+	LCmatrixLoc = copy->LCmatrixLoc;
+	fastModeLoc	= copy->fastModeLoc;
+	shadowMappingEnabledLoc = copy->shadowMappingEnabledLoc;
+
+
 }
 
 Grass::~Grass(void)
@@ -89,6 +94,11 @@ void Grass::init()
 	// shader
 	shaderId = shaderManager->loadShader("Grass", GRASS_VS_FILENAME, GRASS_FS_FILENAME);
 	shader = shaderManager->getShader(shaderId);
+	// shadow map
+	shader->linkTexture(textureManager->getTexture(textureManager->shadowMapID));
+	LCmatrixLoc					= shader->getLocation("LightMVPCameraVInverseMatrix");
+	shadowMappingEnabledLoc		= shader->getLocation("shadowMappingEnabled");
+	fastModeLoc					= shader->getLocation("fastMode");
 	
 	// texture
 	textureId = textureManager->loadTexture(GRASS_TEX_NAME, "grass_tex", 0, false);
@@ -162,6 +172,10 @@ void Grass::draw()
 	textureManager->bindTexture(textureWaveId, GL_TEXTURE1);
 	shader->use(true);
 	shader->setTime(g_time);
+	shader->setBoolean(fastModeLoc, g_fastMode);
+	shader->setBoolean(shadowMappingEnabledLoc, g_ShadowMappingEnabled);
+	shader->setUniformMatrix(LCmatrixLoc, g_LightMVPCameraVInverseMatrix );
+
 	glDisable(GL_CULL_FACE);
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
 		glEnableClientState(GL_VERTEX_ARRAY);

@@ -30,7 +30,7 @@ public:
 	void scale(v3 &scaleVector);
 	
 	void bakeToVBO();
-	
+
 	v3	 transformTexCoords(v3 &origTexCoords);
 	void fixTexType();
 

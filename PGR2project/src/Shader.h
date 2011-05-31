@@ -47,6 +47,9 @@ public:
 	void    setUniform2v(int locIndex, v2 value);
 	void	setUniform3v(int locIndex, v3 value);
 	void    setUniform4v(int locIndex, v4 value);
+	void	setUniformMatrix(int locIndex, m4 & matrix);
+	void	setBoolean(int locIndex, bool value);
+
 	GLint	timeLocation;
 	vector<GLint>	 locations;
 private:	

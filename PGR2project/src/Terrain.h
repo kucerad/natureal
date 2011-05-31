@@ -33,8 +33,6 @@ public:
 
 	void loadHeightMap(string filename, int res_x, int res_y);
 	void loadTextures(string filename, int count);
-
-	void connectShadowMap(int shadowMapTMID);
 	
 	float getHeightAt(float x, float y);
 	float getHeightAt(int x, int y);
