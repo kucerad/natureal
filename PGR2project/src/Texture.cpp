@@ -13,6 +13,21 @@ Texture::~Texture(void)
 	printf("texture: %s deleted.\n", inShaderName.c_str());
 }
 
+void Texture::activate()
+{
+	glActiveTexture(textureUnit);	
+	glClientActiveTexture(textureUnit);
+	glEnable(GL_TEXTURE_2D);
+}
+
+void Texture::deactivate()
+{
+	glActiveTexture(textureUnit);
+	glClientActiveTexture(textureUnit);
+	glDisable(GL_TEXTURE_2D);
+	
+}
+
 
 void Texture::load(string filename, GLint unitNumber, bool buildMipmaps, GLint wrapMode, GLint filterMode)
 {

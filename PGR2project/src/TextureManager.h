@@ -16,6 +16,8 @@ public:
 	void		unbindTexture(int texId);
 	Texture *	getTexture(int texId);
 	int			addTexture(Texture * texture);
+	void		activateTexture(int texId);
+	void		deactivateTexture(int texId);
 	int			shadowMapID;
 private:
 	vector<Texture*> textures;

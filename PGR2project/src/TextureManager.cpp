@@ -14,6 +14,16 @@ TextureManager::~TextureManager(void)
 	}
 }
 
+void TextureManager::activateTexture(int texId)
+{
+	textures[texId]->activate();
+}
+
+void TextureManager::deactivateTexture(int texId)
+{
+	textures[texId]->deactivate();
+}
+
 int TextureManager::addTexture(Texture * texture)
 {
 	textures.push_back(texture);

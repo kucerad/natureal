@@ -10,6 +10,14 @@
 class Vector2
 {
 public:
+	Vector2(){
+		x	= 0.f;
+		y	= 0.f;
+	}
+	Vector2(float val){
+		x	= val;
+		y	= val;
+	}
 
 	Vector2(float _x, float _y):x(_x),y(_y){}
 	~Vector2(){}
@@ -18,6 +26,11 @@ public:
 	{
 		x = copy.x;
 		y = copy.y;
+	}
+	Vector2(const GLfloat *arr)
+	{
+		x = arr[0];
+		y = arr[1];
 	}
 
 	inline float length(){

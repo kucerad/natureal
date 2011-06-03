@@ -20,4 +20,11 @@ inline int randomi(int mini, int maxi){
 	return int((double(rand())/RAND_MAX)*(maxi-mini)) + mini; 
 }
 
+inline float min2f(float a, float b){
+	return std::min(a,b);
+}
+inline float max2f(float a, float b){
+	return std::max(a,b);
+}
+
 #endif

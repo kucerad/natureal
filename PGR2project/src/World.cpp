@@ -16,6 +16,7 @@ World::World(void)
 	p_tree2_prototype= NULL;
 	p_tree2_growth	= NULL;
 	p_water			= NULL;
+	p_model1		= NULL;
 }
 
 
@@ -34,6 +35,7 @@ World::~World(void)
 	SAFE_DELETE_PTR(p_tree2_prototype);
 	SAFE_DELETE_PTR(p_tree2_growth);
 	SAFE_DELETE_PTR(p_water);
+	SAFE_DELETE_PTR(p_model1);
 	textureManager.~TextureManager();
 	shaderManager.~ShaderManager();
 	printf("WORLD deleted.......\n"); 
@@ -42,9 +44,9 @@ World::~World(void)
 void World::draw()
 {
 	// preprocess - one pass for LOD & occlusion queries
+	
 
-
-
+	
 	// 1st pass (light shadows - create shadow map...)
 	p_activeLight->beginShadowMap();
 		// render whole shadow casting&recieving scene
@@ -62,7 +64,7 @@ void World::draw()
 		// TODO
 
 	p_activeLight->endShadowMap();
-
+	
 	// 2nd pass (water)
 	p_activeCamera->shoot();
 
@@ -72,6 +74,7 @@ void World::draw()
 	g_LightMVCameraVInverseMatrix	= p_activeLight->MVmatrix * camViewMatrixInverse;
 	g_LightPMatrix					= p_activeLight->Pmatrix;
 
+	
 	p_water->activeCamera = p_activeCamera;
 	// WATER REFLECTION RENDER
 	p_water->beginReflection();
@@ -103,10 +106,14 @@ void World::draw()
 	
 	glEnable(GL_BLEND);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	p_grass_growth->draw();
 	p_tree1_growth->draw();
 	p_tree2_growth->draw();
 	glDisable(GL_BLEND);
+
+	p_model1->draw();
+	p_model1->renderVertexNormals(0.5f);
 	
 	if (g_godraysEnabled){
 		v3 lightDir = (p_activeLight->position - p_activeCamera->getPosition()).getNormalized();
@@ -123,6 +130,12 @@ void World::draw()
 	//p_terrain->drawNormals();
 	//p_fog->turnOff();
 	
+	//p_activeCamera->shoot();
+	
+
+
+
+
 }
 
 void World::drawUnderWater(){
@@ -198,7 +211,7 @@ void World::init()
 	p_water = new WaterSurface(&textureManager, &shaderManager);
 	p_water->init();  // create FBOs...
 
-
+	
 
 	p_godRays = new GodRays(&shaderManager, p_activeLight);
 	
@@ -250,6 +263,10 @@ void World::init()
 						100 );
  	count = tree2_planter.plantVegetationCount(g_Tree2Count);
 	printf("count: %i\n", count);
+	
+
+	p_model1 = PGR2Model::loadFromFile(MODEL1_FILENAME, &textureManager);
+	p_model1->init();
 
 
 	printf("WORLD CREATED:\n");
