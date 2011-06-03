@@ -14,6 +14,8 @@ public:
 
 	void bind(GLenum texUnit);
 	void unbind();
+	void activate();
+	void deactivate();
 
 	GLint	format;
 	GLenum	textureUnit;

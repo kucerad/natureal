@@ -77,6 +77,13 @@ public:
 		z = copy.z;
 	}
 
+	Vector3(const float *arr)
+	{
+		x = arr[0];
+		y = arr[1];
+		z = arr[2];
+	}
+
 
 	inline operator const float*() const	{ return &x;	}
 	inline operator float*()				{ return &x;	}
@@ -270,8 +277,18 @@ public:
 		Vector3 b = this->getNormalized();
 		return acos(a.dot(b));
 	}
-	void printOut(){
+	inline void printOut(){
 		printf("[%f %f %f]", x,y,z);
+	}
+	inline void min(Vector3 &vector){
+		x = min2f(x, vector.x);
+		y = min2f(y, vector.y);
+		z = min2f(z, vector.z);
+	}
+	inline void max(Vector3 &vector){
+		x = max2f(x, vector.x);
+		y = max2f(y, vector.y);
+		z = max2f(z, vector.z);
 	}
 
 public:

@@ -8,6 +8,7 @@
 #include "../common/GLEW/glew.h"
 #include "../common/GL/glut.h"
 #include "math.h"
+#include "../common/Vector2.h"
 #include "../common/Vector3.h"
 #include "../common/Vector4.h"
 #include "../common/Matrix4x4.h"
@@ -93,6 +94,12 @@
 #define HUMAN_POSITION          v3(0.0, 10.0, 0.0)
 #define HUMAN_DIRECTION			v3(0.0, 0.0, -1.0)
 
+//#define MODEL1_FILENAME			"models/Walls&Towers/watch2.pgr2"
+//#define MODEL1_FILENAME			"models/Walls&Towers/bridge.pgr2"
+//#define MODEL1_FILENAME			"models/MedievalVillage/haywagon.pgr2"
+#define MODEL1_FILENAME			"models/MedievalVillage/house4.pgr2"
+//#define MODEL1_FILENAME			"models/MedievalVillage/egg_box.pgr2"
+
 
 
 static enum Attribs{
@@ -114,8 +121,9 @@ static enum Attribs{
 	ATTRIB2,
 	ATTRIB3,
 	ATTRIB4,
+	FACENORMAL,
 	// add new items here (must be before VBO_ATTRIB_CNT!!!)
-
+	
 
 	VBO_ATR_COUNT
 };

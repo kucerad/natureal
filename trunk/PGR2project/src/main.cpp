@@ -32,7 +32,7 @@ float tree1max = TREE1_MAX_HEIGHT;
 float grassmin = GRASS_MIN_HEIGHT;
 float grassmax = GRASS_MAX_HEIGHT;
 
-CameraMode g_cameraMode = TERRAIN_RESTRICTED;
+CameraMode g_cameraMode = FREE;
 int g_WinWidth				= 800;   // Window width
 int g_WinHeight				= 600;   // Window height
 double g_time				= 0.0;
@@ -87,8 +87,8 @@ bool     g_WireMode             = false; // Wire mode enabled/disabled
 bool     g_FaceCulling          = true; // Face culling enabled/disabled
 GLfloat  g_AlphaThreshold       = 0.01f; // Alpha test threshold
 bool	 g_MouseModeANT			= true;
-// Model
-PGR2Model* g_pModel             = NULL;
+
+
 World world;
 
 #include "../common/common.h"
@@ -116,19 +116,12 @@ void cbDisplay()
    //if (g_FaceCulling) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
 
 	// Setup camera
-   glLoadIdentity();
-   glTranslatef(0.5f, -1.0f, -g_SceneTraZ);
-   pgr2AddQuaternionRotationToTransformation(g_SceneRot);
-   glScalef(g_SceneScale, g_SceneScale, g_SceneScale);
+   //glLoadIdentity();
+   //glTranslatef(0.5f, -1.0f, -g_SceneTraZ);
+   //pgr2AddQuaternionRotationToTransformation(g_SceneRot);
+   //glScalef(g_SceneScale, g_SceneScale, g_SceneScale);
 
-   // Render model if exists
-   if (g_pModel)
-   {
-      g_pModel->render(g_Transparency);
-
-      if (g_ShowVertexNormals)   g_pModel->renderVertexNormals(VECTOR_RENDER_SCALE);
-      if (g_FaceNormals)         g_pModel->renderFaceNormals(VECTOR_RENDER_SCALE);  
-   }
+   
    g_time=timer.RealTime();
    world.update(g_time);
    
@@ -449,6 +442,7 @@ void TW_CALL copyStdStringToClient(std::string& dst, const std::string& src)
 //-----------------------------------------------------------------------------
 void TW_CALL loadNewModelCB(void* clientData)
 {
+	/*
    const std::string* file_name = &g_ModelFileName;//(const std::string *)(clientData);
    printf("RELOAD MODEL\n");
    if (!file_name->empty())
@@ -465,6 +459,7 @@ void TW_CALL loadNewModelCB(void* clientData)
          g_pModel = pOldModel;
       }
    }
+   */
 } 
 
 

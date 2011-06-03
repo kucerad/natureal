@@ -16,7 +16,7 @@
 #include "Planter.h"
 #include "WaterSurface.h"
 #include "GodRays.h"
-
+#include "pgr2model.h"
 
 class World
 {
@@ -57,6 +57,8 @@ public:
 	Vegetation			*p_tree1_growth;
 	Tree2				*p_tree2_prototype;
 	Vegetation			*p_tree2_growth;
+
+	PGR2Model			*p_model1;
 
 	TextureManager		textureManager;
 	ShaderManager		shaderManager;

@@ -40,7 +40,7 @@
    +-------------------------------+
    | ...                           |
    +-------------------------------+
-   | FaceData N                    |   -> mesn 0 N-th face
+   | FaceData N                    |   -> mesh 0 N-th face
    +-------------------------------+      (N = PGR2Model_MeshHeader.num_faces)
    | PGR2Model_MeshHeader          |   -> mesh 1 data
    +-------------------------------+
@@ -150,6 +150,10 @@ PGR2Model::PGR2Model() :
 {
 }
 
+ PGR2Model::PGR2Model(TextureManager *texManager)
+ {
+	 textureManager = texManager;
+ }
 
 //---------------------------------------------------------------------------
 //	Description: 
@@ -157,6 +161,13 @@ PGR2Model::PGR2Model() :
 //---------------------------------------------------------------------------
 PGR2Model::~PGR2Model()
 {
+	// delete ebos
+	for (int i=0; i<m_NumMeshes; i++){
+		glDeleteBuffers(1, & meshes[i]->eboId);
+	}
+	// delete vbo
+	glDeleteBuffers(1, & vboId);
+
    if (m_Textures)   delete [] m_Textures;
    if (m_Materials)  delete [] m_Materials;
    if (m_Meshes)
@@ -172,9 +183,313 @@ PGR2Model::~PGR2Model()
    if (m_Normals)    delete [] m_Normals;
    if (m_Binormals)  delete [] m_Binormals;
    if (m_Tangents)   delete [] m_Tangents;
+   
+
+
+
+
+
 }
 
+void PGR2Model::init()
+{
+	// init min & max corners
+	minCorner = v3(FLT_MAX);
+	maxCorner = v3(-FLT_MAX);
+	
+	// assemble VBO & EBO for transparent & non transparent meshes
+	
 
+	// non transparent
+	vboId		= 0; 
+	vboCount	= 0;
+	int iMesh;
+	
+
+	vector<int> v_indices;
+	vector<VertexData> v_vertices;
+	for (iMesh = 0; iMesh < m_NumMeshes; iMesh++)
+	{
+		v_indices.clear();
+		const MeshData& meshData = m_Meshes[iMesh];
+		Mesh * mesh = meshes[iMesh];
+
+		mesh->hasHeightMap		= m_Materials[meshData.material_index].height_tex_index>=0;
+		mesh->hasBumpMap		= m_Materials[meshData.material_index].bump_tex_index>=0;
+		mesh->hasSpecularMap	= m_Materials[meshData.material_index].specular_tex_index>=0;
+		mesh->material			= & m_Materials[meshData.material_index];
+
+		mesh->shader = NULL;
+		/*
+		if (mesh->hasHeightMap && mesh->hasBumpMap && mesh->hasSpecularMap){
+			mesh->shader = paralaxShader;
+		} else if (mesh->hasBumpMap && mesh->hasSpecularMap){
+			mesh->shader = bumpShader;
+		} else if (mesh->hasSpecularMap){
+			mesh->shader = specularShader;
+		} else {
+			mesh->shader = NULL;
+		}
+		*/
+
+		for (unsigned int iFace = 0; iFace < meshData.num_faces; iFace++)
+		{
+			const FaceData& face = meshData.faces[iFace];
+			for (int iVertex = 0; iVertex < 3; iVertex++)
+			{
+				VertexData vertex;
+				vertex.position		= v3(	m_Vertices[3*face.ivertex[iVertex] + 0],
+											m_Vertices[3*face.ivertex[iVertex] + 1],
+											m_Vertices[3*face.ivertex[iVertex] + 2]);
+				minCorner.min(vertex.position);
+				maxCorner.max(vertex.position);
+				vertex.normal		= v3(	m_Normals[3*face.inormal[iVertex] + 0],
+											m_Normals[3*face.inormal[iVertex] + 1],
+											m_Normals[3*face.inormal[iVertex] + 2]);
+				vertex.binormal		= v3(	m_Binormals[3*face.inormal[iVertex] + 0],
+											m_Binormals[3*face.inormal[iVertex] + 1],
+											m_Binormals[3*face.inormal[iVertex] + 2]);
+				vertex.texcoord		= v2(	m_TexCoords[2*face.itexture[iVertex] + 0],
+											m_TexCoords[2*face.itexture[iVertex] + 1]);
+				vertex.facenormal	= v3(face.normal[0], face.normal[1], face.normal[2]) ;
+				v_indices.push_back(v_vertices.size());
+				v_vertices.push_back(vertex);
+				 
+			} // for each vertex on face
+		} // for each face in mesh
+		int maximum = INT_MIN;
+		mesh->eboCount = v_indices.size();
+		GLuint *elements = new GLuint[mesh->eboCount];
+		for (int i=0; i<mesh->eboCount; i++){
+			elements[i] = (GLuint) v_indices[i];
+			if (maximum<v_indices[i]){
+				maximum = v_indices[i];
+			}
+		}
+		glGenBuffers(1, &(mesh->eboId));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->eboId);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->eboCount*sizeof(GL_UNSIGNED_INT), elements, GL_STATIC_DRAW);	
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		delete [] elements;
+		elements = NULL;
+
+	} // for each mesh
+
+	int size, i;
+	// create arrays for VBO
+	size = v_vertices.size();
+	GLfloat * p_Vertices	= new GLfloat[3*size];
+	GLfloat * p_Normals		= new GLfloat[3*size];
+	GLfloat * p_Binormals	= new GLfloat[3*size];
+	GLfloat * p_TexCoords	= new GLfloat[2*size];
+	GLfloat * p_FaceNormals	= new GLfloat[3*size];
+
+	offsets[VERTEX] = 0;
+	sizes[VERTEX]   = size * 3 * sizeof(GLfloat);
+	int vboSize = sizes[VERTEX];
+	
+	offsets[NORMAL] = vboSize;
+	sizes[NORMAL]	= size * 3 * sizeof(GLfloat);
+	vboSize+= sizes[NORMAL];
+	
+	offsets[BINORMAL] = vboSize;
+	sizes[BINORMAL]	= size * 3 * sizeof(GLfloat);
+	vboSize+= sizes[BINORMAL];
+
+	/*
+	offsets[TANGENT] = vboSize;
+	sizes[TANGENT]	= m_NumVertices * 4 * sizeof(GLfloat);
+	vboSize+= sizes[TANGENT];
+	*/
+	
+	offsets[TEXCOORD0] = vboSize;
+	sizes[TEXCOORD0]	= size * 2 * sizeof(GLfloat);
+	vboSize+= sizes[TEXCOORD0];
+	
+	offsets[FACENORMAL] = vboSize;
+	sizes[FACENORMAL]	= size * 3 * sizeof(GLfloat);
+	vboSize+= sizes[FACENORMAL];
+	
+	for (i=0; i<size; i++){
+		p_Vertices	 [3*i + 0]	= v_vertices[i].position.data[0];
+		p_Vertices	 [3*i + 1]	= v_vertices[i].position.data[1];
+		p_Vertices	 [3*i + 2]	= v_vertices[i].position.data[2];
+
+		p_Normals	 [3*i + 0]	= v_vertices[i].normal.data[0];
+		p_Normals	 [3*i + 1]	= v_vertices[i].normal.data[1];
+		p_Normals	 [3*i + 2]	= v_vertices[i].normal.data[2];
+
+		p_Binormals	 [3*i + 0]	= v_vertices[i].binormal.data[0];
+		p_Binormals	 [3*i + 1]	= v_vertices[i].binormal.data[1];
+		p_Binormals	 [3*i + 2]	= v_vertices[i].binormal.data[2];
+
+		p_TexCoords	 [2*i + 0]	= v_vertices[i].texcoord.data[0];
+		p_TexCoords	 [2*i + 1]	= v_vertices[i].texcoord.data[1];
+
+		p_FaceNormals[3*i + 0]	= v_vertices[i].facenormal.data[0];
+		p_FaceNormals[3*i + 1]	= v_vertices[i].facenormal.data[1];
+		p_FaceNormals[3*i + 2]	= v_vertices[i].facenormal.data[2];
+	}
+
+
+	glGenBuffers(1, &vboId);
+	glBindBuffer(GL_ARRAY_BUFFER, vboId);
+		glBufferData(GL_ARRAY_BUFFER, vboSize, 0, GL_STATIC_DRAW);
+		// vertices
+		glBufferSubData(GL_ARRAY_BUFFER, offsets[VERTEX], sizes[VERTEX], p_Vertices);
+		// normals
+		glBufferSubData(GL_ARRAY_BUFFER, offsets[NORMAL], sizes[NORMAL], p_FaceNormals);
+		//glBufferSubData(GL_ARRAY_BUFFER, offsets[NORMAL], sizes[NORMAL], p_Normals);
+		// binormals
+		glBufferSubData(GL_ARRAY_BUFFER, offsets[BINORMAL], sizes[BINORMAL], p_Binormals);
+		// tangents
+		// glBufferSubData(GL_ARRAY_BUFFER, offsets[TANGENT], sizes[TANGENT], p_Tangents);
+		// texcoords
+		glBufferSubData(GL_ARRAY_BUFFER, offsets[TEXCOORD0], sizes[TEXCOORD0], p_TexCoords);
+		
+		// facenormals
+		glBufferSubData(GL_ARRAY_BUFFER, offsets[FACENORMAL], sizes[FACENORMAL], p_FaceNormals);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	// delete arrays for VBO
+	delete [] p_Binormals;
+	delete [] p_Normals;
+	delete [] p_FaceNormals;
+	delete [] p_Vertices;
+	delete [] p_TexCoords;
+	bbox = new BBox(minCorner, maxCorner, v3(0.0, 0.0, 0.0));
+}
+
+void PGR2Model::draw()
+{
+	renderVBO(true);
+	bbox->drawMode = GL_FILL;
+	bbox->draw();
+
+}
+	 
+void PGR2Model::update(double time)
+{
+}
+	 
+void PGR2Model::translate(v3 &movVector)
+{
+}
+	
+void PGR2Model::rotate(v3 &axis, float angleRad)
+{
+}
+	
+void PGR2Model::scale(v3 &scaleVector)
+{
+}	
+
+
+void PGR2Model::renderVBO(bool transparent_meshes)
+{
+	glPushAttrib(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
+	// render meshes
+	int i;
+	glBindBuffer(GL_ARRAY_BUFFER, vboId);
+	for (int iMesh=0; iMesh < m_NumMeshes; iMesh++ ){
+		Mesh * mesh = meshes[iMesh];
+		if (mesh->isTransparent){
+			glEnable(GL_BLEND);
+			glEnable(GL_ALPHA_TEST);
+			glDisable(GL_LIGHTING);
+		}
+		// TODO aply material
+		glMaterialfv(GL_FRONT_AND_BACK,   GL_AMBIENT, mesh->material->ambient);
+        glMaterialfv(GL_FRONT_AND_BACK,   GL_DIFFUSE, mesh->material->diffuse);
+        glMaterialfv(GL_FRONT_AND_BACK,  GL_SPECULAR, mesh->material->specular);
+        glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, mesh->material->shininess * 128.0f);
+
+		// bind textures
+		
+		for (i=0; i<mesh->texCount; i++){
+			textureManager->bindTexture(mesh->texIds[i], GL_TEXTURE0+GLuint(i));
+		}
+		
+		// own pipeline
+		if (mesh->shader!=NULL){
+			mesh->shader->use(true);
+		}
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->eboId);
+		 
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			
+			
+			// draw VBOs...
+			// positions
+			glVertexPointer(3, GL_FLOAT, 0, BUFFER_OFFSET( offsets[VERTEX]));
+			// normals
+			glNormalPointer(GL_FLOAT,	 0, BUFFER_OFFSET( offsets[NORMAL] ) );
+			
+
+			// own pipeline
+			if (mesh->shader!=NULL){
+				glEnableVertexAttribArray(GLuint(mesh->binormalLoc	));
+				glEnableVertexAttribArray(GLuint(mesh->facenormalLoc));
+				// binormals
+				glVertexAttribPointer(GLuint(mesh->binormalLoc	), 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(offsets[BINORMAL]));
+				// facenormals
+				glVertexAttribPointer(GLuint(mesh->facenormalLoc), 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(offsets[FACENORMAL]));
+			}
+			
+			
+			// for each texture ACTIVATE & set coordinates
+			
+			for (i=0; i<mesh->texCount; i++){
+				textureManager->activateTexture(mesh->texIds[i]);
+				glTexCoordPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(offsets[TEXCOORD0]));
+			}	
+			
+			glDrawElements(GL_TRIANGLES, mesh->eboCount, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+			
+			// for each texture DEACTIVATE
+			
+			for (i=0; i<mesh->texCount; i++){
+				//textureManager->deactivateTexture(mesh->texIds[i]);
+			}
+			
+			if (mesh->shader!=NULL){
+				glDisableVertexAttribArray(GLuint(mesh->binormalLoc	));
+				glDisableVertexAttribArray(GLuint(mesh->facenormalLoc));
+			}
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableClientState(GL_VERTEX_ARRAY);
+
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		if (mesh->isTransparent){
+			glDisable(GL_BLEND);
+			glDisable(GL_ALPHA_TEST);
+			glEnable(GL_LIGHTING);
+		}
+		
+		// fixed pipeline
+		if (mesh->shader!=NULL){
+			mesh->shader->use(false);
+		}
+		// unbind textures
+		for (i=0; i<mesh->texCount; i++){
+			textureManager->unbindTexture(mesh->texIds[i]);
+		}
+		
+
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glPopAttrib();
+	
+
+}
 //---------------------------------------------------------------------------
 //	Description: 
 //
@@ -224,7 +539,7 @@ void PGR2Model::render(bool transparent_meshes)
 //          glBindTexture(GL_TEXTURE_2D, m_Textures[material.bump_tex_index].id);
 //          num_textures_used++;
          }
-         // Use bump texture if exists
+         // Use height texture if exists
          if (material.height_tex_index >= 0) 
          {
 //          glActiveTexture(GL_TEXTURE0 + num_textures_used);
@@ -457,7 +772,7 @@ void PGR2Model::renderVertexNormals(float scale)
 //	Description: 
 //
 //---------------------------------------------------------------------------
-PGR2Model* PGR2Model::loadFromFile(const char* file_name)
+PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texManager)
 {
    bool load_failed = true;
 
@@ -470,7 +785,7 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name)
    // Get file path
    std::string file_path = getFilePath(file_name);
 
-   PGR2Model* pNewModel = new PGR2Model;
+   PGR2Model* pNewModel = new PGR2Model(texManager);
    if (!pNewModel) goto end_of_load;
 
 // Read model header ---------------------------------------------->
@@ -555,6 +870,12 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name)
    // Allocate array for meshes
    pNewModel->m_Meshes = new MeshData[header.num_meshes];
    memset(pNewModel->m_Meshes, 0, header.num_meshes*sizeof(MeshData));
+// ===========================================================================
+// own mesh handling
+   pNewModel->meshes = new Mesh*[header.num_meshes];
+
+// ===========================================================================
+
 
    for (int iMesh = 0; iMesh < header.num_meshes; iMesh++)
    {
@@ -564,6 +885,51 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name)
          goto end_of_load;
 
       pNewModel->m_Meshes[iMesh].material_index = mes_header.material_index;
+// ===========================================================================
+		pNewModel->meshes[iMesh] = new Mesh;
+		MaterialData* materialData = & pNewModel->m_Materials[mes_header.material_index];
+		Mesh * mesh = pNewModel->meshes[iMesh];
+		mesh->isTransparent = false;
+		mesh->texCount = 0;
+		vector<int> tex_ids;
+		if (materialData->diffuse_tex_index		>= 0 ){
+			Texture * tex = new Texture();
+			tex->id = pNewModel->m_Textures[materialData->diffuse_tex_index].id;
+			tex->inShaderName = "diffuse_texture";
+			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+		}
+		if (materialData->specular_tex_index	>= 0 ){
+			Texture * tex = new Texture();
+			tex->id = pNewModel->m_Textures[materialData->specular_tex_index].id;
+			tex->inShaderName = "specular_texture";
+			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+		}
+		if (materialData->bump_tex_index		>= 0 ){
+			Texture * tex = new Texture();
+			tex->id = pNewModel->m_Textures[materialData->bump_tex_index].id;
+			tex->inShaderName = "bump_texture";
+			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+		}
+		if (materialData->alpha_tex_index		>= 0 ){
+			mesh->isTransparent = true;
+			Texture * tex = new Texture();
+			tex->id = pNewModel->m_Textures[materialData->alpha_tex_index].id;
+			tex->inShaderName = "alpha_texture";
+			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+		}
+		if (materialData->height_tex_index		>= 0 ){
+			Texture * tex = new Texture();
+			tex->id = pNewModel->m_Textures[materialData->height_tex_index].id;
+			tex->inShaderName = "height_texture";
+			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+		}
+		mesh->texCount = tex_ids.size();
+		// textures in texmanager... 
+		mesh->texIds = new int[mesh->texCount];
+		for (int i=0; i<mesh->texCount; i++){
+			mesh->texIds[i] = tex_ids[i];
+		}
+// ===========================================================================
       pNewModel->m_Meshes[iMesh].num_faces      = mes_header.num_faces;
       if (mes_header.num_faces > 0)
       {

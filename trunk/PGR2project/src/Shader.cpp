@@ -226,7 +226,9 @@ void Shader::use(bool isTurnedOn)
 		// attach uniforms
 		int i, size = uniforms.size();
 		for (i=0; i<size; i++){
-			glUniform1i(uniforms[i].location, uniforms[i].value);
+			if (uniforms[i].location>=0){
+				glUniform1i(uniforms[i].location, uniforms[i].value);
+			} // else invalid location
 		}
 	} else {
 		glUseProgram(0);
