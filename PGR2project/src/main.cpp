@@ -373,13 +373,22 @@ void initGUI()
    TwBar *controlBar = TwNewBar("Controls");
    TwDefine(" Controls position='10 10' size='250 370' refresh=0.1 \
             valueswidth=80 ");
+   // camera mode
+    TwEnumVal cam_mode[] = 
+   { 
+	  { CameraMode::FREE				 , "Free"					},
+	  { CameraMode::TERRAIN_RESTRICTED   , "Terrain restricted"     },
+	  { CameraMode::TERRAIN_CONNECTED    , "Terrain connected"      },
+      { CameraMode::WALK				 , "Walk"					}
 
-   /*
-   TwAddVarRW(controlBar, "model_file", TW_TYPE_STDSTRING, &g_ModelFileName,
-      " label='file' group=Model help='Model file name.' ");
-   TwAddButton(controlBar, "load_new_model", loadNewModelCB, NULL, 
-      " label='load model' group=Model help='Load new model.' ");
-   */
+   };
+
+   TwType transport_type = TwDefineEnum("Camera mode", cam_mode, 
+                                        4);
+   TwAddVarRW(controlBar, "camera mode", transport_type, &g_cameraMode, 
+               " group='Camera' keyIncr=c \
+               help='Change camera movement mode.' ");
+
    TwAddVarRO(controlBar, "fps", TW_TYPE_FLOAT, &(g_Statistics.fps), 
 	   " label='fps' group=Statistics help='frames per second' ");
    TwAddVarRO(controlBar, "primitives", TW_TYPE_INT32, &(g_Statistics.primitives), 
@@ -398,7 +407,7 @@ void initGUI()
    // bridge
    TwAddVarRO(controlBar, "bridge_lod", TW_TYPE_INT32, &(g_Statistics.bridge_lod), 
 	   " label='bridge_lod' group=Statistics help='bridge level of detail' ");
-   TwAddVarRO(controlBar, "house1_samples", TW_TYPE_INT32, &(g_Statistics.bridge_samples), 
+   TwAddVarRO(controlBar, "bridge_samples", TW_TYPE_INT32, &(g_Statistics.bridge_samples), 
 	   " label='bridge_samples' group=Statistics help='bridge samples generated on bbox' ");
    // tower 1
    TwAddVarRO(controlBar, "tower1_lod", TW_TYPE_INT32, &(g_Statistics.tower1_lod), 
@@ -418,12 +427,12 @@ void initGUI()
    // haywagon
    TwAddVarRO(controlBar, "haywagon_lod", TW_TYPE_INT32, &(g_Statistics.haywagon_lod), 
 	   " label='haywagon_lod' group=Statistics help='haywagon level of detail' ");
-   TwAddVarRO(controlBar, "house1_samples", TW_TYPE_INT32, &(g_Statistics.haywagon_samples), 
+   TwAddVarRO(controlBar, "haywagon_samples", TW_TYPE_INT32, &(g_Statistics.haywagon_samples), 
 	   " label='haywagon_samples' group=Statistics help='haywagon samples generated on bbox' ");
    // well
    TwAddVarRO(controlBar, "well_lod", TW_TYPE_INT32, &(g_Statistics.well_lod), 
 	   " label='well_lod' group=Statistics help='well level of detail' ");
-   TwAddVarRO(controlBar, "house1_samples", TW_TYPE_INT32, &(g_Statistics.well_samples), 
+   TwAddVarRO(controlBar, "well_samples", TW_TYPE_INT32, &(g_Statistics.well_samples), 
 	   " label='well_samples' group=Statistics help='well samples generated on bbox' ");
   
 

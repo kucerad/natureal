@@ -33,10 +33,14 @@ void WaterSurface::drawForLOD()
 
 void WaterSurface::draw()
 {
+	textureManager->bindTexture(dudv_ID, GL_TEXTURE3);
 	shader->use(true);
+	shader->setTime(g_time);
 	shader->setUniform1i(water_reflection_loc, 0);// texture unit 0
-	shader->setUniform1i(water_refraction_loc, 1);// texture unit 0
-	shader->setUniform1i(water_depth_loc, 2);// texture unit 0
+	shader->setUniform1i(water_refraction_loc, 1);// texture unit 1
+	shader->setUniform1i(water_depth_loc, 2);// texture unit 2
+	//shader->setUniform1i(water_dudv_loc, 3);
+
 	glColor3f(0.f, 0.1f, 1.f);
 	// use texture
 	glPushMatrix();
@@ -49,14 +53,15 @@ void WaterSurface::draw()
 		glBindTexture(GL_TEXTURE_2D, cb_refr_ID);
 		glActiveTexture(GL_TEXTURE2);		
 		glBindTexture(GL_TEXTURE_2D, db_refr_ID);
-			glClientActiveTexture(GL_TEXTURE0);
+		glClientActiveTexture(GL_TEXTURE0);
 			drawPlane();
 		glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_CULL_FACE);
 	glPopMatrix();
 	shader->use(false);
-
+	textureManager->unbindTexture(dudv_ID);
+	
 }
 
 
@@ -64,6 +69,7 @@ void WaterSurface::init()
 {
 	// init textures & buffers
 	//textureManager->loadTexture(...);
+	dudv_ID = textureManager->loadTexture(WATER_DUDV_MAP, "water_dudvmap", 3, false, GL_REPEAT, GL_LINEAR);
 
 	glGenTextures(1, &cb_refl_ID);
 		glBindTexture(GL_TEXTURE_2D, cb_refl_ID);
@@ -119,24 +125,10 @@ void WaterSurface::init()
  	 water_reflection_loc = shader->getLocation("water_reflection");
 	 water_refraction_loc = shader->getLocation("water_refraction");
 	 water_depth_loc = shader->getLocation("water_depthmap");
+	 shader->linkTexture(textureManager->getTexture(dudv_ID));
 }
 
 void WaterSurface::update(double time)
-{
-
-}
-
-void WaterSurface::translate(v3 &movVector)
-{
-
-}
-
-void WaterSurface::rotate(v3 &axis, float angleRad)
-{
-
-}
-
-void WaterSurface::scale(v3 &scaleVector)
 {
 
 }

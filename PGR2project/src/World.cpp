@@ -127,6 +127,8 @@ void World::draw()
 	p_skybox->draw();
 	p_water->draw(); // draw water surface
 	
+	drawModels();
+
 	glEnable(GL_BLEND);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
@@ -134,10 +136,6 @@ void World::draw()
 	p_tree1_growth->draw();
 	p_tree2_growth->draw();
 	glDisable(GL_BLEND);
-
-	drawModels();
-	//p_model1->draw();
-
 	
 	if (g_godraysEnabled){
 		v3 lightDir = (p_activeLight->position - p_activeCamera->getPosition()).getNormalized();
@@ -432,6 +430,69 @@ void World::initModels()
 	bridge->actualLOD	= & g_Statistics.bridge_lod;
 	bridge->LODvalue	= & g_Statistics.bridge_samples;
 	v_models.push_back(bridge);
+
+	// tower1
+	l0 = PGR2Model::loadFromFile(TOWER1_LOD0_FILENAME, &textureManager);
+	l1 = PGR2Model::loadFromFile(TOWER1_LOD1_FILENAME, &textureManager);
+	//l2 = PGR2Model::loadFromFile(BRIDGE_LOD2_FILENAME, &textureManager);
+	l0->init();
+	l1->init();
+	//l2->init();
+	tower1 = new LODmodel();
+	tower1->translate			(TOWER1_POSITION);
+	tower1->rotate				(TOWER1_ROTATION_AXIS,
+								 TOWER1_ROTATION_ANGLE);
+	tower1->scale				(TOWER1_SCALE);
+	tower1->tresholds =			 TOWER1_LOD_TRESHOLDS;	
+	tower1->setLODModel(0, l0);
+	tower1->setLODModel(1, l1);
+	tower1->setLODModel(2, l1);
+	tower1->setLODModel(3, NULL);
+	tower1->actualLOD	= & g_Statistics.tower1_lod;
+	tower1->LODvalue	= & g_Statistics.tower1_samples;
+	v_models.push_back(tower1);
+
+	// tower2
+	l0 = PGR2Model::loadFromFile(TOWER2_LOD0_FILENAME, &textureManager);
+	//l1 = PGR2Model::loadFromFile(TOWER2_LOD1_FILENAME, &textureManager);
+	//l2 = PGR2Model::loadFromFile(BRIDGE_LOD2_FILENAME, &textureManager);
+	l0->init();
+	//l1->init();
+	//l2->init();
+	tower2 = new LODmodel();
+	tower2->translate			(TOWER2_POSITION);
+	tower2->rotate				(TOWER2_ROTATION_AXIS,
+								 TOWER2_ROTATION_ANGLE);
+	tower2->scale				(TOWER2_SCALE);
+	tower2->tresholds =			 TOWER2_LOD_TRESHOLDS;	
+	tower2->setLODModel(0, l0);
+	tower2->setLODModel(1, l0);
+	tower2->setLODModel(2, l0);
+	tower2->setLODModel(3, NULL);
+	tower2->actualLOD	= & g_Statistics.tower2_lod;
+	tower2->LODvalue	= & g_Statistics.tower2_samples;
+	v_models.push_back(tower2);
+
+	// well
+	l0 = PGR2Model::loadFromFile(WELL_LOD0_FILENAME, &textureManager);
+	l1 = PGR2Model::loadFromFile(WELL_LOD1_FILENAME, &textureManager);
+	//l2 = PGR2Model::loadFromFile(BRIDGE_LOD2_FILENAME, &textureManager);
+	l0->init();
+	l1->init();
+	//l2->init();
+	well = new LODmodel();
+	well->translate			(WELL_POSITION);
+	well->rotate				(WELL_ROTATION_AXIS,
+								 WELL_ROTATION_ANGLE);
+	well->scale				(WELL_SCALE);
+	well->tresholds =			 WELL_LOD_TRESHOLDS;	
+	well->setLODModel(0, l0);
+	well->setLODModel(1, l1);
+	well->setLODModel(2, l1);
+	well->setLODModel(3, NULL);
+	well->actualLOD	= & g_Statistics.well_lod;
+	well->LODvalue	= & g_Statistics.well_samples;
+	v_models.push_back(well);
 
 	//p_model1 = PGR2Model::loadFromFile(HOUSE1_LOD0_FILENAME, &textureManager);
 	//p_model1->init();
