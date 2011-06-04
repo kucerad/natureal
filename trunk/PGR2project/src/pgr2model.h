@@ -78,6 +78,15 @@ class PGR2Model:
 			MaterialData	*material;
 			GLint			binormalLoc;
 			GLint			facenormalLoc;
+			GLint			diffuse_tex_loc;
+			GLint			height_tex_loc;
+			GLint			bump_tex_loc;
+			GLint			specular_tex_loc;
+
+			int				diffuse_tex_i;
+			int				height_tex_i;
+			int				bump_tex_i;
+			int				specular_tex_i;
 			Shader			*shader;
 			bool			hasHeightMap;
 			bool			hasBumpMap;
@@ -94,7 +103,7 @@ class PGR2Model:
 		
 		virtual ~PGR2Model();
 
-		static PGR2Model* loadFromFile(const char* file_name,  TextureManager *texManager);
+		static PGR2Model* loadFromFile(const char* file_name,  TextureManager *texManager, ShaderManager * shManager);
 		       bool       saveToFile(const char* file_name);
 		
 		// =======================================

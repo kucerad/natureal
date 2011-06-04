@@ -9,6 +9,7 @@
 #include "ShaderManager.h"
 #include "../common/Matrix4x4.h"
 #include "BBox.h"
+#include "Material.h"
 
 class SceneModel
 {
@@ -31,9 +32,12 @@ public:
 
 	void scale(v3 &scaleVector);
 
+
 	TextureManager *textureManager;
 	ShaderManager  *shaderManager;
 
+
+	Material * material;
 	m4	transformMatrix;
 	int fastModeLoc;
 	int	shadowMappingEnabledLoc;

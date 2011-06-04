@@ -219,10 +219,10 @@ void PGR2Model::init()
 		mesh->hasSpecularMap	= m_Materials[meshData.material_index].specular_tex_index>=0;
 		mesh->material			= & m_Materials[meshData.material_index];
 
-		mesh->shader = NULL;
+		//mesh->shader = NULL;
 		/*
 		if (mesh->hasHeightMap && mesh->hasBumpMap && mesh->hasSpecularMap){
-			mesh->shader = paralaxShader;
+			mesh->shader = parallaxShader;
 		} else if (mesh->hasBumpMap && mesh->hasSpecularMap){
 			mesh->shader = bumpShader;
 		} else if (mesh->hasSpecularMap){
@@ -338,7 +338,7 @@ void PGR2Model::init()
 		// vertices
 		glBufferSubData(GL_ARRAY_BUFFER, offsets[VERTEX], sizes[VERTEX], p_Vertices);
 		// normals
-		glBufferSubData(GL_ARRAY_BUFFER, offsets[NORMAL], sizes[NORMAL], p_FaceNormals);
+		glBufferSubData(GL_ARRAY_BUFFER, offsets[NORMAL], sizes[NORMAL], p_Normals);
 		//glBufferSubData(GL_ARRAY_BUFFER, offsets[NORMAL], sizes[NORMAL], p_Normals);
 		// binormals
 		glBufferSubData(GL_ARRAY_BUFFER, offsets[BINORMAL], sizes[BINORMAL], p_Binormals);
@@ -397,7 +397,6 @@ void PGR2Model::renderVBO(bool transparent_meshes)
 			glEnable(GL_ALPHA_TEST);
 			glDisable(GL_LIGHTING);
 		}
-		// TODO aply material
 		glMaterialfv(GL_FRONT_AND_BACK,   GL_AMBIENT, mesh->material->ambient);
         glMaterialfv(GL_FRONT_AND_BACK,   GL_DIFFUSE, mesh->material->diffuse);
         glMaterialfv(GL_FRONT_AND_BACK,  GL_SPECULAR, mesh->material->specular);
@@ -412,6 +411,7 @@ void PGR2Model::renderVBO(bool transparent_meshes)
 		// own pipeline
 		if (mesh->shader!=NULL){
 			mesh->shader->use(true);
+			mesh->shader->setTexture(mesh->diffuse_tex_loc, mesh->diffuse_tex_i);
 		}
 		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->eboId);
@@ -769,7 +769,7 @@ void PGR2Model::renderVertexNormals(float scale)
 //	Description: 
 //
 //---------------------------------------------------------------------------
-PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texManager)
+PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texManager, ShaderManager *shManager)
 {
    bool load_failed = true;
 
@@ -888,18 +888,28 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 		Mesh * mesh = pNewModel->meshes[iMesh];
 		mesh->isTransparent = false;
 		mesh->texCount = 0;
+		mesh->shader = shManager->getPhongShader();
+		mesh->binormalLoc	= mesh->shader->getLocation("a_binormal");
+		mesh->facenormalLoc = mesh->shader->getLocation("a_facenormal");
+
 		vector<int> tex_ids;
 		if (materialData->diffuse_tex_index		>= 0 ){
 			Texture * tex = new Texture();
 			tex->id = pNewModel->m_Textures[materialData->diffuse_tex_index].id;
 			tex->inShaderName = "diffuse_texture";
+			mesh->diffuse_tex_i = tex_ids.size();
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			mesh->diffuse_tex_loc = mesh->shader->getLocation(tex->inShaderName);
+
 		}
 		if (materialData->specular_tex_index	>= 0 ){
 			Texture * tex = new Texture();
 			tex->id = pNewModel->m_Textures[materialData->specular_tex_index].id;
 			tex->inShaderName = "specular_texture";
+			mesh->specular_tex_i = tex_ids.size();
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			mesh->specular_tex_loc = mesh->shader->getLocation(tex->inShaderName);
+
 			g_Specularmaps ++;
 
 		}
@@ -907,7 +917,10 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 			Texture * tex = new Texture();
 			tex->id = pNewModel->m_Textures[materialData->bump_tex_index].id;
 			tex->inShaderName = "bump_texture";
+			mesh->bump_tex_i = tex_ids.size();
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			mesh->bump_tex_loc = mesh->shader->getLocation(tex->inShaderName);
+
 			g_Bumpmaps++;
 
 		}
@@ -923,7 +936,10 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 			Texture * tex = new Texture();
 			tex->id = pNewModel->m_Textures[materialData->height_tex_index].id;
 			tex->inShaderName = "height_texture";
+			mesh->height_tex_i = tex_ids.size();
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			mesh->height_tex_loc = mesh->shader->getLocation(tex->inShaderName);
+
 			g_Heightmaps++;
 		}
 		mesh->texCount = tex_ids.size();

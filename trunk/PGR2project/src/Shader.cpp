@@ -251,6 +251,7 @@ bool Shader::linkTexture(Texture *texture)
 	uniform.location = loc;
 	uniform.value	 = texture->textureUnitNumber;
 	uniforms.push_back(uniform);
+	return true;
 }
 
 void Shader::printShaderInfoLog(GLuint objectId, bool bShaderProgram)
@@ -381,3 +382,8 @@ void	Shader::setBoolean(int locIndex, bool value)
 {
 	setUniform1i(locIndex, value?1:0);
 }
+void	Shader::setTexture(int location, int texUnitNumber)
+{
+	glUniform1i(location, texUnitNumber);
+}
+

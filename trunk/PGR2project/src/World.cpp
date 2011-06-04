@@ -235,7 +235,7 @@ void World::show_textures(){
 void World::init()
 {
 	printf("INITIALIZING WORLD:\n");
-
+	shaderManager.init();
 	// create LOD buffers
 	glGenTextures(1, &db_LOD_ID );
 		glBindTexture(GL_TEXTURE_2D, db_LOD_ID );
@@ -350,7 +350,7 @@ void World::init()
  	count = tree2_planter.plantVegetationCount(g_Tree2Count);
 	printf("count: %i\n", count);
 	
-	p_model1 = PGR2Model::loadFromFile(HOUSE1_LOD1_FILENAME, &textureManager);
+	p_model1 = PGR2Model::loadFromFile(HOUSE1_LOD1_FILENAME, &textureManager, &shaderManager);
 	p_model1->init();
 	initModels();
 	
@@ -366,9 +366,9 @@ void World::initModels()
 	PGR2Model * l1;
 	PGR2Model * l2;
 	// house 1
-	l0 = PGR2Model::loadFromFile(HOUSE1_LOD0_FILENAME, &textureManager);
-	l1 = PGR2Model::loadFromFile(HOUSE1_LOD1_FILENAME, &textureManager);
-	l2 = PGR2Model::loadFromFile(HOUSE1_LOD2_FILENAME, &textureManager);
+	l0 = PGR2Model::loadFromFile(HOUSE1_LOD0_FILENAME, &textureManager, &shaderManager);
+	l1 = PGR2Model::loadFromFile(HOUSE1_LOD1_FILENAME, &textureManager, &shaderManager);
+	l2 = PGR2Model::loadFromFile(HOUSE1_LOD2_FILENAME, &textureManager, &shaderManager);
 	l0->init();
 	
 	l1->init();
@@ -390,9 +390,9 @@ void World::initModels()
 	v_models.push_back(house1);
 	
 	// house 2
-	l0 = PGR2Model::loadFromFile(HOUSE2_LOD0_FILENAME, &textureManager);
-	l1 = PGR2Model::loadFromFile(HOUSE2_LOD1_FILENAME, &textureManager);
-	l2 = PGR2Model::loadFromFile(HOUSE2_LOD2_FILENAME, &textureManager);
+	l0 = PGR2Model::loadFromFile(HOUSE2_LOD0_FILENAME, &textureManager, &shaderManager);
+	l1 = PGR2Model::loadFromFile(HOUSE2_LOD1_FILENAME, &textureManager, &shaderManager);
+	l2 = PGR2Model::loadFromFile(HOUSE2_LOD2_FILENAME, &textureManager, &shaderManager);
 	l0->init();
 	l1->init();
 	l2->init();
@@ -411,8 +411,8 @@ void World::initModels()
 	v_models.push_back(house2);
 
 	// bridge
-	l0 = PGR2Model::loadFromFile(BRIDGE_LOD0_FILENAME, &textureManager);
-	l1 = PGR2Model::loadFromFile(BRIDGE_LOD1_FILENAME, &textureManager);
+	l0 = PGR2Model::loadFromFile(BRIDGE_LOD0_FILENAME, &textureManager, &shaderManager);
+	l1 = PGR2Model::loadFromFile(BRIDGE_LOD1_FILENAME, &textureManager, &shaderManager);
 	//l2 = PGR2Model::loadFromFile(BRIDGE_LOD2_FILENAME, &textureManager);
 	l0->init();
 	l1->init();
@@ -432,8 +432,8 @@ void World::initModels()
 	v_models.push_back(bridge);
 
 	// tower1
-	l0 = PGR2Model::loadFromFile(TOWER1_LOD0_FILENAME, &textureManager);
-	l1 = PGR2Model::loadFromFile(TOWER1_LOD1_FILENAME, &textureManager);
+	l0 = PGR2Model::loadFromFile(TOWER1_LOD0_FILENAME, &textureManager, &shaderManager);
+	l1 = PGR2Model::loadFromFile(TOWER1_LOD1_FILENAME, &textureManager, &shaderManager);
 	//l2 = PGR2Model::loadFromFile(BRIDGE_LOD2_FILENAME, &textureManager);
 	l0->init();
 	l1->init();
@@ -453,7 +453,7 @@ void World::initModels()
 	v_models.push_back(tower1);
 
 	// tower2
-	l0 = PGR2Model::loadFromFile(TOWER2_LOD0_FILENAME, &textureManager);
+	l0 = PGR2Model::loadFromFile(TOWER2_LOD0_FILENAME, &textureManager, &shaderManager);
 	//l1 = PGR2Model::loadFromFile(TOWER2_LOD1_FILENAME, &textureManager);
 	//l2 = PGR2Model::loadFromFile(BRIDGE_LOD2_FILENAME, &textureManager);
 	l0->init();
@@ -474,8 +474,8 @@ void World::initModels()
 	v_models.push_back(tower2);
 
 	// well
-	l0 = PGR2Model::loadFromFile(WELL_LOD0_FILENAME, &textureManager);
-	l1 = PGR2Model::loadFromFile(WELL_LOD1_FILENAME, &textureManager);
+	l0 = PGR2Model::loadFromFile(WELL_LOD0_FILENAME, &textureManager, &shaderManager);
+	l1 = PGR2Model::loadFromFile(WELL_LOD1_FILENAME, &textureManager, &shaderManager);
 	//l2 = PGR2Model::loadFromFile(BRIDGE_LOD2_FILENAME, &textureManager);
 	l0->init();
 	l1->init();
@@ -500,6 +500,10 @@ void World::initModels()
 }
 void World::drawModels()
 {
+	glPushMatrix();
+	glTranslatef(50.f, 10.f, 0.f);
+		p_model1->render(false);
+	glPopMatrix();
 	// draw other models...
 	int count = v_models.size();
 	for (int i=0; i < count; i++){

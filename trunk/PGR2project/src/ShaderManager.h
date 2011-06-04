@@ -19,7 +19,7 @@ public:
 					GLint  geometry_vertices_out,
 					GLenum geometry_primitive_in,
 					GLenum geometry_primitive_out);
-
+	void init();
 	void use(int shaderId, bool turnOn);
 	Shader* getShader(int shaderId);
 
@@ -31,7 +31,7 @@ private:
 
 	Shader* bumpmapShader;
 	Shader* phongShader;
-	Shader* paralaxShader;
+	Shader* parallaxShader;
 	vector<Shader*> shaders;
 };
 
