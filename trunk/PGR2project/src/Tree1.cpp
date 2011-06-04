@@ -25,6 +25,7 @@ Tree1::~Tree1(void)
 	glDeleteBuffers(1, &vboId);
 	printf("Tree1 is deleted\n");
 }
+
 void Tree1::bakeToVBO()
 {
 	if (vboId>0){
@@ -138,21 +139,6 @@ void Tree1::init()
 }
 
 void Tree1::update(double time)
-{
-
-}
-
-void Tree1::translate(v3 &movVector)
-{
-	
-}
-
-void Tree1::rotate(v3 &axis, float angleRad)
-{
-	
-}
-
-void Tree1::scale(v3 &scaleVector)
 {
 
 }

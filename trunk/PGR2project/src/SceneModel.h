@@ -7,6 +7,8 @@
 #include "utils.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"
+#include "../common/Matrix4x4.h"
+#include "BBox.h"
 
 class SceneModel
 {
@@ -17,24 +19,28 @@ public:
 
 	virtual void draw()=0;
 
+	virtual void drawForLOD()=0;
+
 	virtual void init()=0;
 
 	virtual void update(double time)=0;
 
-	virtual void translate(v3 &movVector)=0;
+	void translate(v3 &movVector);
 
-	virtual void rotate(v3 &axis, float angleRad)=0;
+	void rotate(v3 &axis, float angleRad);
 
-	virtual void scale(v3 &scaleVector)=0;
+	void scale(v3 &scaleVector);
 
 	TextureManager *textureManager;
 	ShaderManager  *shaderManager;
 
+	m4	transformMatrix;
 	int fastModeLoc;
 	int	shadowMappingEnabledLoc;
 	int LCmatrixLoc;
 	int LMV_CVImatrixLoc;
 	int LPmatrixLoc;
+	BBox * bbox;
 };
 #endif
 

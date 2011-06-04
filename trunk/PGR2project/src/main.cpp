@@ -38,6 +38,11 @@ int g_WinHeight				= 600;   // Window height
 double g_time				= 0.0;
 CTimer						timer;
 Statistics					g_Statistics;
+int g_Bumpmaps		= 0;
+int g_Heightmaps	= 0;
+int g_Specularmaps	= 0;
+int g_Alphamaps		= 0;
+
 
 #include "pgr2model.h"
 #include <assert.h>
@@ -47,6 +52,9 @@ Statistics					g_Statistics;
 
 bool tqAvailable			= false;
 GLuint tqid					= 0;
+bool pqAvailable			= false;
+GLuint pqid					= 0;
+
 GLint result_available		= 0;
 
 v3 g_light_position			= LIGHT_POSITION;
@@ -124,7 +132,12 @@ void cbDisplay()
    
    g_time=timer.RealTime();
    world.update(g_time);
-   
+   /*
+   if (pqAvailable){
+	   glBeginQuery(GL_PRIMITIVES_GENERATED, pqid);
+   }
+   */
+
    // if timer query available
    if (tqAvailable){
 	    // measure on GPU
@@ -149,9 +162,14 @@ void cbDisplay()
 		double timeDiff = timer.RealTime() - g_time;
 		g_Statistics.fps = 1.0 / (timeDiff);
    }
-   
-
-   
+   /*
+    if (pqAvailable){
+		glEndQuery(GL_PRIMITIVES_GENERATED);
+		GLuint64EXT count = 0;
+		glGetQueryObjectui64vEXT(pqid, GL_QUERY_RESULT, &count); // blocking CPU
+		g_Statistics.primitives = count;
+	}
+   */
 }
 
 void initApp()
@@ -180,6 +198,10 @@ void initApp()
 		tqAvailable = true;
 		glGenQueries(1, &tqid);
 	}
+	
+	pqAvailable = true;
+	glGenQueries(1, &pqid);
+
 
 }
 void deinitApp()
@@ -192,6 +214,9 @@ void deinitApp()
 	//world.~World();
 	if (tqAvailable){
 		glDeleteQueries(1, &tqid);
+	}
+	if (pqAvailable){
+		glDeleteQueries(1, &pqid);
 	}
 	printf("deinit done, bye\n");
 	//system("PAUSE");
@@ -356,7 +381,57 @@ void initGUI()
       " label='load model' group=Model help='Load new model.' ");
    */
    TwAddVarRO(controlBar, "fps", TW_TYPE_FLOAT, &(g_Statistics.fps), 
-	   " label='fps' group=Render help='frames per second' ");
+	   " label='fps' group=Statistics help='frames per second' ");
+   TwAddVarRO(controlBar, "primitives", TW_TYPE_INT32, &(g_Statistics.primitives), 
+	   " label='primitives' group=Statistics help='primitives generated' ");
+   
+   // house 1
+   TwAddVarRO(controlBar, "house1_lod", TW_TYPE_INT32, &(g_Statistics.house1_lod), 
+	   " label='house1_lod' group=Statistics help='house level of detail' ");
+   TwAddVarRO(controlBar, "house1_samples", TW_TYPE_INT32, &(g_Statistics.house1_samples), 
+	   " label='house1_samples' group=Statistics help='house samples generated on bbox' ");
+   // house2
+   TwAddVarRO(controlBar, "house2_lod", TW_TYPE_INT32, &(g_Statistics.house2_lod), 
+	   " label='house2_lod' group=Statistics help='house level of detail' ");
+   TwAddVarRO(controlBar, "house2_samples", TW_TYPE_INT32, &(g_Statistics.house2_samples), 
+	   " label='house2_samples' group=Statistics help='house samples generated on bbox' ");
+   // bridge
+   TwAddVarRO(controlBar, "bridge_lod", TW_TYPE_INT32, &(g_Statistics.bridge_lod), 
+	   " label='bridge_lod' group=Statistics help='bridge level of detail' ");
+   TwAddVarRO(controlBar, "house1_samples", TW_TYPE_INT32, &(g_Statistics.bridge_samples), 
+	   " label='bridge_samples' group=Statistics help='bridge samples generated on bbox' ");
+   // tower 1
+   TwAddVarRO(controlBar, "tower1_lod", TW_TYPE_INT32, &(g_Statistics.tower1_lod), 
+	   " label='tower1_lod' group=Statistics help='tower1 level of detail' ");
+   TwAddVarRO(controlBar, "tower1_samples", TW_TYPE_INT32, &(g_Statistics.tower1_samples), 
+	   " label='tower1_samples' group=Statistics help='tower1 samples generated on bbox' ");
+   // tower 2
+   TwAddVarRO(controlBar, "tower2_lod", TW_TYPE_INT32, &(g_Statistics.tower2_lod), 
+	   " label='tower2_lod' group=Statistics help='tower2 level of detail' ");
+   TwAddVarRO(controlBar, "tower2_samples", TW_TYPE_INT32, &(g_Statistics.tower2_samples), 
+	   " label='tower2_samples' group=Statistics help='tower2 samples generated on bbox' ");
+   // eggbox
+   TwAddVarRO(controlBar, "eggbox_lod", TW_TYPE_INT32, &(g_Statistics.eggbox_lod), 
+	   " label='eggbox_lod' group=Statistics help='eggbox level of detail' ");
+   TwAddVarRO(controlBar, "eggbox_samples", TW_TYPE_INT32, &(g_Statistics.eggbox_samples), 
+	   " label='eggbox_samples' group=Statistics help='eggbox samples generated on bbox' ");
+   // haywagon
+   TwAddVarRO(controlBar, "haywagon_lod", TW_TYPE_INT32, &(g_Statistics.haywagon_lod), 
+	   " label='haywagon_lod' group=Statistics help='haywagon level of detail' ");
+   TwAddVarRO(controlBar, "house1_samples", TW_TYPE_INT32, &(g_Statistics.haywagon_samples), 
+	   " label='haywagon_samples' group=Statistics help='haywagon samples generated on bbox' ");
+   // well
+   TwAddVarRO(controlBar, "well_lod", TW_TYPE_INT32, &(g_Statistics.well_lod), 
+	   " label='well_lod' group=Statistics help='well level of detail' ");
+   TwAddVarRO(controlBar, "house1_samples", TW_TYPE_INT32, &(g_Statistics.well_samples), 
+	   " label='well_samples' group=Statistics help='well samples generated on bbox' ");
+  
+
+
+   
+   
+   
+   
    /*TwAddVarRW(controlBar, "x_translate", TW_TYPE_FLOAT, &(g_light_position.x), 
 	   " label='x' group=Light help='x translation' ");
    TwAddVarRW(controlBar, "y_translate", TW_TYPE_FLOAT, &(g_light_position.y), 
@@ -364,7 +439,9 @@ void initGUI()
    TwAddVarRW(controlBar, "z_translate", TW_TYPE_FLOAT, &(g_light_position.z), 
 	   " label='z' group=Light help='z translation' ");   
 	   */
-   
+   TwAddVarRW(controlBar, "godrays", TW_TYPE_BOOLCPP, &(g_godraysEnabled), 
+	   " label='God rays enabled' group=Light help='enable/disable god rays' ");  
+
    TwAddVarRW(controlBar, "fbos", TW_TYPE_BOOLCPP, &(g_showTextures), 
 	   " label='Show FBOs' group=Debug help='enable/disable FBO display' "); 
    TwAddVarCB(controlBar, "Tree 2 count", TW_TYPE_INT16, cbSetTree2Count, cbGetTree2Count, NULL, " group='Vegetation' min=0 max=10000 step=1 ");
@@ -392,9 +469,7 @@ void initGUI()
    TwAddVarCB(controlBar, "Grass MIN", TW_TYPE_FLOAT, cbSetGrassMin, cbGetGrassMin, NULL, " group='Levels' min=-5 max=30 step=1 ");
    TwAddVarCB(controlBar, "Grass MAX", TW_TYPE_FLOAT, cbSetGrassMax, cbGetGrassMax, NULL, " group='Levels' min=-5 max=30 step=1 ");
 
-   TwAddVarRW(controlBar, "godrays", TW_TYPE_BOOLCPP, &(g_godraysEnabled), 
-	   " label='God rays enabled' group=Light help='enable/disable god rays' ");  
-
+  
    //TwAddVarRW(controlBar, "vertex_normals", TW_TYPE_BOOLCPP, 
    //   &g_ShowVertexNormals, " label='vertex normals' \
    //   group=Render help='Show vertex normal, tangent, binormal.' ");

@@ -22,7 +22,16 @@ public:
 
 	void use(int shaderId, bool turnOn);
 	Shader* getShader(int shaderId);
+
+	Shader* getBumpMapShader();
+	Shader* getPhongShader();
+	Shader* getParallaxShader();
 	
+private:
+
+	Shader* bumpmapShader;
+	Shader* phongShader;
+	Shader* paralaxShader;
 	vector<Shader*> shaders;
 };
 

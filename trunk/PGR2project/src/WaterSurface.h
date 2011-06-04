@@ -14,6 +14,8 @@ public:
 
 	void draw();
 
+	virtual void drawForLOD();
+
 	void init();
 
 	void update(double time);

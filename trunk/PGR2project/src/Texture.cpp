@@ -22,10 +22,9 @@ void Texture::activate()
 
 void Texture::deactivate()
 {
-	glActiveTexture(textureUnit);
-	glClientActiveTexture(textureUnit);
+	glActiveTexture(textureUnit);	
 	glDisable(GL_TEXTURE_2D);
-	
+	glClientActiveTexture(GL_TEXTURE0);
 }
 
 

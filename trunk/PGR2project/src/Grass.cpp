@@ -21,12 +21,12 @@ Grass::Grass(Grass* copy):
 
 
 }
-
 Grass::~Grass(void)
 {
 	glDeleteBuffers(1, &vboId);
 	printf("Grass is deleted\n");
 }
+
 void Grass::bakeToVBO()
 {
 	if (vboId>0){
@@ -141,21 +141,6 @@ void Grass::init()
 }
 
 void Grass::update(double time)
-{
-
-}
-
-void Grass::translate(v3 &movVector)
-{
-	
-}
-
-void Grass::rotate(v3 &axis, float angleRad)
-{
-	
-}
-
-void Grass::scale(v3 &scaleVector)
 {
 
 }

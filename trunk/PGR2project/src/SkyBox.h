@@ -24,15 +24,11 @@ public:
 
 	void draw();
 
+	virtual void drawForLOD(); 
+
 	void init();
 
 	void update(double time);
-
-	void translate(v3 &movVector);
-
-	void rotate(v3 &axis, float angleRad);
-
-	void scale(v3 &scaleVector);
 
 	void loadFromFiles(string filename);
 	

@@ -17,7 +17,28 @@ enum CameraMode{
 struct Statistics{
 	float	fps;
 	int		primitives;
+	int		house1_lod;
+	int		house1_samples;
+	int		house2_lod;
+	int		house2_samples;
+	int		bridge_lod;
+	int		bridge_samples;
+	int		tower1_lod;
+	int		tower1_samples;
+	int		tower2_lod;
+	int		tower2_samples;
+	int		eggbox_lod;
+	int		eggbox_samples;
+	int		haywagon_lod;
+	int		haywagon_samples;
+	int		well_lod;
+	int		well_samples;
+	//int		house_lod;
+	//int		house_samples;
+
+
 };
+static int g_nula = 0;
 
 extern	GLint					g_WinWidth;   // Window width
 extern	GLint					g_WinHeight;   // Window height
@@ -44,4 +65,10 @@ extern	v4						g_terrain_border_widths;
 extern int						g_GrassCount;
 extern int						g_Tree1Count;
 extern int						g_Tree2Count;
+
+extern int g_Bumpmaps	   ;
+extern int g_Heightmaps	   ;
+extern int g_Specularmaps  ;
+extern int g_Alphamaps	   ;
+
 #endif
