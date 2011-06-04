@@ -169,7 +169,7 @@ void Terrain::drawUnderWater(){
 	shader->setUniform4v(border_values_location, g_terrain_border_values);
 	shader->setUniform4v(border_widths_location, g_terrain_border_widths);
 	
-	shader->setUniform2f(heightInterval_location,-1000.f, WATER_HEIGHT);
+	shader->setUniform2f(heightInterval_location,-1000.f, WATER_HEIGHT+1.f);
 	shader->setUniformMatrix(LMV_CVImatrixLoc, g_LightMVCameraVInverseMatrix );
 	shader->setUniformMatrix(LPmatrixLoc, g_LightPMatrix );
 		

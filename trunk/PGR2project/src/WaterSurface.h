@@ -20,12 +20,6 @@ public:
 
 	void update(double time);
 
-	void translate(v3 &movVector);
-
-	void rotate(v3 &axis, float angleRad);
-
-	void scale(v3 &scaleVector);
-
 	void windowSizeChanged(int width, int height);
 	void beginReflection();
 	void endReflection();
@@ -34,16 +28,18 @@ public:
 
 
 	void showTextures();
-	GLuint fb_refl_ID;
-	GLuint cb_refl_ID;
-	GLuint db_refl_ID;
-	GLuint fb_refr_ID;
-	GLuint cb_refr_ID;
-	GLuint db_refr_ID;
+	GLuint	fb_refl_ID;
+	GLuint	cb_refl_ID;
+	GLuint	db_refl_ID;
+	GLuint	fb_refr_ID;
+	GLuint	cb_refr_ID;
+	GLuint	db_refr_ID;
+	int		dudv_ID;
 	Shader* shader;
 	int		water_reflection_loc;
 	int		water_refraction_loc;
 	int		water_depth_loc;
+	int		water_dudv_loc;
 	v4		viewPos;
 	v4		lightPos;
 	v4		waterColor;
