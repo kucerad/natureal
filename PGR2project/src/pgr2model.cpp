@@ -361,30 +361,27 @@ void PGR2Model::init()
 	bbox = new BBox(minCorner, maxCorner, v3(0.0, 0.0, 0.0));
 }
 
+void PGR2Model::drawForLOD()
+{
+	glDisable(GL_CULL_FACE);
+	bbox->drawMode = GL_FILL;
+	bbox->draw();
+	bbox->drawMode = GL_LINE;
+	glEnable(GL_CULL_FACE);
+}
+
 void PGR2Model::draw()
 {
 	renderVBO(true);
-	bbox->drawMode = GL_FILL;
-	bbox->draw();
-
 }
 	 
 void PGR2Model::update(double time)
 {
 }
-	 
-void PGR2Model::translate(v3 &movVector)
-{
-}
-	
-void PGR2Model::rotate(v3 &axis, float angleRad)
-{
-}
-	
-void PGR2Model::scale(v3 &scaleVector)
-{
-}	
 
+int PGR2Model::getNumTextures(){
+	return m_NumTextures;
+}
 
 void PGR2Model::renderVBO(bool transparent_meshes)
 {
@@ -455,7 +452,7 @@ void PGR2Model::renderVBO(bool transparent_meshes)
 			// for each texture DEACTIVATE
 			
 			for (i=0; i<mesh->texCount; i++){
-				//textureManager->deactivateTexture(mesh->texIds[i]);
+				textureManager->deactivateTexture(mesh->texIds[i]);
 			}
 			
 			if (mesh->shader!=NULL){
@@ -903,12 +900,16 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 			tex->id = pNewModel->m_Textures[materialData->specular_tex_index].id;
 			tex->inShaderName = "specular_texture";
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			g_Specularmaps ++;
+
 		}
 		if (materialData->bump_tex_index		>= 0 ){
 			Texture * tex = new Texture();
 			tex->id = pNewModel->m_Textures[materialData->bump_tex_index].id;
 			tex->inShaderName = "bump_texture";
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			g_Bumpmaps++;
+
 		}
 		if (materialData->alpha_tex_index		>= 0 ){
 			mesh->isTransparent = true;
@@ -916,12 +917,14 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 			tex->id = pNewModel->m_Textures[materialData->alpha_tex_index].id;
 			tex->inShaderName = "alpha_texture";
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			g_Alphamaps++;
 		}
 		if (materialData->height_tex_index		>= 0 ){
 			Texture * tex = new Texture();
 			tex->id = pNewModel->m_Textures[materialData->height_tex_index].id;
 			tex->inShaderName = "height_texture";
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
+			g_Heightmaps++;
 		}
 		mesh->texCount = tex_ids.size();
 		// textures in texmanager... 

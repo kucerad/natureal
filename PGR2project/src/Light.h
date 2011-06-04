@@ -11,6 +11,8 @@ public:
 	~Light(void);
 	void draw();
 
+	virtual void drawForLOD();
+
 	void init();
 
 	void update(double time);

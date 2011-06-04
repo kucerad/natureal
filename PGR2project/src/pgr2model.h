@@ -102,15 +102,11 @@ class PGR2Model:
 
 		virtual void draw();
 
+		virtual void drawForLOD();
+
 		virtual void init();
 
 		virtual void update(double time);
-
-		virtual void translate(v3 &movVector);
-
-		virtual void rotate(v3 &axis, float angleRad);
-
-		virtual void scale(v3 &scaleVector);	
 
 		// ====================================
 
@@ -161,6 +157,7 @@ class PGR2Model:
 		GLuint  teboCount;
 
 public:
+		int getNumTextures();
 		bool compare(const PGR2Model& m);
 
 		v3 minCorner;
@@ -169,8 +166,6 @@ public:
 		Shader * paralaxShader;
 		Shader * bumpShader;
 		Shader * specularShader;
-
-		BBox * bbox;
 };
 
 

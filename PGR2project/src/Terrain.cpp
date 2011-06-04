@@ -31,6 +31,23 @@ Terrain::~Terrain(void)
 	SAFE_DELETE_ARRAY_PTR(elements);
 }
 
+
+void  Terrain::drawForLOD()
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,eboId);
+	glBindBuffer(GL_ARRAY_BUFFER, vboId); 
+		// enable states
+		glEnableClientState(GL_VERTEX_ARRAY);
+		// draw VBOs...
+		glVertexPointer(channels[VERTEX], glTypes[VERTEX], 0, BUFFER_OFFSET(offsets[VERTEX]));
+		glDrawElements(GL_TRIANGLE_STRIP, eboCount, GL_UNSIGNED_INT, BUFFER_OFFSET(offsets[INDEX]));
+		// disable
+		glDisableClientState(GL_VERTEX_ARRAY);
+	// unbind buffers
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 void Terrain::draw()
 {	
 	// bind textures

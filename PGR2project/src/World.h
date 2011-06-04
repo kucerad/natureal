@@ -2,6 +2,7 @@
 #define _WORLD_H
 
 #include "globals.h"
+#include "utils.h"
 #include "scenemodel.h"
 #include "Terrain.h"
 #include "SkyBox.h"
@@ -17,6 +18,7 @@
 #include "WaterSurface.h"
 #include "GodRays.h"
 #include "pgr2model.h"
+#include "LODmodel.h"
 
 class World
 {
@@ -29,7 +31,15 @@ public:
 	void drawForLOD();
 	void windowSizeChanged(int width, int height);
 
+	void startLODBuffer();
+	void endLODBuffer();
+
 	void init();
+
+	void initModels();
+	void drawModels();
+
+	void deinitModels();
 
 	void update(double time);
 
@@ -67,6 +77,25 @@ public:
 	Planter				grass_planter;
 	Planter				tree1_planter;
 	Planter				tree2_planter;
+
+private:
+	// models:
+	LODmodel			*house1;
+	LODmodel			*house2;
+	LODmodel			*house3;
+	LODmodel			*bridge;
+	LODmodel			*tower1;
+	LODmodel			*tower2;
+	LODmodel			*eggbox;
+	LODmodel			*haywagon;
+	LODmodel			*well;
+
+	GLuint				fb_LOD_ID;
+	GLuint				cb_LOD_ID;
+	GLuint				db_LOD_ID;
+
+	void show_textures();
+	void drawForShadowmapping();
 };
 
 #endif

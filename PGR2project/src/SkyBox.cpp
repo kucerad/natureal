@@ -26,6 +26,10 @@ SkyBox::~SkyBox(void)
 	// delete plane
 }
 
+void SkyBox::drawForLOD()
+{
+}
+
 void SkyBox::draw()
 {
 	glDisable(GL_LIGHTING);
@@ -104,21 +108,6 @@ void SkyBox::init()
 }
 
 void SkyBox::update(double time)
-{
-
-}
-
-void SkyBox::translate(v3 &movVector)
-{
-
-}
-
-void SkyBox::rotate(v3 &axis, float angleRad)
-{
-
-}
-
-void SkyBox::scale(v3 &scaleVector)
 {
 
 }

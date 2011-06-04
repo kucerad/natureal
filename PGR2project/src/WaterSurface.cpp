@@ -18,6 +18,19 @@ WaterSurface::~WaterSurface(void)
 	glDeleteTextures(1, &db_refr_ID);
 }
 
+void WaterSurface::drawForLOD()
+{
+	glDisable(GL_TEXTURE_2D);
+	glPushMatrix();
+	glScalef(500.f, 1.f, 500.f);
+	glDisable(GL_CULL_FACE);
+		glColor3f(0.f, 0.f, 1.f);
+		drawPlane();
+	glEnable(GL_CULL_FACE);
+	glPopMatrix();
+	glEnable(GL_TEXTURE_2D);
+}
+
 void WaterSurface::draw()
 {
 	shader->use(true);

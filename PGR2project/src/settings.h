@@ -18,6 +18,7 @@
 
 #define TIME_STEP 0.1f
 #define TIME_QUERY_EXTENSION	"GL_EXT_timer_query"
+#define PRIMITIVES_QUERY_EXTENSION ""
 
 
 #define HEIGHTMAP_SOURCE		"textures/terrain/terrain2.png"
@@ -94,12 +95,74 @@
 #define HUMAN_POSITION          v3(0.0, 10.0, 0.0)
 #define HUMAN_DIRECTION			v3(0.0, 0.0, -1.0)
 
-//#define MODEL1_FILENAME			"models/Walls&Towers/watch2.pgr2"
-//#define MODEL1_FILENAME			"models/Walls&Towers/bridge.pgr2"
-//#define MODEL1_FILENAME			"models/MedievalVillage/haywagon.pgr2"
-#define MODEL1_FILENAME			"models/MedievalVillage/house4.pgr2"
-//#define MODEL1_FILENAME			"models/MedievalVillage/egg_box.pgr2"
+//#define MODEL1_FILENAME		"models/Walls&Towers/watch2.pgr2"
+//#define MODEL1_FILENAME		"models/Walls&Towers/bridge.pgr2"
+//#define MODEL1_FILENAME		"models/MedievalVillage/haywagon.pgr2"
+//#define MODEL1_FILENAME		"models/MedievalVillage/house4.pgr2"
+#define HOUSE1_LOD0_FILENAME	"models/MedievalVillage/house4.pgr2"
+#define HOUSE1_LOD1_FILENAME	"models/MedievalVillage/house4_lod1.pgr2"
+#define HOUSE1_LOD2_FILENAME	"models/MedievalVillage/house4_lod2.pgr2"
+#define HOUSE1_POSITION			v3(0.f, 4.f, 0.f)
+#define HOUSE1_ROTATION_AXIS	v3(0.f, 1.f, 0.f)
+#define HOUSE1_ROTATION_ANGLE	0.0f
+#define HOUSE1_SCALE			v3(0.8f, 0.8f, 0.8f)
+#define HOUSE1_LOD_TRESHOLDS	v3(15000, 10000, 5000)
 
+#define HOUSE2_LOD0_FILENAME	"models/MedievalVillage/house1.pgr2"
+#define HOUSE2_LOD1_FILENAME	"models/MedievalVillage/house1_lod1.pgr2"
+#define HOUSE2_LOD2_FILENAME	"models/MedievalVillage/house1_lod2.pgr2"
+#define HOUSE2_POSITION			v3(20.f, 5.f, 20.f)
+#define HOUSE2_ROTATION_AXIS	v3(0.f, 1.f, 0.f)
+#define HOUSE2_ROTATION_ANGLE	0.0f
+#define HOUSE2_SCALE			v3(0.8f, 0.8f, 0.8f)
+#define HOUSE2_LOD_TRESHOLDS	v3(15000, 10000, 5000)
+
+#define BRIDGE_LOD0_FILENAME	"models/Walls&Towers/bridge.pgr2"
+#define BRIDGE_LOD1_FILENAME	"models/Walls&Towers/bridge_LOD.pgr2"
+#define BRIDGE_POSITION			v3(-20.0, 0.0, 0.0)
+#define BRIDGE_ROTATION_AXIS	v3(0.0, 1.0, 0.0)
+#define BRIDGE_ROTATION_ANGLE	0.0f
+#define BRIDGE_SCALE			v3(1.0, 1.0, 1.0)
+#define BRIDGE_LOD_TRESHOLDS	v3(1000000, 10000, 1000)
+
+#define TOWER1_LOD0_FILENAME	"models/Walls&Towers/tower_4.pgr2"
+#define TOWER1_LOD1_FILENAME	"models/Walls&Towers/tower_4_LOD.pgr2"
+#define TOWER1_POSITION			v3(0.0, 0.0, 0.0)
+#define TOWER1_ROTATION_AXIS	v3(0.0, 1.0, 0.0)
+#define TOWER1_ROTATION_ANGLE	0.0f
+#define TOWER1_SCALE			v3(1.0, 1.0, 1.0)
+#define TOWER1_LOD_TRESHOLDS	v3(1000000, 10000, 1000)
+
+#define TOWER2_LOD0_FILENAME	"models/Walls&Towers/watch2.pgr2"
+#define TOWER2_POSITION			v3(0.0, 0.0, 0.0)
+#define TOWER2_ROTATION_AXIS	v3(0.0, 1.0, 0.0)
+#define TOWER2_ROTATION_ANGLE	0.0f
+#define TOWER2_SCALE			v3(1.0, 1.0, 1.0)
+#define TOWER2_LOD_TRESHOLDS	v3(1000000, 10000, 1000)
+
+#define EGGBOX_LOD0_FILENAME	"models/MedievalVillage/egg_box.pgr2"
+#define EGGBOX_LOD1_FILENAME	"models/MedievalVillage/egg_box_lod.pgr2"
+#define EGGBOX_POSITION			v3(0.0, 0.0, 0.0)
+#define EGGBOX_ROTATION_AXIS	v3(0.0, 1.0, 0.0)
+#define EGGBOX_ROTATION_ANGLE	0.0f
+#define EGGBOX_SCALE			v3(1.0, 1.0, 1.0)
+#define EGGBOX_LOD_TRESHOLDS	v3(1000000, 10000, 1000)
+
+#define HAYWAGON_LOD0_FILENAME	"models/MedievalVillage/haywagon.pgr2"
+#define HAYWAGON_LOD1_FILENAME	"models/MedievalVillage/haywagon_lod.pgr2"
+#define HAYWAGON_POSITION			v3(0.0, 0.0, 0.0)
+#define HAYWAGON_ROTATION_AXIS	v3(0.0, 1.0, 0.0)
+#define HAYWAGON_ROTATION_ANGLE	0.0f
+#define HAYWAGON_SCALE			v3(1.0, 1.0, 1.0)
+#define HAYWAGON_LOD_TRESHOLDS	v3(1000000, 10000, 1000)
+
+#define WELL_LOD0_FILENAME		"models/DesertOasis/well2.pgr2"
+#define WELL_LOD1_FILENAME		"models/DesertOasis/well2_lod.pgr2"
+#define WELL_POSITION			v3(-5.0, 2.0, 0.0)
+#define WELL_ROTATION_AXIS		v3(0.0, 1.0, 0.0)
+#define WELL_ROTATION_ANGLE		0.0f
+#define WELL_SCALE				v3(1.0, 1.0, 1.0)
+#define WELL_LOD_TRESHOLDS		v3(1000000, 10000, 1000)
 
 
 static enum Attribs{
@@ -128,6 +191,7 @@ static enum Attribs{
 	VBO_ATR_COUNT
 };
 
+#define LOD_REDUCTION			1.0
 
 
 #define GODRAYS_VS_FILENAME		"shaders/godrays/godrays_vs.glsl"

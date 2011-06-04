@@ -144,6 +144,11 @@ void Light::endShadowMap(){
 	showTextures();
 }
 
+void Light::drawForLOD()
+{
+	draw();
+}
+
 void Light::draw()
 {
 	glPushAttrib(GL_LIGHTING_BIT);

@@ -108,6 +108,7 @@
     <ClInclude Include="src\IniSettings.h" />
     <ClInclude Include="src\ioutils.h" />
     <ClInclude Include="src\Light.h" />
+    <ClInclude Include="src\LODmodel.h" />
     <ClInclude Include="src\math.h" />
     <ClInclude Include="src\pgr2model.h" />
     <ClInclude Include="src\Planter.h" />
@@ -138,6 +139,7 @@
     <ClCompile Include="src\IniSettings.cpp" />
     <ClCompile Include="src\ioutils.cpp" />
     <ClCompile Include="src\Light.cpp" />
+    <ClCompile Include="src\LODmodel.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pgr2model.cpp" />
     <ClCompile Include="src\Planter.cpp" />
