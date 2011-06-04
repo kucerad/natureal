@@ -136,6 +136,8 @@ void main()
 	}
 
 	vec4 color = gl_FrontLightModelProduct.sceneColor + (Ia + Id)*tex_color +Is;
+	//vec4 color = (Ia + Id)*tex_color +Is;
+	//vec4 color = gl_FrontLightModelProduct.sceneColor;// + (Ia + Id)*tex_color +Is;
 
 	gl_FragData[0] = shade * color;// mix(gl_Fog.color, color, fogFactor );
 	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);

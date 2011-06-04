@@ -49,6 +49,7 @@ public:
 	void    setUniform4v(int locIndex, v4 value);
 	void	setUniformMatrix(int locIndex, m4 & matrix);
 	void	setBoolean(int locIndex, bool value);
+	void	setTexture(int location, int texUnitNumber);
 
 	GLint	timeLocation;
 	vector<GLint>	 locations;

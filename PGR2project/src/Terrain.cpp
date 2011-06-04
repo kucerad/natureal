@@ -34,6 +34,7 @@ Terrain::~Terrain(void)
 
 void  Terrain::drawForLOD()
 {
+	//material->use();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,eboId);
 	glBindBuffer(GL_ARRAY_BUFFER, vboId); 
 		// enable states
@@ -50,6 +51,7 @@ void  Terrain::drawForLOD()
 
 void Terrain::draw()
 {	
+	material->use();
 	// bind textures
 	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
 		textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
@@ -111,6 +113,7 @@ void Terrain::draw()
 
 void Terrain::drawOverWater(){
 	// bind textures
+	material->use();
 	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
 		textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
 	}
@@ -162,6 +165,7 @@ void Terrain::drawOverWater(){
 
 void Terrain::drawUnderWater(){
 	// bind textures
+	material->use();
 	for (int i=0; i<TERRAIN_TEX_COUNT; i++){
 		textureManager->bindTexture(textureIds[i], GL_TEXTURE0+GLuint(i));
 	}
@@ -231,6 +235,9 @@ void Terrain::drawNormals()
 	 
 void Terrain::init()
 {
+	// material
+	material = new Material(v4(0.2), v4(0.7), v4(0.0), 0.5);
+
 	// load & create shaders
 	int shaderID = shaderManager->loadShader("Terrain", TERRAIN_VS_FILENAME, TERRAIN_FS_FILENAME);
 	shader = shaderManager->getShader(shaderID);
