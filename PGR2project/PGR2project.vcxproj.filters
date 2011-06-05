@@ -110,6 +110,12 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\TestModel.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="common\models\elephant.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
@@ -138,6 +144,9 @@
     </Filter>
     <Filter Include="Scene\Vegetation\AdvTree">
       <UniqueIdentifier>{08001247-cfce-441b-a527-2a15df92ed96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{67ed1ef2-3475-43fd-a637-f8031de1f4e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +228,9 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\TestModel.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\terrain\terrain_fs.glsl">
@@ -267,6 +279,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\models\phong_vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\models\phong_fs_s.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\models\phong_vs_s.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

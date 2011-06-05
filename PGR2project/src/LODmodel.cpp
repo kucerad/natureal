@@ -96,7 +96,9 @@ void LODmodel::drawLOD(int level)
 }
 
 void LODmodel::drawForShadowMapping(){
-	
+	if (lods[*actualLOD]!=NULL){
+		drawLOD(lastLOD);
+	}
 }
 void LODmodel::drawForLOD(){
 	getLODvalue();

@@ -193,6 +193,9 @@ PGR2Model::~PGR2Model()
 
 void PGR2Model::init()
 {
+	v3 x(1.0,0.0,0.0);
+	v3 y(0.0,1.0,0.0);
+	v3 z(0.0,0.0,1.0);
 	// init min & max corners
 	minCorner = v3(FLT_MAX);
 	maxCorner = v3(-FLT_MAX);
@@ -218,7 +221,10 @@ void PGR2Model::init()
 		mesh->hasBumpMap		= m_Materials[meshData.material_index].bump_tex_index>=0;
 		mesh->hasSpecularMap	= m_Materials[meshData.material_index].specular_tex_index>=0;
 		mesh->material			= & m_Materials[meshData.material_index];
-
+		if (level==0){
+			mesh->enabledLoc	= mesh->shader->getLocation("enabled");
+			mesh->scaleBiasLoc	= mesh->shader->getLocation("scaleBias");
+		}
 		//mesh->shader = NULL;
 		/*
 		if (mesh->hasHeightMap && mesh->hasBumpMap && mesh->hasSpecularMap){
@@ -243,12 +249,23 @@ void PGR2Model::init()
 											m_Vertices[3*face.ivertex[iVertex] + 2]);
 				minCorner.min(vertex.position);
 				maxCorner.max(vertex.position);
+				vertex.normal =  v3(face.normal[0], face.normal[1], face.normal[2]) ;
+				/*
 				vertex.normal		= v3(	m_Normals[3*face.inormal[iVertex] + 0],
 											m_Normals[3*face.inormal[iVertex] + 1],
 											m_Normals[3*face.inormal[iVertex] + 2]);
+											*/
+				// calc binormal from normal
+				float angle = vertex.normal.angleTo(x);
+				v3 axis = vertex.normal.cross(x);
+				vertex.binormal = y.getRotated(angle, axis);
+
+
+				/*
 				vertex.binormal		= v3(	m_Binormals[3*face.inormal[iVertex] + 0],
 											m_Binormals[3*face.inormal[iVertex] + 1],
 											m_Binormals[3*face.inormal[iVertex] + 2]);
+				*/
 				vertex.texcoord		= v2(	m_TexCoords[2*face.itexture[iVertex] + 0],
 											m_TexCoords[2*face.itexture[iVertex] + 1]);
 				vertex.facenormal	= v3(face.normal[0], face.normal[1], face.normal[2]) ;
@@ -412,6 +429,11 @@ void PGR2Model::renderVBO(bool transparent_meshes)
 		if (mesh->shader!=NULL){
 			mesh->shader->use(true);
 			mesh->shader->setTexture(mesh->diffuse_tex_loc, mesh->diffuse_tex_i);
+			if (level==0){
+				mesh->shader->setUniform1i(mesh->enabledLoc, g_ParallaxMappingEnabled?1:0);
+				mesh->shader->setTexture(mesh->bump_tex_loc, mesh->bump_tex_i);
+				mesh->shader->setUniform2f(mesh->scaleBiasLoc, g_ParallaxScale, g_ParallaxBias);
+			}
 		}
 		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->eboId);
@@ -431,12 +453,12 @@ void PGR2Model::renderVBO(bool transparent_meshes)
 
 			// own pipeline
 			if (mesh->shader!=NULL){
-				glEnableVertexAttribArray(GLuint(mesh->binormalLoc	));
-				glEnableVertexAttribArray(GLuint(mesh->facenormalLoc));
+				glEnableVertexAttribArray(mesh->binormalLoc	);
+				glEnableVertexAttribArray(mesh->facenormalLoc);
 				// binormals
-				glVertexAttribPointer(GLuint(mesh->binormalLoc	), 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(offsets[BINORMAL]));
+				glVertexAttribPointer(mesh->binormalLoc	, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(offsets[BINORMAL]));
 				// facenormals
-				glVertexAttribPointer(GLuint(mesh->facenormalLoc), 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(offsets[FACENORMAL]));
+				glVertexAttribPointer(mesh->facenormalLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(offsets[FACENORMAL]));
 			}
 			
 			
@@ -456,8 +478,8 @@ void PGR2Model::renderVBO(bool transparent_meshes)
 			}
 			
 			if (mesh->shader!=NULL){
-				glDisableVertexAttribArray(GLuint(mesh->binormalLoc	));
-				glDisableVertexAttribArray(GLuint(mesh->facenormalLoc));
+				glDisableVertexAttribArray(mesh->binormalLoc	);
+				glDisableVertexAttribArray(mesh->facenormalLoc	);
 			}
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 			glDisableClientState(GL_NORMAL_ARRAY);
@@ -769,7 +791,7 @@ void PGR2Model::renderVertexNormals(float scale)
 //	Description: 
 //
 //---------------------------------------------------------------------------
-PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texManager, ShaderManager *shManager)
+PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texManager, ShaderManager *shManager, int level)
 {
    bool load_failed = true;
 
@@ -783,6 +805,7 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
    std::string file_path = getFilePath(file_name);
 
    PGR2Model* pNewModel = new PGR2Model(texManager);
+   pNewModel->level = level;
    if (!pNewModel) goto end_of_load;
 
 // Read model header ---------------------------------------------->
@@ -889,8 +912,11 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 		mesh->isTransparent = false;
 		mesh->texCount = 0;
 		mesh->shader = shManager->getPhongShader();
-		mesh->binormalLoc	= mesh->shader->getLocation("a_binormal");
-		mesh->facenormalLoc = mesh->shader->getLocation("a_facenormal");
+		if (level==0){
+			mesh->shader = shManager->getParallaxShader();
+		}
+		mesh->binormalLoc	= mesh->shader->getAttributeLocation("a_binormal");
+		mesh->facenormalLoc = mesh->shader->getAttributeLocation("a_facenormal");
 
 		vector<int> tex_ids;
 		if (materialData->diffuse_tex_index		>= 0 ){
@@ -908,7 +934,7 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 			tex->inShaderName = "specular_texture";
 			mesh->specular_tex_i = tex_ids.size();
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
-			mesh->specular_tex_loc = mesh->shader->getLocation(tex->inShaderName);
+			mesh->specular_tex_loc = mesh->shader->getGLLocation(tex->inShaderName);
 
 			g_Specularmaps ++;
 
@@ -919,7 +945,7 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 			tex->inShaderName = "bump_texture";
 			mesh->bump_tex_i = tex_ids.size();
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
-			mesh->bump_tex_loc = mesh->shader->getLocation(tex->inShaderName);
+			mesh->bump_tex_loc = mesh->shader->getGLLocation(tex->inShaderName);
 
 			g_Bumpmaps++;
 
@@ -938,7 +964,7 @@ PGR2Model* PGR2Model::loadFromFile(const char* file_name, TextureManager *texMan
 			tex->inShaderName = "height_texture";
 			mesh->height_tex_i = tex_ids.size();
 			tex_ids.push_back(pNewModel->textureManager->addTexture(tex));
-			mesh->height_tex_loc = mesh->shader->getLocation(tex->inShaderName);
+			mesh->height_tex_loc = mesh->shader->getGLLocation(tex->inShaderName);
 
 			g_Heightmaps++;
 		}

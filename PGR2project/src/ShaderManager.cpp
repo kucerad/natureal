@@ -10,7 +10,7 @@ void ShaderManager::init()
 {
 	// init phong & parallax shaders
 	phongShader		= getShader(loadShader("phong", PHONG_VS_FILENAME, PHONG_FS_FILENAME));
-	//parallaxShader	= getShader(loadShader("parallax", PARALLAX_VS_FILENAME, PARALLAX_FS_FILENAME));
+	parallaxShader	= getShader(loadShader("parallax", PARALLAX_VS_FILENAME, PARALLAX_FS_FILENAME));
 
 }
 

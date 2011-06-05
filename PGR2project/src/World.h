@@ -19,6 +19,7 @@
 #include "GodRays.h"
 #include "pgr2model.h"
 #include "LODmodel.h"
+#include "TestModel.h"
 
 class World
 {
@@ -69,6 +70,7 @@ public:
 	Vegetation			*p_tree2_growth;
 
 	PGR2Model			*p_model1;
+	TestModel			*p_testModel;
 
 	TextureManager		textureManager;
 	ShaderManager		shaderManager;

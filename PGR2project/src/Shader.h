@@ -35,6 +35,8 @@ public:
 	void	destroy();
 	void	use(bool isTurnedOn);
 	int		getLocation(string var_name);
+	int		getGLLocation(string var_name);
+	int		getAttributeLocation(string var_name);
 	void	setUniform1i(int locIndex, int value);
 	void    setUniform2i(int locIndex, int value1, int value2);
 	void	setUniform3i(int locIndex, int value1, int value2, int value3);

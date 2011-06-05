@@ -82,6 +82,8 @@ class PGR2Model:
 			GLint			height_tex_loc;
 			GLint			bump_tex_loc;
 			GLint			specular_tex_loc;
+			int				enabledLoc;
+			int				scaleBiasLoc;
 
 			int				diffuse_tex_i;
 			int				height_tex_i;
@@ -103,7 +105,7 @@ class PGR2Model:
 		
 		virtual ~PGR2Model();
 
-		static PGR2Model* loadFromFile(const char* file_name,  TextureManager *texManager, ShaderManager * shManager);
+		static PGR2Model* loadFromFile(const char* file_name,  TextureManager *texManager, ShaderManager * shManager, int level=1);
 		       bool       saveToFile(const char* file_name);
 		
 		// =======================================
@@ -172,9 +174,7 @@ public:
 		v3 minCorner;
 		v3 maxCorner;
 
-		Shader * paralaxShader;
-		Shader * bumpShader;
-		Shader * specularShader;
+		int			level;
 };
 
 

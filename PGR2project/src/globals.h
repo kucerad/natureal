@@ -48,6 +48,10 @@ extern	bool					g_fastMode;
 extern	v3						g_light_position;
 extern	bool					g_drawingReflection;
 extern	bool					g_showTextures;
+extern  bool					g_ParallaxMappingEnabled;
+extern  float					g_ParallaxScale;
+extern  float					g_ParallaxBias;
+
 
 extern	bool					g_ShadowMappingEnabled;
 extern	m4						g_LightMVPCameraVInverseMatrix;
