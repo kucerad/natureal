@@ -93,6 +93,7 @@
     <ClInclude Include="common\Matrix3x3.h" />
     <ClInclude Include="common\Matrix4x4.h" />
     <ClInclude Include="common\models\cube.h" />
+    <ClInclude Include="common\models\elephant.h" />
     <ClInclude Include="common\png.h" />
     <ClInclude Include="common\timer.h" />
     <ClInclude Include="common\tools.h" />
@@ -119,6 +120,7 @@
     <ClInclude Include="src\ShaderManager.h" />
     <ClInclude Include="src\SkyBox.h" />
     <ClInclude Include="src\Terrain.h" />
+    <ClInclude Include="src\TestModel.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Tree1.h" />
@@ -150,6 +152,7 @@
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\SkyBox.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
+    <ClCompile Include="src\TestModel.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tree1.cpp" />
@@ -166,7 +169,9 @@
     <None Include="shaders\models\parallax_fs.glsl" />
     <None Include="shaders\models\parallax_vs.glsl" />
     <None Include="shaders\models\phong_fs.glsl" />
+    <None Include="shaders\models\phong_fs_s.glsl" />
     <None Include="shaders\models\phong_vs.glsl" />
+    <None Include="shaders\models\phong_vs_s.glsl" />
     <None Include="shaders\skybox\skybox_fs.glsl" />
     <None Include="shaders\skybox\skybox_vs.glsl" />
     <None Include="shaders\terrain\terrain_fs.glsl" />

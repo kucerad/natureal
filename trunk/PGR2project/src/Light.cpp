@@ -155,8 +155,8 @@ void Light::draw()
 	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-		glTranslate(g_light_position);
-		glColor4f(1.0,1.0,0.6,1.0);
+		glTranslate(positionFixedToSkybox);
+		glColor3f(1.0,0.0,0.0);
 		glutSolidSphere(10.0, 5, 5);
 	glPopMatrix();
 	glEnable(GL_LIGHTING);
@@ -167,6 +167,9 @@ void Light::turnOn()
 {
 	glEnable(GL_LIGHTING);
 	glEnable(lightId);
+	glLightfv(lightId, GL_POSITION      , v4(positionFixedToSkybox).data);
+	glLightfv(lightId, GL_SPOT_DIRECTION, v4(direction).data);
+	
 }
 
 void Light::turnOff()
@@ -179,11 +182,11 @@ void Light::setup(GLuint lid, v3 &pos, v3 &dir, v4 &ambi, v4 &diff, v4 &spec, fl
 	lightId = lid;
 	position = pos;
 	direction= dir;
-	glLightfv(lid, GL_POSITION      , v4(pos).data);
-	glLightfv(lid, GL_SPOT_DIRECTION, v4(dir).data);
-	glLightfv(lid, GL_AMBIENT       , ambi.data);
-	glLightfv(lid, GL_DIFFUSE       , diff.data);
-	glLightfv(lid, GL_SPECULAR	    , spec.data);
-	glLightf (lid, GL_SPOT_CUTOFF	, cutOff);
-	glLightf (lid, GL_SPOT_EXPONENT , exp);
+	glLightfv(lightId, GL_POSITION      , v4(position).data);
+	glLightfv(lightId, GL_SPOT_DIRECTION, v4(direction).data);
+	glLightfv(lightId, GL_AMBIENT       , ambi.data);
+	glLightfv(lightId, GL_DIFFUSE       , diff.data);
+	glLightfv(lightId, GL_SPECULAR	    , spec.data);
+	glLightf (lightId, GL_SPOT_CUTOFF	, cutOff);
+	glLightf (lightId, GL_SPOT_EXPONENT , exp);
 }

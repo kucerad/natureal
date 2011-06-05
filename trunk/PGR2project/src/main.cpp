@@ -18,6 +18,10 @@
 #define TEST 0
 #include "../common/Vector4.h"
 #include "settings.h"
+bool	g_ParallaxMappingEnabled = true;
+float	g_ParallaxScale =   0.04;
+float	g_ParallaxBias  =  -0.02;
+
 
 #define TERRAIN_INIT_BORDER_VAL v4(13.0f, 10.0f, 5.0f, -1.0f)
 #define TERRAIN_INIT_BORDER_WID v4(2.0f, 2.0f, 2.0f, 2.0f)
@@ -373,6 +377,15 @@ void initGUI()
    TwBar *controlBar = TwNewBar("Controls");
    TwDefine(" Controls position='10 10' size='250 370' refresh=0.1 \
             valueswidth=80 ");
+   TwAddVarRW(controlBar, "parallax", TW_TYPE_BOOLCPP, &g_ParallaxMappingEnabled, 
+               " help='Parallax mapping enabled' ");
+   TwAddVarRW(controlBar, "parallaxScale", TW_TYPE_FLOAT, &g_ParallaxScale, 
+               " help='Parallax scale value' step=0.001");
+   TwAddVarRW(controlBar, "parallaxBias", TW_TYPE_FLOAT, &g_ParallaxBias, 
+               " help='Parallax bias value' step=0.001");
+	
+
+
    // camera mode
     TwEnumVal cam_mode[] = 
    { 

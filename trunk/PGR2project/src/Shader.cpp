@@ -315,6 +315,11 @@ void Shader::destroy()
 	}
 }
 
+int		Shader::getGLLocation(string var_name)
+{
+	return glGetUniformLocation(programID, var_name.c_str());
+}
+
 int		Shader::getLocation(string var_name)
 {
 	int loc = glGetUniformLocation(programID, var_name.c_str());
@@ -326,6 +331,11 @@ int		Shader::getLocation(string var_name)
 	//}
 	//return -1;
 }
+int		Shader::getAttributeLocation(string var_name)
+{
+	return glGetAttribLocation(programID, var_name.c_str());
+}
+
 void	Shader::setUniform1i(int locIndex, int value)
 {
 	glUniform1i(locations[locIndex], value);

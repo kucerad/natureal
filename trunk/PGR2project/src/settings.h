@@ -169,6 +169,9 @@
 #define PARALLAX_VS_FILENAME	"shaders/models/parallax_vs.glsl"
 #define PARALLAX_FS_FILENAME	"shaders/models/parallax_fs.glsl"
 
+#define PHONG_S_VS_FILENAME		"shaders/models/phong_vs_s.glsl"
+#define PHONG_S_FS_FILENAME		"shaders/models/phong_fs_s.glsl"
+
 
 static enum Attribs{
 	INDEX,
@@ -209,7 +212,7 @@ static enum Attribs{
 #define SHADOWMAP_RESOLUTION_Y  2048
 
 
-static v4 sunAmb  = v4(0.9,0.9, 1.0, 1.0);
+static v4 sunAmb  = v4(0.5,0.5, 0.5, 1.0);
 static v4 sunDif  = v4(1.0,1.0, 1.0, 1.0);
 static v4 sunSpe  = v4(0.5,0.5, 0.6, 1.0);
 
