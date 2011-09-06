@@ -8,7 +8,18 @@
 #ifndef __CUBE_MODEL_H__
 #define __CUBE_MODEL_H__
 
-#include "../../src/settings.h"
+#include "settings.h"
+
+const GLfloat CUBE_VERTICES_ARRAY[] =
+{
+	 -1.0f,-1.0f, 1.0f,  1.0f,-1.0f, 1.0f,  1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+	 -1.0f,-1.0f,-1.0f, -1.0f, 1.0f,-1.0f,  1.0f, 1.0f,-1.0f,  1.0f,-1.0f,-1.0f
+};
+const GLfloat CUBE_COLORS_ARRAY[] =
+{
+	 1.0f, 0.0f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f,
+	 1.0f, 0.0f, 1.0f,  1.0f, 1.0f, 1.0f,  0.0f, 1.0f, 1.0f,  0.0f, 0.0f, 1.0f
+};
 
 const GLfloat CUBE_VERTEX_ARRAY[] =
 {
@@ -77,7 +88,7 @@ const GLfloat CUBE_COLOR_AND_VERTEX_ARRAY[] =
 };
 
 
-const GLubyte CUBE_INDEX_ARRAY[] =
+const GLuint CUBE_INDEX_ARRAY[] =
 {
    0, 1, 2, 3,
 	4, 5, 6, 7,
@@ -88,7 +99,7 @@ const GLubyte CUBE_INDEX_ARRAY[] =
 };
 
 const int NUM_CUBE_VERTICES = sizeof(CUBE_VERTEX_ARRAY) / (3*sizeof(GLfloat));
-const int NUM_CUBE_INDICES  = sizeof(CUBE_INDEX_ARRAY) / sizeof(GLubyte);
+const int NUM_CUBE_INDICES  = sizeof(CUBE_INDEX_ARRAY) / sizeof(GLuint);
 
 extern GLuint cube_vbo_id;
 extern GLuint cube_ebo_id;
@@ -134,13 +145,21 @@ static void drawCube()
 		glVertexPointer(3, GL_FLOAT, 0, BUFFER_OFFSET(0));
 		glNormalPointer(GL_FLOAT, 0, BUFFER_OFFSET(3*NUM_CUBE_VERTICES*sizeof(GLfloat)));
 		//glDrawArrays(GL_QUADS, 0, NUM_CUBE_VERTICES);
-	   glDrawElements(GL_QUADS, NUM_CUBE_INDICES, GL_UNSIGNED_BYTE, BUFFER_OFFSET(0)); 
+	   glDrawElements(GL_QUADS, NUM_CUBE_INDICES, GL_UNSIGNED_INT, BUFFER_OFFSET(0)); 
 	//                  CUBE_INDEX_ARRAY);
 
 	   glDisableClientState(GL_VERTEX_ARRAY);
 	   glDisableClientState(GL_NORMAL_ARRAY);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+};
+
+const GLfloat PLANE_VERTEX_ARRAY2[] =
+{
+	 -0.5f, 0.0f, -0.5f,
+	 -0.5f, 0.0f,  0.5f,
+	  0.5f, 0.0f,  0.5f,
+	  0.5f, 0.0f, -0.5f	
 };
 
 
@@ -159,6 +178,14 @@ const GLfloat PLANE_TEX_COORD_ARRAY[] =
 	 1.0f, 1.0f,
 	 0.0f, 1.0f
 };
+const GLfloat PLANE_TEX_COORD_ARRAY2[] =
+{
+	 0.0f, 0.0f,
+	 0.0f, 1.0f,
+	 1.0f, 1.0f,
+	 1.0f, 0.0f
+};
+
 
 const GLfloat PLANE_NORMAL_ARRAY[] =
 {
@@ -166,6 +193,20 @@ const GLfloat PLANE_NORMAL_ARRAY[] =
 	0.0f, 1.0f, 0.0f,
 	0.0f, 1.0f, 0.0f,
 	0.0f, 1.0f, 0.0f
+};
+const GLfloat PLANE_NORMAL_ARRAY2[] =
+{
+    0.0f,-1.0f, 0.0f,
+	0.0f,-1.0f, 0.0f,
+	0.0f,-1.0f, 0.0f,
+	0.0f,-1.0f, 0.0f
+};
+const GLfloat PLANE_TANGENT_ARRAY[] =
+{
+    1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f
 };
 const GLubyte PLANE_INDEX_ARRAY[] =
 {
